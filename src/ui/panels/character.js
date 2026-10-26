@@ -1,3 +1,4 @@
+import { t as translateText } from '../../i18n/index.js';
 import { registerPanel } from '../panel-host.js';
 import { app } from '../../core/app.js';
 import { el, clamp } from '../../core/util.js';
@@ -50,29 +51,29 @@ const DEFAULT_TEXT = {
 if (!app.textDefaults) app.textDefaults = { ...DEFAULT_TEXT };
 
 const STYLES = [
-  { value: 'regular', label: 'Regular' },
-  { value: 'italic', label: 'Italic' },
-  { value: 'bold', label: 'Bold' },
-  { value: 'bold italic', label: 'Bold Italic' },
+  { value: 'regular', label: translateText("Regular") },
+  { value: 'italic', label: translateText("Italic") },
+  { value: 'bold', label: translateText("Bold") },
+  { value: 'bold italic', label: translateText("Bold Italic") },
 ];
 
 const ANTIALIAS = [
-  { value: 'none', label: 'None' },
-  { value: 'sharp', label: 'Sharp' },
-  { value: 'crisp', label: 'Crisp' },
-  { value: 'strong', label: 'Strong' },
-  { value: 'smooth', label: 'Smooth' },
+  { value: 'none', label: translateText("None") },
+  { value: 'sharp', label: translateText("Sharp") },
+  { value: 'crisp', label: translateText("Crisp") },
+  { value: 'strong', label: translateText("Strong") },
+  { value: 'smooth', label: translateText("Smooth") },
 ];
 
 const TOGGLES = [
-  { key: 'fauxBold', label: 'B', title: 'Faux Bold', className: 'is-bold' },
-  { key: 'fauxItalic', label: 'I', title: 'Faux Italic', className: 'is-italic' },
-  { key: 'underline', label: 'U', title: 'Underline', className: 'is-under' },
-  { key: 'strikethrough', label: 'S', title: 'Strikethrough', className: 'is-strike' },
-  { key: 'allCaps', label: 'TT', title: 'All Caps' },
-  { key: 'smallCaps', label: 'Tt', title: 'Small Caps' },
-  { key: 'superscript', label: 'T¹', title: 'Superscript' },
-  { key: 'subscript', label: 'T₁', title: 'Subscript' },
+  { key: 'fauxBold', label: 'B', title: translateText("Faux Bold"), className: 'is-bold' },
+  { key: 'fauxItalic', label: 'I', title: translateText("Faux Italic"), className: 'is-italic' },
+  { key: 'underline', label: 'U', title: translateText("Underline"), className: 'is-under' },
+  { key: 'strikethrough', label: 'S', title: translateText("Strikethrough"), className: 'is-strike' },
+  { key: 'allCaps', label: 'TT', title: translateText("All Caps") },
+  { key: 'smallCaps', label: 'Tt', title: translateText("Small Caps") },
+  { key: 'superscript', label: 'T¹', title: translateText("Superscript") },
+  { key: 'subscript', label: 'T₁', title: translateText("Subscript") },
 ];
 
 /** Superscript and subscript cannot both be on. */
@@ -95,7 +96,7 @@ async function rasterize(doc, layer) {
 
 registerPanel({
   id: 'character',
-  title: 'Character',
+  title: translateText("Character"),
   icon: 'text',
   group: 'bottom',
   order: 4,
@@ -214,7 +215,7 @@ registerPanel({
         sel.value = current;
       });
       return el('label.pkt-field.pkt-wide', {},
-        el('span.pkt-label', { text: 'Font' }), sel);
+        el('span.pkt-label', { text: translateText("Font") }), sel);
     };
 
     const checkField = (label, key) => {
@@ -239,7 +240,7 @@ registerPanel({
     const colorBtn = colorSwatchButton(
       () => get('color'),
       (c) => set('color', toHex(parseColor(c)), false),
-      { title: 'Text Color', live: false }
+      { title: translateText("Text Color"), live: false }
     );
     controls.push(() => colorBtn.sync());
 
@@ -248,14 +249,14 @@ registerPanel({
       selectField('Style', 'fontStyle', STYLES),
       el('div.pkt-pair', {},
         numField('Size', 'fontSize', { min: 1, max: 1600, unit: 'px' }),
-        numField('Leading', 'leading', { min: 0, max: 3000, unit: 'px', hint: '0 = automatic (1.2 × size)' })
+        numField('Leading', 'leading', { min: 0, max: 3000, unit: 'px', hint: translateText("0 = automatic (1.2 × size)") })
       ),
       el('div.pkt-pair', {},
         numField('Tracking', 'tracking', { min: -1000, max: 1000, hint: 'Letter spacing in 1/1000 em' }),
         selectField('Kerning', 'kerning', [
-          { value: 'metrics', label: 'Metrics' },
-          { value: 'optical', label: 'Optical' },
-          { value: 'none', label: 'Off' },
+          { value: 'metrics', label: translateText("Metrics") },
+          { value: 'optical', label: translateText("Optical") },
+          { value: 'none', label: translateText("Off") },
         ])
       ),
       el('div.pkt-pair', {},
@@ -264,7 +265,7 @@ registerPanel({
       ),
       el('div.pkt-pair', {},
         numField('Baseline', 'baselineShift', { min: -500, max: 500, unit: 'px' }),
-        el('label.pkt-field', {}, el('span.pkt-label', { text: 'Color' }), colorBtn)
+        el('label.pkt-field', {}, el('span.pkt-label', { text: translateText("Color") }), colorBtn)
       ),
       toggleStrip,
       selectField('Anti-alias', 'antiAlias', ANTIALIAS)
@@ -274,9 +275,9 @@ registerPanel({
 
     const alignStrip = el('div.pkt-aligns');
     const ALIGNS = [
-      { value: 'left', icon: 'align-left', title: 'Align left' },
-      { value: 'center', icon: 'align-center-h', title: 'Align centre' },
-      { value: 'right', icon: 'align-right', title: 'Align right' },
+      { value: 'left', icon: 'align-left', title: translateText("Align left") },
+      { value: 'center', icon: 'align-center-h', title: translateText("Align centre") },
+      { value: 'right', icon: 'align-right', title: translateText("Align right") },
     ];
     for (const a of ALIGNS) {
       const btn = el('button.pk-icon-btn.pkt-align', { type: 'button', title: a.title, onclick: () => set('align', a.value, false) }, iconEl(a.icon));
@@ -284,7 +285,7 @@ registerPanel({
       alignStrip.appendChild(btn);
     }
     const justifyBtn = el('button.pkt-toggle.pkt-justify', {
-      type: 'button', title: 'Justify', text: 'J',
+      type: 'button', title: translateText("Justify"), text: 'J',
       onclick: () => set('align', 'justify', false),
     });
     controls.push(() => justifyBtn.classList.toggle('is-on', get('align') === 'justify'));
@@ -311,7 +312,7 @@ registerPanel({
     body.append(
       scope,
       charSection,
-      el('div.pkt-heading', { text: 'Paragraph' }),
+      el('div.pkt-heading', { text: translateText("Paragraph") }),
       paraSection
     );
 

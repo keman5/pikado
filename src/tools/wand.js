@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { registerTool } from './base.js';
 import { SelectionTool } from './marquee.js';
 import { getComposite } from '../render/compositor.js';
@@ -131,9 +132,9 @@ class MagicWandTool extends SelectionTool {
       id: 'wand', name: 'Magic Wand Tool', icon: 'wand', shortcut: 'W',
       group: 'wand', groupOrder: 3,
       options: [
-        { key: 'tolerance', label: 'Tolerance', type: 'slider', min: 0, max: 255, step: 1, default: 32 },
-        { key: 'contiguous', label: 'Contiguous', type: 'checkbox', default: true },
-        { key: 'sampleAllLayers', label: 'Sample All Layers', type: 'checkbox', default: false },
+        { key: 'tolerance', label: translateText("Tolerance"), type: 'slider', min: 0, max: 255, step: 1, default: 32 },
+        { key: 'contiguous', label: translateText("Contiguous"), type: 'checkbox', default: true },
+        { key: 'sampleAllLayers', label: translateText("Sample All Layers"), type: 'checkbox', default: false },
       ],
     });
   }
@@ -175,8 +176,8 @@ class QuickSelectTool extends SelectionTool {
       group: 'wand', groupOrder: 3,
       modes: ['replace', 'add', 'subtract'],
       options: [
-        { key: 'size', label: 'Size', type: 'slider', min: 1, max: 500, step: 1, default: 30, unit: 'px' },
-        { key: 'sampleAllLayers', label: 'Sample All Layers', type: 'checkbox', default: false },
+        { key: 'size', label: translateText("Size"), type: 'slider', min: 1, max: 500, step: 1, default: 30, unit: 'px' },
+        { key: 'sampleAllLayers', label: translateText("Sample All Layers"), type: 'checkbox', default: false },
       ],
     });
     this.painting = false;

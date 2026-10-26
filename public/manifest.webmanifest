@@ -1,5 +1,6 @@
 {
   "name": "Pikado",
+  "lang": "en",
   "short_name": "Pikado",
   "description": "A browser-based raster and vector image studio. Works offline.",
   "start_url": ".",
@@ -8,7 +9,11 @@
   "orientation": "any",
   "background_color": "#0f0f13",
   "theme_color": "#0f0f13",
-  "categories": ["graphics", "photo", "productivity"],
+  "categories": [
+    "graphics",
+    "photo",
+    "productivity"
+  ],
   "icons": [
     {
       "src": "./icon-192.png",

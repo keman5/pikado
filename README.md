@@ -585,8 +585,10 @@ traps the suite is built to avoid.
 | ICNS (macOS icon) | yes — largest entry, PNG or legacy RLE | yes — 16 to 1024 px, never upscaled |
 | `.pkd` (Pikado native) | yes | yes — lossless, preserves everything |
 
-`.pkd` is the format to use when you care about keeping your work intact. PSD
-export writes real layer records — including adjustment layers, masks, group
+**Save As defaults to `.psd`**, with `.pkd` available in the file picker's format
+selector. Save writes the existing file's format; browsers without a file picker
+download a PSD. `.pkd` remains the lossless format for preserving all Pikado data.
+PSD saving writes real layer records — including adjustment layers, masks, group
 nesting, blend modes and fill opacity — but see the limits below.
 
 <!-- ============================================================
@@ -797,3 +799,31 @@ HEIC decoding uses [libheif](https://github.com/strukturag/libheif) and
 [libheif-js](https://github.com/catdad-experiments/libheif-js), all LGPL-3.0.
 It ships as the package's own file, unmodified and loaded separately from the
 rest of Pikado, so it can be replaced with any compatible build.
+
+## 中文版与 Cloudflare 部署
+
+中文版地址：**https://ps.macseek.cc**。菜单、工具、面板和编辑对话框使用中文；
+用户文件名、图层名、内部命令标识与文件格式保持原样。部分技术说明仍沿用上游英文。
+所有图像编辑在浏览器中完成，生成式填充依然需要用户自己的 API 密钥并单独授权。
+
+支持简体中文和 English，默认中文。通过“编辑 → 首选项 → 语言”切换，
+点击确定后先保存作品，再刷新页面生效；选择会保存在当前浏览器。
+所有已汉化文案集中在 `src/i18n/locales/zh-CN.js` 与 `en.js`，使用相同的键，
+动态参数使用 `{0}`、`{1}`；界面通过 `src/i18n/index.js` 的 `t()` 读取。
+添加语言时新增资源，并在该入口的 `catalogs`、`LOCALES` 中注册。
+
+“另存为”默认生成真实的分层 PSD 文件，也可在文件类型中选择 PKD。
+PSD 沿用现有导出器的兼容性限制；需要完整保留 Pikado 专有编辑数据时请选择 PKD。
+
+```bash
+./build.sh          # 本地测试并构建，输出 dist/
+./build.sh check    # 多语言资源和中文化边界检查
+./build.sh deploy   # 本地构建后上传 Cloudflare Workers 静态资源并绑定域名
+```
+
+部署使用本机已有的 Wrangler 登录授权，不在仓库保存凭据。
+`wrangler.jsonc` 指定 Worker `pikado-zh` 与自定义域名 `ps.macseek.cc`。
+首次部署需确保本机已通过 `npx wrangler login` 登录对应 Cloudflare 账户。
+`public/_headers` 对入口和 Service Worker 禁用长期缓存，对哈希资源使用长期缓存。
+
+浏览器回归测试：先运行 `npm run dev`，再访问 `http://localhost:5173/tests/`。

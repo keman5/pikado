@@ -11,7 +11,8 @@ import { writePSD, SELECTION_CHANNEL_NAME } from '/src/io/psd-write.js';
 import { readPSD } from '/src/io/psd-read.js';
 import { POSTSCRIPT_FACES, postScriptFace, familyFromPostScriptName } from '/src/text/fonts.js';
 import { encodeGIF, buildPalette } from '/src/io/gif.js';
-import { exportDocument } from '/src/io/save.js';
+import { exportDocument, saveDocument, saveDocumentAs } from '/src/io/save.js';
+import { openFile } from '/src/io/open.js';
 import { exportSVG } from '/src/io/svg.js';
 
 /* ------------------------------------------------------------------ */
@@ -992,4 +993,97 @@ suite('io / opening a 16-bit file says the depth was lost', async (t) => {
    * Verified to fail by removing the ctx.warnings.push for depth === 16.
    */
   t.ok(seen.some((m) => /16-bit/.test(m)), `the depth loss is reported (${seen.join(' | ') || 'nothing'})`);
+});
+
+suite('io / Save As defaults to real PSD and subsequent Save keeps its format', async (t) => {
+  const descriptor = Object.getOwnPropertyDescriptor(window, 'showSaveFilePicker');
+  const doc = t.doc(24, 18, '#ffffff', 'Save Test.pkd');
+  t.fill(doc.activeLayer(), '#ff0000', 0, 0, 12, 18);
+  doc.touch();
+  let options, written, closed = 0;
+  const handle = { name: 'Save Test.PSD', createWritable: async () => ({
+    write: async blob => { written = blob; }, close: async () => { closed++; },
+  }) };
+  Object.defineProperty(window, 'showSaveFilePicker', { configurable: true, value: async opts => { options = opts; return handle; } });
+  try {
+    t.ok(await saveDocumentAs(doc), 'Save As succeeds');
+    t.eq(options.suggestedName, 'Save Test.psd', 'PSD replaces the old extension by default');
+    t.eq(options.types[0].accept['image/vnd.adobe.photoshop'], ['.psd'], 'PSD is the first filter');
+    t.eq(options.types[1].accept['application/x-pikado'], ['.pkd'], 'PKD remains an explicit option');
+    t.eq(await written.slice(0, 4).text(), '8BPS', 'the file contains PSD bytes');
+    const reopened = await readPSD(await written.arrayBuffer());
+    t.eq([reopened.width, reopened.height], [24, 18], 'the saved PSD reopens at the right size');
+    t.eq(t.px(reopened.layers[0].canvas, 2, 2), '255,0,0,255', 'the saved layer pixels survive');
+    t.eq(closed, 1, 'the writable was closed');
+    t.is(doc.fileHandle, handle, 'the PSD handle is retained');
+    t.eq(doc.dirty, false, 'successful write marks the document saved');
+
+    t.fill(doc.activeLayer(), '#00ff00', 0, 0, 4, 4);
+    doc.touch();
+    t.ok(await saveDocument(doc), 'ordinary Save uses the existing PSD handle');
+    t.eq(await written.slice(0, 4).text(), '8BPS', 'ordinary Save never writes PKD into a PSD file');
+    const updated = await readPSD(await written.arrayBuffer());
+    t.eq(t.px(updated.layers[0].canvas, 2, 2), '0,255,0,255', 'subsequent PSD save contains the edit');
+
+    handle.name = 'Save Test.pkd';
+    t.ok(await saveDocumentAs(doc), 'the user can choose PKD');
+    const pkd = await loadPKD(await written.arrayBuffer());
+    t.eq([pkd.width, pkd.height], [24, 18], 'PKD option contains actual PKD data');
+    doc.touch();
+    t.ok(await saveDocument(doc), 'ordinary Save still supports an existing PKD handle');
+    t.eq((await loadPKD(await written.arrayBuffer())).width, 24, 'subsequent PKD save retains its format');
+
+    doc.dirty = true;
+    const previousWrites = closed;
+    handle.name = 'bad.png';
+    t.notOk(await saveDocumentAs(doc), 'an unsupported extension is rejected');
+    t.eq(closed, previousWrites, 'invalid extensions never open a writable');
+    t.eq(doc.dirty, true, 'a failed save keeps the document dirty');
+
+    handle.name = 'failed.psd';
+    handle.createWritable = async () => { throw new Error('Disk full'); };
+    t.notOk(await saveDocumentAs(doc), 'write errors are reported');
+    t.eq(doc.dirty, true, 'write errors do not mark the document saved');
+
+    Object.defineProperty(window, 'showSaveFilePicker', { configurable: true, value: async () => { throw new DOMException('Cancelled', 'AbortError'); } });
+    t.eq(await saveDocumentAs(doc), false, 'cancelling does not fall back to a download');
+    t.eq(doc.dirty, true, 'cancel keeps unsaved state');
+  } finally {
+    if (descriptor) Object.defineProperty(window, 'showSaveFilePicker', descriptor);
+    else delete window.showSaveFilePicker;
+  }
+});
+
+suite('io / Save As download fallback is PSD and imported PSDs require Save As', async (t) => {
+  const descriptor = Object.getOwnPropertyDescriptor(window, 'showSaveFilePicker');
+  const originalCreate = URL.createObjectURL;
+  const originalClick = HTMLAnchorElement.prototype.click;
+  const doc = t.doc(16, 12, '#123456', 'Fallback');
+  let downloaded, filename;
+  Object.defineProperty(window, 'showSaveFilePicker', { configurable: true, value: undefined });
+  URL.createObjectURL = blob => { downloaded = blob; return originalCreate.call(URL, blob); };
+  HTMLAnchorElement.prototype.click = function () { filename = this.download; };
+  try {
+    t.ok(await saveDocumentAs(doc), 'fallback completes');
+    t.eq(filename, 'Fallback.psd', 'download gets the PSD extension');
+    t.eq(await downloaded.slice(0, 4).text(), '8BPS', 'fallback uses the PSD encoder');
+    const file = new File([downloaded], 'Fallback.psd', { type: 'image/vnd.adobe.photoshop' });
+    file.handle = { name: file.name, createWritable: async () => ({ write: async () => {}, close: async () => {} }) };
+    const opened = await openFile(file);
+    try {
+      t.notOk(opened.fileHandle, 'an imported PSD cannot silently overwrite its original after lossy import');
+    } finally { t.app.closeDocument(opened); }
+  } finally {
+    URL.createObjectURL = originalCreate;
+    HTMLAnchorElement.prototype.click = originalClick;
+    if (descriptor) Object.defineProperty(window, 'showSaveFilePicker', descriptor);
+    else delete window.showSaveFilePicker;
+  }
+});
+
+suite('io / PSD format limits fail before writing invalid files', async (t) => {
+  const doc = t.doc(8, 8, '#ffffff', 'PSD limit');
+  doc.width = 30001;
+  try { await t.throws(() => writePSD(doc), 'PSD rejects dimensions beyond its 30,000 pixel limit'); }
+  finally { doc.width = 8; }
 });

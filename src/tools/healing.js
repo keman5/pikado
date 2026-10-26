@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { Tool, registerTool } from './base.js';
 import { app } from '../core/app.js';
 import { EffectStroke, brushOptionDescriptors, brushFromOptions } from '../paint/brush-engine.js';
@@ -341,11 +342,11 @@ class SpotHealingTool extends BrushToolBase {
       strokeLabel: 'Spot Healing Brush',
       options: [
         ...tweakDefaults(brushOptionDescriptors({ opacity: false, flow: false, airbrush: false }), { size: 30, hardness: 100 }),
-        { key: 'type', label: 'Type', type: 'radio', default: 'content-aware',
+        { key: 'type', label: translateText("Type"), type: 'radio', default: 'content-aware',
           options: [
-            { value: 'content-aware', label: 'Content-Aware' },
-            { value: 'texture', label: 'Create Texture' },
-            { value: 'proximity', label: 'Proximity Match' },
+            { value: 'content-aware', label: translateText("Content-Aware") },
+            { value: 'texture', label: translateText("Create Texture") },
+            { value: 'proximity', label: translateText("Proximity Match") },
           ] },
       ],
     });
@@ -402,15 +403,15 @@ class HealingBrushTool extends BrushToolBase {
       strokeLabel: 'Healing Brush',
       options: [
         ...tweakDefaults(brushOptionDescriptors({ opacity: false, flow: false, airbrush: false }), { size: 30, hardness: 100 }),
-        { key: 'source', label: 'Source', type: 'radio', default: 'sampled',
+        { key: 'source', label: translateText("Source"), type: 'radio', default: 'sampled',
           options: [
-            { value: 'sampled', label: 'Sampled' },
-            { value: 'pattern', label: 'Pattern' },
+            { value: 'sampled', label: translateText("Sampled") },
+            { value: 'pattern', label: translateText("Pattern") },
           ] },
-        { key: 'pattern', label: 'Pattern', type: 'select', options: patternOptions(), default: 'grain',
+        { key: 'pattern', label: translateText("Pattern"), type: 'select', options: patternOptions(), default: 'grain',
           when: (s) => s.source === 'pattern' },
-        { key: 'aligned', label: 'Aligned', type: 'checkbox', default: true },
-        { key: 'sampleAllLayers', label: 'Sample All Layers', type: 'checkbox', default: false },
+        { key: 'aligned', label: translateText("Aligned"), type: 'checkbox', default: true },
+        { key: 'sampleAllLayers', label: translateText("Sample All Layers"), type: 'checkbox', default: false },
       ],
     });
     this.source = null;
@@ -531,7 +532,7 @@ class HealingBrushTool extends BrushToolBase {
     // In Pattern mode there is no sample point at all, so the row would be
     // meaningless — leave it out rather than showing a dead entry.
     const extra = this.state.source === 'pattern' ? [] : [{
-      label: 'Reset Healing Source',
+      label: translateText("Reset Healing Source"),
       disabled: !this.source,
       run: () => {
         this.source = null;
@@ -597,17 +598,17 @@ class PatchTool extends Tool {
       id: 'patch', name: 'Patch Tool', icon: 'patch', cursor: 'crosshair', shortcut: 'J',
       group: 'healing', groupOrder: 6,
       options: [
-        { key: 'mode', label: 'Mode', type: 'radio', default: 'normal',
+        { key: 'mode', label: translateText("Mode"), type: 'radio', default: 'normal',
           options: [
-            { value: 'normal', label: 'Normal' },
-            { value: 'content-aware', label: 'Content-Aware' },
+            { value: 'normal', label: translateText("Normal") },
+            { value: 'content-aware', label: translateText("Content-Aware") },
           ] },
-        { key: 'patchSource', label: 'Patch', type: 'radio', default: 'source',
+        { key: 'patchSource', label: translateText("Patch"), type: 'radio', default: 'source',
           options: [
-            { value: 'source', label: 'Source' },
-            { value: 'destination', label: 'Destination' },
+            { value: 'source', label: translateText("Source") },
+            { value: 'destination', label: translateText("Destination") },
           ] },
-        { key: 'transparent', label: 'Transparent', type: 'checkbox', default: false,
+        { key: 'transparent', label: translateText("Transparent"), type: 'checkbox', default: false,
           hint: 'Transfer texture only, keeping the destination colour' },
       ],
     });
@@ -711,14 +712,14 @@ class PatchTool extends Tool {
     });
     const items = [];
     if (this.points.length) {
-      items.push({ label: 'Discard Patch Area', accel: 'Esc', run: () => this.cancel() });
+      items.push({ label: translateText("Discard Patch Area"), accel: 'Esc', run: () => this.cancel() });
       items.push(sep());
     }
     items.push({ header: 'Patch' });
     items.push(pick('mode', 'normal', 'Normal'));
     items.push(pick('mode', 'content-aware', 'Content-Aware'));
     items.push({
-      label: 'Transparent',
+      label: translateText("Transparent"),
       checked: !!s.transparent,
       run: () => this.setOption('transparent', !s.transparent),
     });
@@ -944,8 +945,8 @@ class RedEyeTool extends Tool {
       id: 'red-eye', name: 'Red Eye Tool', icon: 'red-eye', cursor: 'crosshair', shortcut: 'J',
       group: 'healing', groupOrder: 6,
       options: [
-        { key: 'pupilSize', label: 'Pupil Size', type: 'slider', min: 10, max: 100, step: 1, default: 50, unit: '%' },
-        { key: 'darkenAmount', label: 'Darken Amount', type: 'slider', min: 0, max: 100, step: 1, default: 50, unit: '%' },
+        { key: 'pupilSize', label: translateText("Pupil Size"), type: 'slider', min: 10, max: 100, step: 1, default: 50, unit: '%' },
+        { key: 'darkenAmount', label: translateText("Darken Amount"), type: 'slider', min: 0, max: 100, step: 1, default: 50, unit: '%' },
       ],
     });
     this.app = app;

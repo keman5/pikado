@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import './open.css';
 import { app } from '../core/app.js';
 import { PikaDocument } from '../core/document.js';
@@ -43,7 +44,7 @@ async function askAboutOversizePSD(info) {
     }),
   );
   dialog.setButtons([
-    { label: 'Cancel', value: 'cancel', subtle: true },
+    { label: translateText("Cancel"), value: 'cancel', subtle: true },
     { label: 'Open all layers anyway', value: 'proceed' },
     { label: 'Open flattened', value: 'flatten', primary: true },
   ]);
@@ -473,8 +474,8 @@ async function openDroppedUrl(url, alt, opts) {
  */
 export function installFileDrop(areaEl) {
   const host = areaEl || document.body;
-  const title = el('div.pk-drop-title', { text: 'Drop to open' });
-  const hint = el('div.pk-drop-hint', {}, 'Hold ', el('kbd', { text: 'Shift' }), ' to place into the current document');
+  const title = el('div.pk-drop-title', { text: translateText("Drop to open") });
+  const hint = el('div.pk-drop-hint', {}, 'Hold ', el('kbd', { text: translateText("Shift") }), ' to place into the current document');
   const overlay = el('div.pk-drop-overlay', {}, el('div.pk-drop-card', {}, title, hint));
   host.appendChild(overlay);
 

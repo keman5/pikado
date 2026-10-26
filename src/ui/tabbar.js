@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { el, rafThrottle } from '../core/util.js';
 import { app } from '../core/app.js';
 import { icon } from './icons.js';
@@ -50,10 +51,10 @@ function render() {
       onpointerdown: (e) => { if (e.button === 0) beginTabDrag(e, doc); },
     },
       el('span.pk-tab-name.pk-truncate', { text: doc.name }),
-      doc.dirty ? el('span.pk-tab-dirty', { title: 'Unsaved changes' }) : null,
+      doc.dirty ? el('span.pk-tab-dirty', { title: translateText("Unsaved changes") }) : null,
       el('button.pk-tab-close', {
         type: 'button',
-        title: 'Close',
+        title: translateText("Close"),
         html: icon('close', { size: 10 }),
         onclick: (e) => { e.stopPropagation(); closeDoc(doc); },
       })
@@ -64,7 +65,7 @@ function render() {
   root.appendChild(
     el('button.pk-tab-new', {
       type: 'button',
-      title: 'New document',
+      title: translateText("New document"),
       html: icon('plus', { size: 13 }),
       onclick: newDocument,
     })

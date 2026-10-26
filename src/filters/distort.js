@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { registerFilter } from './registry.js';
 import { operableRect, operableSurface } from './run.js';
 import { app } from '../core/app.js';
@@ -102,8 +103,8 @@ function warp(imageData, edge, mapFn) {
 }
 
 const UNDEFINED_AREAS = [
-  { value: 'wrap', label: 'Wrap Around' },
-  { value: 'repeat', label: 'Repeat Edge Pixels' },
+  { value: 'wrap', label: translateText("Wrap Around") },
+  { value: 'repeat', label: translateText("Repeat Edge Pixels") },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -205,24 +206,24 @@ registerFilter({
   menu: 'Distort',
   dialogWidth: 380,
   params: [
-    { key: 'horizontal', label: 'Horizontal Scale', type: 'slider', min: -999, max: 999, step: 1, default: 10 },
-    { key: 'vertical', label: 'Vertical Scale', type: 'slider', min: -999, max: 999, step: 1, default: 10 },
+    { key: 'horizontal', label: translateText("Horizontal Scale"), type: 'slider', min: -999, max: 999, step: 1, default: 10 },
+    { key: 'vertical', label: translateText("Vertical Scale"), type: 'slider', min: -999, max: 999, step: 1, default: 10 },
     {
-      key: 'mapType', label: 'Displacement Map', type: 'select', default: 'perlin',
+      key: 'mapType', label: translateText("Displacement Map"), type: 'select', default: 'perlin',
       options: [
-        { value: 'perlin', label: 'Perlin Noise' },
-        { value: 'ripples', label: 'Ripples' },
-        { value: 'bars', label: 'Bars' },
-        { value: 'checkers', label: 'Checkers' },
+        { value: 'perlin', label: translateText("Perlin Noise") },
+        { value: 'ripples', label: translateText("Ripples") },
+        { value: 'bars', label: translateText("Bars") },
+        { value: 'checkers', label: translateText("Checkers") },
       ],
     },
-    { key: 'seed', label: 'Seed', type: 'slider', min: 1, max: 9999, step: 1, default: 137, when: (s) => s.mapType === 'perlin' },
+    { key: 'seed', label: translateText("Seed"), type: 'slider', min: 1, max: 9999, step: 1, default: 137, when: (s) => s.mapType === 'perlin' },
     {
-      key: 'fit', label: 'Map Fit', type: 'radio', default: 'stretch',
-      options: [{ value: 'stretch', label: 'Stretch To Fit' }, { value: 'tile', label: 'Tile' }],
+      key: 'fit', label: translateText("Map Fit"), type: 'radio', default: 'stretch',
+      options: [{ value: 'stretch', label: translateText("Stretch To Fit") }, { value: 'tile', label: translateText("Tile") }],
     },
-    { key: 'detail', label: 'Tile Size', type: 'slider', min: 2, max: 100, step: 1, default: 25, unit: '%', when: (s) => s.fit === 'tile' },
-    { key: 'undefinedAreas', label: 'Undefined Areas', type: 'radio', default: 'repeat', options: UNDEFINED_AREAS },
+    { key: 'detail', label: translateText("Tile Size"), type: 'slider', min: 2, max: 100, step: 1, default: 25, unit: '%', when: (s) => s.fit === 'tile' },
+    { key: 'undefinedAreas', label: translateText("Undefined Areas"), type: 'radio', default: 'repeat', options: UNDEFINED_AREAS },
   ],
   apply(imageData, p) {
     const w = imageData.width, h = imageData.height;
@@ -249,7 +250,7 @@ registerFilter({
   name: 'Pinch...',
   menu: 'Distort',
   params: [
-    { key: 'amount', label: 'Amount', type: 'slider', min: -100, max: 100, step: 1, default: 50, unit: '%' },
+    { key: 'amount', label: translateText("Amount"), type: 'slider', min: -100, max: 100, step: 1, default: 50, unit: '%' },
   ],
   apply(imageData, p) {
     const w = imageData.width, h = imageData.height;
@@ -279,10 +280,10 @@ registerFilter({
   menu: 'Distort',
   params: [
     {
-      key: 'mode', label: 'Conversion', type: 'radio', default: 'rect2polar',
+      key: 'mode', label: translateText("Conversion"), type: 'radio', default: 'rect2polar',
       options: [
-        { value: 'rect2polar', label: 'Rectangular to Polar' },
-        { value: 'polar2rect', label: 'Polar to Rectangular' },
+        { value: 'rect2polar', label: translateText("Rectangular to Polar") },
+        { value: 'polar2rect', label: translateText("Polar to Rectangular") },
       ],
     },
   ],
@@ -321,10 +322,10 @@ registerFilter({
   name: 'Ripple...',
   menu: 'Distort',
   params: [
-    { key: 'amount', label: 'Amount', type: 'slider', min: -999, max: 999, step: 1, default: 100, unit: '%' },
+    { key: 'amount', label: translateText("Amount"), type: 'slider', min: -999, max: 999, step: 1, default: 100, unit: '%' },
     {
-      key: 'size', label: 'Size', type: 'select', default: 'medium',
-      options: [{ value: 'small', label: 'Small' }, { value: 'medium', label: 'Medium' }, { value: 'large', label: 'Large' }],
+      key: 'size', label: translateText("Size"), type: 'select', default: 'medium',
+      options: [{ value: 'small', label: translateText("Small") }, { value: 'medium', label: translateText("Medium") }, { value: 'large', label: translateText("Large") }],
     },
   ],
   apply(imageData, p) {
@@ -348,9 +349,9 @@ registerFilter({
   name: 'Shear...',
   menu: 'Distort',
   params: [
-    { key: 'amount', label: 'Amount', type: 'slider', min: -500, max: 500, step: 1, default: 40, unit: 'px' },
-    { key: 'frequency', label: 'Frequency', type: 'slider', min: 0.25, max: 20, step: 0.25, default: 1 },
-    { key: 'undefinedAreas', label: 'Undefined Areas', type: 'radio', default: 'repeat', options: UNDEFINED_AREAS },
+    { key: 'amount', label: translateText("Amount"), type: 'slider', min: -500, max: 500, step: 1, default: 40, unit: 'px' },
+    { key: 'frequency', label: translateText("Frequency"), type: 'slider', min: 0.25, max: 20, step: 0.25, default: 1 },
+    { key: 'undefinedAreas', label: translateText("Undefined Areas"), type: 'radio', default: 'repeat', options: UNDEFINED_AREAS },
   ],
   apply(imageData, p) {
     const h = imageData.height;
@@ -372,13 +373,13 @@ registerFilter({
   name: 'Spherize...',
   menu: 'Distort',
   params: [
-    { key: 'amount', label: 'Amount', type: 'slider', min: -100, max: 100, step: 1, default: 100, unit: '%' },
+    { key: 'amount', label: translateText("Amount"), type: 'slider', min: -100, max: 100, step: 1, default: 100, unit: '%' },
     {
-      key: 'mode', label: 'Mode', type: 'select', default: 'normal',
+      key: 'mode', label: translateText("Mode"), type: 'select', default: 'normal',
       options: [
-        { value: 'normal', label: 'Normal' },
-        { value: 'horizontal', label: 'Horizontal Only' },
-        { value: 'vertical', label: 'Vertical Only' },
+        { value: 'normal', label: translateText("Normal") },
+        { value: 'horizontal', label: translateText("Horizontal Only") },
+        { value: 'vertical', label: translateText("Vertical Only") },
       ],
     },
   ],
@@ -433,7 +434,7 @@ registerFilter({
   name: 'Twirl...',
   menu: 'Distort',
   params: [
-    { key: 'angle', label: 'Angle', type: 'slider', min: -999, max: 999, step: 1, default: 50, unit: '°' },
+    { key: 'angle', label: translateText("Angle"), type: 'slider', min: -999, max: 999, step: 1, default: 50, unit: '°' },
   ],
   apply(imageData, p) {
     const w = imageData.width, h = imageData.height;
@@ -470,19 +471,19 @@ registerFilter({
   menu: 'Distort',
   dialogWidth: 380,
   params: [
-    { key: 'generators', label: 'Number of Generators', type: 'slider', min: 1, max: 999, step: 1, default: 5 },
-    { key: 'wavelengthMin', label: 'Wavelength Min', type: 'slider', min: 1, max: 999, step: 1, default: 10 },
-    { key: 'wavelengthMax', label: 'Wavelength Max', type: 'slider', min: 1, max: 999, step: 1, default: 120 },
-    { key: 'amplitudeMin', label: 'Amplitude Min', type: 'slider', min: 1, max: 999, step: 1, default: 5 },
-    { key: 'amplitudeMax', label: 'Amplitude Max', type: 'slider', min: 1, max: 999, step: 1, default: 35 },
-    { key: 'scaleH', label: 'Horizontal Scale', type: 'slider', min: 0, max: 100, step: 1, default: 100, unit: '%' },
-    { key: 'scaleV', label: 'Vertical Scale', type: 'slider', min: 0, max: 100, step: 1, default: 100, unit: '%' },
+    { key: 'generators', label: translateText("Number of Generators"), type: 'slider', min: 1, max: 999, step: 1, default: 5 },
+    { key: 'wavelengthMin', label: translateText("Wavelength Min"), type: 'slider', min: 1, max: 999, step: 1, default: 10 },
+    { key: 'wavelengthMax', label: translateText("Wavelength Max"), type: 'slider', min: 1, max: 999, step: 1, default: 120 },
+    { key: 'amplitudeMin', label: translateText("Amplitude Min"), type: 'slider', min: 1, max: 999, step: 1, default: 5 },
+    { key: 'amplitudeMax', label: translateText("Amplitude Max"), type: 'slider', min: 1, max: 999, step: 1, default: 35 },
+    { key: 'scaleH', label: translateText("Horizontal Scale"), type: 'slider', min: 0, max: 100, step: 1, default: 100, unit: '%' },
+    { key: 'scaleV', label: translateText("Vertical Scale"), type: 'slider', min: 0, max: 100, step: 1, default: 100, unit: '%' },
     {
-      key: 'type', label: 'Type', type: 'radio', default: 'sine',
-      options: [{ value: 'sine', label: 'Sine' }, { value: 'triangle', label: 'Triangle' }, { value: 'square', label: 'Square' }],
+      key: 'type', label: translateText("Type"), type: 'radio', default: 'sine',
+      options: [{ value: 'sine', label: translateText("Sine") }, { value: 'triangle', label: translateText("Triangle") }, { value: 'square', label: translateText("Square") }],
     },
-    { key: 'undefinedAreas', label: 'Undefined Areas', type: 'radio', default: 'repeat', options: UNDEFINED_AREAS },
-    { key: 'seed', label: 'Randomize', type: 'slider', min: 1, max: 9999, step: 1, default: 42 },
+    { key: 'undefinedAreas', label: translateText("Undefined Areas"), type: 'radio', default: 'repeat', options: UNDEFINED_AREAS },
+    { key: 'seed', label: translateText("Randomize"), type: 'slider', min: 1, max: 9999, step: 1, default: 42 },
   ],
   apply(imageData, p) {
     const n = Math.max(1, Math.min(999, p.generators | 0));
@@ -551,14 +552,14 @@ registerFilter({
   name: 'ZigZag...',
   menu: 'Distort',
   params: [
-    { key: 'amount', label: 'Amount', type: 'slider', min: -100, max: 100, step: 1, default: 50, unit: '%' },
-    { key: 'ridges', label: 'Ridges', type: 'slider', min: 0, max: 20, step: 1, default: 5 },
+    { key: 'amount', label: translateText("Amount"), type: 'slider', min: -100, max: 100, step: 1, default: 50, unit: '%' },
+    { key: 'ridges', label: translateText("Ridges"), type: 'slider', min: 0, max: 20, step: 1, default: 5 },
     {
-      key: 'style', label: 'Style', type: 'select', default: 'pond',
+      key: 'style', label: translateText("Style"), type: 'select', default: 'pond',
       options: [
-        { value: 'around', label: 'Around Center' },
-        { value: 'out', label: 'Out From Center' },
-        { value: 'pond', label: 'Pond Ripples' },
+        { value: 'around', label: translateText("Around Center") },
+        { value: 'out', label: translateText("Out From Center") },
+        { value: 'pond', label: translateText("Pond Ripples") },
       ],
     },
   ],
@@ -595,14 +596,14 @@ registerFilter({
   menu: 'Distort',
   dialogWidth: 400,
   params: [
-    { key: 'distortion', label: 'Remove Distortion', type: 'slider', min: -100, max: 100, step: 1, default: 0, hint: '− barrel · + pincushion' },
-    { key: 'chromaRC', label: 'Fix Red/Cyan Fringe', type: 'slider', min: -100, max: 100, step: 1, default: 0 },
-    { key: 'chromaBY', label: 'Fix Blue/Yellow Fringe', type: 'slider', min: -100, max: 100, step: 1, default: 0 },
+    { key: 'distortion', label: translateText("Remove Distortion"), type: 'slider', min: -100, max: 100, step: 1, default: 0, hint: translateText("− barrel · + pincushion") },
+    { key: 'chromaRC', label: translateText("Fix Red/Cyan Fringe"), type: 'slider', min: -100, max: 100, step: 1, default: 0 },
+    { key: 'chromaBY', label: translateText("Fix Blue/Yellow Fringe"), type: 'slider', min: -100, max: 100, step: 1, default: 0 },
     { type: 'separator' },
-    { key: 'vertical', label: 'Vertical Perspective', type: 'slider', min: -100, max: 100, step: 1, default: 0 },
-    { key: 'horizontal', label: 'Horizontal Perspective', type: 'slider', min: -100, max: 100, step: 1, default: 0 },
-    { key: 'angle', label: 'Angle', type: 'angle', default: 0 },
-    { key: 'scale', label: 'Scale', type: 'slider', min: 50, max: 200, step: 1, default: 100, unit: '%' },
+    { key: 'vertical', label: translateText("Vertical Perspective"), type: 'slider', min: -100, max: 100, step: 1, default: 0 },
+    { key: 'horizontal', label: translateText("Horizontal Perspective"), type: 'slider', min: -100, max: 100, step: 1, default: 0 },
+    { key: 'angle', label: translateText("Angle"), type: 'angle', default: 0 },
+    { key: 'scale', label: translateText("Scale"), type: 'slider', min: 50, max: 200, step: 1, default: 100, unit: '%' },
   ],
   apply(imageData, p) {
     const w = imageData.width, h = imageData.height, data = imageData.data;
@@ -692,16 +693,16 @@ const MESH_N = 65;
 
 /** The Liquify tool list, in the order the dialog offers them. */
 export const LIQUIFY_TOOLS = [
-  { value: 'push', label: 'Forward Warp' },
-  { value: 'reconstruct', label: 'Reconstruct' },
-  { value: 'smooth', label: 'Smooth' },
-  { value: 'twirl-cw', label: 'Twirl Clockwise' },
-  { value: 'twirl-ccw', label: 'Twirl Anticlockwise' },
-  { value: 'pucker', label: 'Pucker' },
-  { value: 'bloat', label: 'Bloat' },
-  { value: 'push-left', label: 'Push Left' },
-  { value: 'freeze', label: 'Freeze Mask' },
-  { value: 'thaw', label: 'Thaw Mask' },
+  { value: 'push', label: translateText("Forward Warp") },
+  { value: 'reconstruct', label: translateText("Reconstruct") },
+  { value: 'smooth', label: translateText("Smooth") },
+  { value: 'twirl-cw', label: translateText("Twirl Clockwise") },
+  { value: 'twirl-ccw', label: translateText("Twirl Anticlockwise") },
+  { value: 'pucker', label: translateText("Pucker") },
+  { value: 'bloat', label: translateText("Bloat") },
+  { value: 'push-left', label: translateText("Push Left") },
+  { value: 'freeze', label: translateText("Freeze Mask") },
+  { value: 'thaw', label: translateText("Thaw Mask") },
 ];
 
 /** Tools that keep working while the pointer is held still. */
@@ -955,7 +956,7 @@ function renderLiquify(container, state, onChange) {
   const layer = doc && doc.activeLayer();
   const surf = doc && layer ? operableSurface(doc, layer) : null;
   if (!surf) {
-    container.appendChild(el('div.pk-hint', { text: 'No editable layer.' }));
+    container.appendChild(el('div.pk-hint', { text: translateText("No editable layer.") }));
     return null;
   }
   const rect = operableRect(doc);
@@ -1144,7 +1145,7 @@ function renderLiquify(container, state, onChange) {
       for (let i = 0; i < mesh.frozen.length; i++) mesh.frozen[i] = 1 - mesh.frozen[i];
     }, 'Swap frozen and thawed areas'),
     act('Thaw All', () => mesh.frozen.fill(0), 'Clear the freeze mask'),
-    el('span.pk-hint', { text: 'Drag on the preview to warp' })
+    el('span.pk-hint', { text: translateText("Drag on the preview to warp") })
   );
 
   container.classList.add('pk-liquify');
@@ -1173,19 +1174,19 @@ registerFilter({
   menu: 'Distort',
   dialogWidth: 520,
   params: [
-    { key: 'mode', label: 'Tool', type: 'select', default: 'push', options: LIQUIFY_TOOLS },
-    { key: 'brushSize', label: 'Brush Size', type: 'slider', min: 4, max: 1500, step: 1, default: 180, unit: 'px' },
-    { key: 'brushPressure', label: 'Brush Pressure', type: 'slider', min: 1, max: 100, step: 1, default: 60 },
+    { key: 'mode', label: translateText("Tool"), type: 'select', default: 'push', options: LIQUIFY_TOOLS },
+    { key: 'brushSize', label: translateText("Brush Size"), type: 'slider', min: 4, max: 1500, step: 1, default: 180, unit: 'px' },
+    { key: 'brushPressure', label: translateText("Brush Pressure"), type: 'slider', min: 1, max: 100, step: 1, default: 60 },
     {
-      key: 'brushRate', label: 'Brush Rate', type: 'slider', min: 1, max: 100, step: 1, default: 40,
+      key: 'brushRate', label: translateText("Brush Rate"), type: 'slider', min: 1, max: 100, step: 1, default: 40,
       hint: 'Speed of the tools that keep working while you hold still',
     },
     {
-      key: 'brushDensity', label: 'Brush Density', type: 'slider', min: 0, max: 100, step: 1, default: 50,
+      key: 'brushDensity', label: translateText("Brush Density"), type: 'slider', min: 0, max: 100, step: 1, default: 50,
       hint: 'How far the effect reaches toward the brush edge',
     },
-    { key: 'showMesh', label: 'Show Mesh', type: 'checkbox', default: false },
-    { key: 'showMask', label: 'Show Frozen Areas', type: 'checkbox', default: true },
+    { key: 'showMesh', label: translateText("Show Mesh"), type: 'checkbox', default: false },
+    { key: 'showMask', label: translateText("Show Frozen Areas"), type: 'checkbox', default: true },
     { key: 'mesh', type: 'custom', default: null, render: renderLiquify },
 
     /*

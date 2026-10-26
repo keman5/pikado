@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { registerFilter } from './registry.js';
 import { app } from '../core/app.js';
 import { createCanvas, getImageData, clamp, clamp255, deg2rad, lerp } from '../core/util.js';
@@ -80,9 +81,9 @@ function fbmField(w, h, ox, oy, seed, baseCell, octaves, roughness, step = 1) {
 }
 
 const CLOUD_PARAMS = [
-  { key: 'seed', label: 'Seed', type: 'slider', min: 1, max: 9999, step: 1, default: 1234 },
-  { key: 'scale', label: 'Scale', type: 'slider', min: 5, max: 400, step: 1, default: 100, unit: '%' },
-  { key: 'roughness', label: 'Roughness', type: 'slider', min: 10, max: 90, step: 1, default: 50, unit: '%' },
+  { key: 'seed', label: translateText("Seed"), type: 'slider', min: 1, max: 9999, step: 1, default: 1234 },
+  { key: 'scale', label: translateText("Scale"), type: 'slider', min: 5, max: 400, step: 1, default: 100, unit: '%' },
+  { key: 'roughness', label: translateText("Roughness"), type: 'slider', min: 10, max: 90, step: 1, default: 50, unit: '%' },
 ];
 
 function cloudField(imageData, p, ctx) {
@@ -169,9 +170,9 @@ registerFilter({
   name: 'Fibers...',
   menu: 'Render',
   params: [
-    { key: 'variance', label: 'Variance', type: 'slider', min: 1, max: 64, step: 1, default: 16 },
-    { key: 'strength', label: 'Strength', type: 'slider', min: 1, max: 64, step: 1, default: 4 },
-    { key: 'seed', label: 'Randomize', type: 'slider', min: 1, max: 9999, step: 1, default: 7 },
+    { key: 'variance', label: translateText("Variance"), type: 'slider', min: 1, max: 64, step: 1, default: 16 },
+    { key: 'strength', label: translateText("Strength"), type: 'slider', min: 1, max: 64, step: 1, default: 4 },
+    { key: 'seed', label: translateText("Randomize"), type: 'slider', min: 1, max: 9999, step: 1, default: 7 },
   ],
   apply(imageData, p, ctx) {
     const w = imageData.width, h = imageData.height, data = imageData.data;
@@ -356,9 +357,9 @@ registerFilter({
   menu: 'Render',
   dialogWidth: 380,
   params: [
-    { key: 'brightness', label: 'Brightness', type: 'slider', min: 10, max: 300, step: 1, default: 100, unit: '%' },
+    { key: 'brightness', label: translateText("Brightness"), type: 'slider', min: 10, max: 300, step: 1, default: 100, unit: '%' },
     {
-      key: 'lensType', label: 'Lens Type', type: 'select', default: '50-300',
+      key: 'lensType', label: translateText("Lens Type"), type: 'select', default: '50-300',
       options: [
         { value: '50-300', label: '50-300mm Zoom' },
         { value: '35', label: '35mm Prime' },
@@ -366,8 +367,8 @@ registerFilter({
         { value: 'movie', label: 'Movie Prime' },
       ],
     },
-    { key: 'centerX', label: 'Flare Center X', type: 'slider', min: 0, max: 100, step: 0.5, default: 35, unit: '%' },
-    { key: 'centerY', label: 'Flare Center Y', type: 'slider', min: 0, max: 100, step: 0.5, default: 30, unit: '%' },
+    { key: 'centerX', label: translateText("Flare Center X"), type: 'slider', min: 0, max: 100, step: 0.5, default: 35, unit: '%' },
+    { key: 'centerY', label: translateText("Flare Center Y"), type: 'slider', min: 0, max: 100, step: 0.5, default: 30, unit: '%' },
   ],
   apply(imageData, p) {
     const w = imageData.width, h = imageData.height, data = imageData.data;
@@ -399,27 +400,27 @@ registerFilter({
   dialogWidth: 400,
   params: [
     {
-      key: 'lightType', label: 'Light Type', type: 'select', default: 'spot',
+      key: 'lightType', label: translateText("Light Type"), type: 'select', default: 'spot',
       options: [
-        { value: 'spot', label: 'Spot' },
-        { value: 'omni', label: 'Omni' },
-        { value: 'directional', label: 'Directional' },
+        { value: 'spot', label: translateText("Spot") },
+        { value: 'omni', label: translateText("Omni") },
+        { value: 'directional', label: translateText("Directional") },
       ],
     },
-    { key: 'color', label: 'Light Color', type: 'color', default: '#ffffff' },
-    { key: 'intensity', label: 'Intensity', type: 'slider', min: 0, max: 200, step: 1, default: 70 },
-    { key: 'focus', label: 'Focus', type: 'slider', min: 1, max: 100, step: 1, default: 55, when: (s) => s.lightType !== 'directional' },
-    { key: 'lightX', label: 'Light X', type: 'slider', min: -50, max: 150, step: 1, default: 50, unit: '%', when: (s) => s.lightType !== 'directional' },
-    { key: 'lightY', label: 'Light Y', type: 'slider', min: -50, max: 150, step: 1, default: 50, unit: '%', when: (s) => s.lightType !== 'directional' },
-    { key: 'direction', label: 'Direction', type: 'angle', default: 135, when: (s) => s.lightType === 'directional' },
+    { key: 'color', label: translateText("Light Color"), type: 'color', default: '#ffffff' },
+    { key: 'intensity', label: translateText("Intensity"), type: 'slider', min: 0, max: 200, step: 1, default: 70 },
+    { key: 'focus', label: translateText("Focus"), type: 'slider', min: 1, max: 100, step: 1, default: 55, when: (s) => s.lightType !== 'directional' },
+    { key: 'lightX', label: translateText("Light X"), type: 'slider', min: -50, max: 150, step: 1, default: 50, unit: '%', when: (s) => s.lightType !== 'directional' },
+    { key: 'lightY', label: translateText("Light Y"), type: 'slider', min: -50, max: 150, step: 1, default: 50, unit: '%', when: (s) => s.lightType !== 'directional' },
+    { key: 'direction', label: translateText("Direction"), type: 'angle', default: 135, when: (s) => s.lightType === 'directional' },
     { type: 'separator' },
-    { key: 'gloss', label: 'Gloss', type: 'slider', min: -100, max: 100, step: 1, default: 0 },
-    { key: 'material', label: 'Material', type: 'slider', min: -100, max: 100, step: 1, default: 0 },
-    { key: 'exposure', label: 'Exposure', type: 'slider', min: -100, max: 100, step: 1, default: 0 },
-    { key: 'ambience', label: 'Ambience', type: 'slider', min: -100, max: 100, step: 1, default: 20 },
+    { key: 'gloss', label: translateText("Gloss"), type: 'slider', min: -100, max: 100, step: 1, default: 0 },
+    { key: 'material', label: translateText("Material"), type: 'slider', min: -100, max: 100, step: 1, default: 0 },
+    { key: 'exposure', label: translateText("Exposure"), type: 'slider', min: -100, max: 100, step: 1, default: 0 },
+    { key: 'ambience', label: translateText("Ambience"), type: 'slider', min: -100, max: 100, step: 1, default: 20 },
     { type: 'separator' },
-    { key: 'texture', label: 'Texture Channel (bump from image)', type: 'checkbox', default: true },
-    { key: 'height', label: 'Height', type: 'slider', min: 0, max: 100, step: 1, default: 50, when: (s) => !!s.texture },
+    { key: 'texture', label: translateText("Texture Channel (bump from image)"), type: 'checkbox', default: true },
+    { key: 'height', label: translateText("Height"), type: 'slider', min: 0, max: 100, step: 1, default: 50, when: (s) => !!s.texture },
   ],
   apply(imageData, p) {
     const w = imageData.width, h = imageData.height, data = imageData.data;

@@ -1,3 +1,4 @@
+import { t as translateText } from '../../i18n/index.js';
 import './dialogs.css';
 import { el } from '../../core/util.js';
 import { Dialog } from '../dialog.js';
@@ -53,7 +54,7 @@ export async function showAiKeyDialog(providerId = 'openai') {
   });
 
   const remember = el('input', { type: 'checkbox' });
-  const rememberRow = el('label.pk-check', {}, remember, el('span', { text: 'Remember this key on this device' }));
+  const rememberRow = el('label.pk-check', {}, remember, el('span', { text: translateText("Remember this key on this device") }));
 
   /*
    * Every provider that needs a key, and whether one is set — because with more
@@ -149,7 +150,7 @@ export async function showAiKeyDialog(providerId = 'openai') {
   });
 
   dialog.setBody(
-    ...(providerSel ? [el('div.pk-field', {}, el('label', { text: 'Provider' }), providerSel)] : []),
+    ...(providerSel ? [el('div.pk-field', {}, el('label', { text: translateText("Provider") }), providerSel)] : []),
     el('div.pk-field', {},
       el('div.pk-hint', {
         text: host
@@ -164,7 +165,7 @@ export async function showAiKeyDialog(providerId = 'openai') {
         + 'plain text — anyone who can use this browser profile, and any script that runs on '
         + 'this page, can read it. Use a key with a spending limit you could afford to lose.',
     }),
-    ...(modelSel ? [el('div.pk-field', {}, el('label', { text: 'Model' }), modelSel)] : []),
+    ...(modelSel ? [el('div.pk-field', {}, el('label', { text: translateText("Model") }), modelSel)] : []),
     effortRow,
     // Declared by the provider, not branched on here — the dialog stays free of
     // `if (id === 'openai')`, which is what lets a new provider be data only.
@@ -174,7 +175,7 @@ export async function showAiKeyDialog(providerId = 'openai') {
     ...(consentNote ? [consentNote] : []),
   );
 
-  const buttons = [{ label: 'Cancel', value: null, subtle: true }];
+  const buttons = [{ label: translateText("Cancel"), value: null, subtle: true }];
 
   if (hasCredential(id)) {
     buttons.push({
@@ -194,7 +195,7 @@ export async function showAiKeyDialog(providerId = 'openai') {
        * Forgets every key and every "don't ask again", because a user clearing
        * their credentials means "undo the trust", not "undo part of it".
        */
-      label: 'Forget everything',
+      label: translateText("Forget everything"),
       danger: true,
       onClick: async (dlg) => {
         await forgetAllCredentials();
@@ -207,7 +208,7 @@ export async function showAiKeyDialog(providerId = 'openai') {
   }
 
   buttons.push({
-    label: 'Save',
+    label: translateText("Save"),
     primary: true,
     onClick: async (dlg) => {
       const value = input.value.trim();

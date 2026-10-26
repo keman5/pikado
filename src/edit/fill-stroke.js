@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { app } from '../core/app.js';
 import { createCanvas, uid } from '../core/util.js';
 import { toCss, toHex } from '../core/color.js';
@@ -18,15 +19,15 @@ import { paramDialog, promptDialog } from '../ui/dialog.js';
  */
 
 const FILL_CONTENTS = [
-  { value: 'foreground', label: 'Foreground Color' },
-  { value: 'background', label: 'Background Color' },
-  { value: 'color', label: 'Color...' },
-  { value: 'content-aware', label: 'Content-Aware' },
-  { value: 'pattern', label: 'Pattern' },
-  { value: 'history', label: 'History' },
-  { value: 'black', label: 'Black' },
+  { value: 'foreground', label: translateText("Foreground Color") },
+  { value: 'background', label: translateText("Background Color") },
+  { value: 'color', label: translateText("Color...") },
+  { value: 'content-aware', label: translateText("Content-Aware") },
+  { value: 'pattern', label: translateText("Pattern") },
+  { value: 'history', label: translateText("History") },
+  { value: 'black', label: translateText("Black") },
   { value: 'gray50', label: '50% Gray' },
-  { value: 'white', label: 'White' },
+  { value: 'white', label: translateText("White") },
 ];
 
 const BLEND_OPTIONS = BLEND_MODES.map((m) => ({ value: m.id, label: m.name }));
@@ -310,22 +311,22 @@ export async function showFillDialog(doc) {
   });
 
   const result = await paramDialog({
-    title: 'Fill',
+    title: translateText("Fill"),
     width: 380,
     state,
     params: [
-      { key: 'use', label: 'Contents', type: 'select', options: FILL_CONTENTS },
-      { key: 'color', label: 'Color', type: 'color', when: (s) => s.use === 'color' },
+      { key: 'use', label: translateText("Contents"), type: 'select', options: FILL_CONTENTS },
+      { key: 'color', label: translateText("Color"), type: 'color', when: (s) => s.use === 'color' },
       {
-        key: 'pattern', label: 'Pattern', type: 'select',
-        options: patterns.length ? patterns.map((p) => ({ value: p.id, label: p.name })) : [{ value: '', label: 'None defined' }],
+        key: 'pattern', label: translateText("Pattern"), type: 'select',
+        options: patterns.length ? patterns.map((p) => ({ value: p.id, label: p.name })) : [{ value: '', label: translateText("None defined") }],
         when: (s) => s.use === 'pattern',
       },
-      { key: 'patternScale', label: 'Pattern Scale', type: 'slider', min: 0.1, max: 4, step: 0.1, when: (s) => s.use === 'pattern' },
+      { key: 'patternScale', label: translateText("Pattern Scale"), type: 'slider', min: 0.1, max: 4, step: 0.1, when: (s) => s.use === 'pattern' },
       { type: 'separator' },
-      { key: 'blendMode', label: 'Blending Mode', type: 'select', options: BLEND_OPTIONS },
-      { key: 'opacity', label: 'Opacity', type: 'slider', min: 0, max: 100, step: 1, unit: '%' },
-      { key: 'preserveTransparency', label: 'Preserve Transparency', type: 'checkbox' },
+      { key: 'blendMode', label: translateText("Blending Mode"), type: 'select', options: BLEND_OPTIONS },
+      { key: 'opacity', label: translateText("Opacity"), type: 'slider', min: 0, max: 100, step: 1, unit: '%' },
+      { key: 'preserveTransparency', label: translateText("Preserve Transparency"), type: 'checkbox' },
     ],
     onPreview: (s) => {
       if (!s) {
@@ -341,7 +342,7 @@ export async function showFillDialog(doc) {
   setLayerPreview(layer.id, null);
   doc.touch('preview');
   if (!result) return;
-  await app.busy('Fill', async () => fillSelection(doc, toOpts(result)));
+  await app.busy(translateText("Fill"), async () => fillSelection(doc, toOpts(result)));
 }
 
 /* ------------------------------------------------------------------ */
@@ -432,20 +433,20 @@ export async function showStrokeDialog(doc) {
   });
 
   const result = await paramDialog({
-    title: 'Stroke',
+    title: translateText("Stroke"),
     width: 380,
     state,
     params: [
-      { key: 'width', label: 'Width', type: 'slider', min: 1, max: 250, step: 1, unit: 'px' },
-      { key: 'color', label: 'Color', type: 'color' },
+      { key: 'width', label: translateText("Width"), type: 'slider', min: 1, max: 250, step: 1, unit: 'px' },
+      { key: 'color', label: translateText("Color"), type: 'color' },
       {
-        key: 'location', label: 'Location', type: 'radio',
-        options: [{ value: 'inside', label: 'Inside' }, { value: 'center', label: 'Center' }, { value: 'outside', label: 'Outside' }],
+        key: 'location', label: translateText("Location"), type: 'radio',
+        options: [{ value: 'inside', label: translateText("Inside") }, { value: 'center', label: translateText("Center") }, { value: 'outside', label: translateText("Outside") }],
       },
       { type: 'separator' },
-      { key: 'blendMode', label: 'Blending Mode', type: 'select', options: BLEND_OPTIONS },
-      { key: 'opacity', label: 'Opacity', type: 'slider', min: 0, max: 100, step: 1, unit: '%' },
-      { key: 'preserveTransparency', label: 'Preserve Transparency', type: 'checkbox' },
+      { key: 'blendMode', label: translateText("Blending Mode"), type: 'select', options: BLEND_OPTIONS },
+      { key: 'opacity', label: translateText("Opacity"), type: 'slider', min: 0, max: 100, step: 1, unit: '%' },
+      { key: 'preserveTransparency', label: translateText("Preserve Transparency"), type: 'checkbox' },
     ],
     onPreview: (s) => {
       if (!s) {
@@ -469,7 +470,7 @@ export async function showStrokeDialog(doc) {
   setLayerPreview(layer.id, null);
   doc.touch('preview');
   if (!result) return;
-  await app.busy('Stroke', async () => strokeSelection(doc, toOpts(result)));
+  await app.busy(translateText("Stroke"), async () => strokeSelection(doc, toOpts(result)));
 }
 
 /* ------------------------------------------------------------------ */
@@ -775,19 +776,19 @@ export async function showContentAwareFillDialog(doc) {
     return;
   }
   const result = await paramDialog({
-    title: 'Content-Aware Fill',
+    title: translateText("Content-Aware Fill"),
     width: 380,
     preview: false,
     state: { sampleAllLayers: false, output: 'current' },
     params: [
-      { key: 'sampleAllLayers', label: 'Sample All Layers', type: 'checkbox' },
+      { key: 'sampleAllLayers', label: translateText("Sample All Layers"), type: 'checkbox' },
       {
-        key: 'output', label: 'Output To', type: 'select',
-        options: [{ value: 'current', label: 'Current Layer' }, { value: 'new-layer', label: 'New Layer' }],
+        key: 'output', label: translateText("Output To"), type: 'select',
+        options: [{ value: 'current', label: translateText("Current Layer") }, { value: 'new-layer', label: translateText("New Layer") }],
       },
       { type: 'label', label: 'The selected pixels are re-synthesised from the surrounding image.' },
     ],
   });
   if (!result) return;
-  await app.busy('Content-Aware Fill', async () => contentAwareFill(doc, result));
+  await app.busy(translateText("Content-Aware Fill"), async () => contentAwareFill(doc, result));
 }

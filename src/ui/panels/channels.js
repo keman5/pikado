@@ -1,3 +1,4 @@
+import { t as translateText } from '../../i18n/index.js';
 import { registerPanel } from '../panel-host.js';
 import { app } from '../../core/app.js';
 import { el, uid, createCanvas, ctx2dRead } from '../../core/util.js';
@@ -102,7 +103,7 @@ function nextAlphaName(doc) {
 
 registerPanel({
   id: 'channels',
-  title: 'Channels',
+  title: translateText("Channels"),
   icon: 'channels',
   group: 'top',
   order: 1,
@@ -249,7 +250,7 @@ registerPanel({
       const d = doc();
       list.replaceChildren();
       if (!d) {
-        list.appendChild(el('div.pkch-empty', { text: 'No document open.' }));
+        list.appendChild(el('div.pkch-empty', { text: translateText("No document open.") }));
         renderFooter();
         return;
       }
@@ -259,7 +260,7 @@ registerPanel({
           id: 'quickmask',
           name: 'Quick Mask',
           thumb: canvasThumb(d.selection.active ? d.selection.toCanvas() : null),
-          eye: { on: true, title: 'Exit Quick Mask', onToggle: toggleQuickMask },
+          eye: { on: true, title: translateText("Exit Quick Mask"), onToggle: toggleQuickMask },
         }));
       }
 
@@ -312,12 +313,12 @@ registerPanel({
     const renderFooter = () => {
       const d = doc();
       footer.replaceChildren(
-        el('button.pk-icon-btn', { type: 'button', title: 'Load channel as selection', disabled: !d, onclick: () => loadSelection(selectedId) }, iconEl('marquee-rect')),
-        el('button.pk-icon-btn', { type: 'button', title: 'Save selection as channel', disabled: !d, onclick: saveSelection }, iconEl('mask')),
-        el('button.pk-icon-btn' + (d && d.quickMask ? '.active' : ''), { type: 'button', title: 'Toggle Quick Mask', disabled: !d, onclick: toggleQuickMask }, iconEl('adjustment')),
+        el('button.pk-icon-btn', { type: 'button', title: translateText("Load channel as selection"), disabled: !d, onclick: () => loadSelection(selectedId) }, iconEl('marquee-rect')),
+        el('button.pk-icon-btn', { type: 'button', title: translateText("Save selection as channel"), disabled: !d, onclick: saveSelection }, iconEl('mask')),
+        el('button.pk-icon-btn' + (d && d.quickMask ? '.active' : ''), { type: 'button', title: translateText("Toggle Quick Mask"), disabled: !d, onclick: toggleQuickMask }, iconEl('adjustment')),
         el('div.pk-spacer'),
-        el('button.pk-icon-btn', { type: 'button', title: 'New channel', disabled: !d, onclick: newChannel }, iconEl('plus')),
-        el('button.pk-icon-btn', { type: 'button', title: 'Delete channel', disabled: !d, onclick: deleteChannel }, iconEl('trash'))
+        el('button.pk-icon-btn', { type: 'button', title: translateText("New channel"), disabled: !d, onclick: newChannel }, iconEl('plus')),
+        el('button.pk-icon-btn', { type: 'button', title: translateText("Delete channel"), disabled: !d, onclick: deleteChannel }, iconEl('trash'))
       );
     };
 

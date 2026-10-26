@@ -1,3 +1,4 @@
+import { t as translateText } from '../../i18n/index.js';
 import './dialogs.css';
 import './select-and-mask.css';
 import { el, createCanvas, ctx2d, ctx2dRead } from '../../core/util.js';
@@ -40,28 +41,28 @@ const WORK_PIXELS = 260000;
 
 /** How the preview shows the selection. */
 const VIEW_MODES = [
-  { value: 'onion', label: 'Onion Skin', hint: 'Unselected areas fade out' },
-  { value: 'ants', label: 'Marching Ants', hint: 'The classic dashed outline' },
-  { value: 'overlay', label: 'Overlay', hint: 'Unselected areas tinted, like Quick Mask' },
-  { value: 'black', label: 'On Black', hint: 'The selection over black' },
-  { value: 'white', label: 'On White', hint: 'The selection over white' },
-  { value: 'mask', label: 'Black & White', hint: 'The mask itself' },
-  { value: 'layers', label: 'On Layers', hint: 'The selection over the layers below' },
+  { value: 'onion', label: translateText("Onion Skin"), hint: 'Unselected areas fade out' },
+  { value: 'ants', label: translateText("Marching Ants"), hint: 'The classic dashed outline' },
+  { value: 'overlay', label: translateText("Overlay"), hint: 'Unselected areas tinted, like Quick Mask' },
+  { value: 'black', label: translateText("On Black"), hint: 'The selection over black' },
+  { value: 'white', label: translateText("On White"), hint: 'The selection over white' },
+  { value: 'mask', label: translateText("Black & White"), hint: 'The mask itself' },
+  { value: 'layers', label: translateText("On Layers"), hint: 'The selection over the layers below' },
 ];
 
 /** Where the result goes when the workspace closes. */
 const OUTPUTS = [
-  { value: 'selection', label: 'Selection' },
-  { value: 'mask', label: 'Layer Mask' },
-  { value: 'layer', label: 'New Layer' },
-  { value: 'layer-mask', label: 'New Layer with Layer Mask' },
-  { value: 'document', label: 'New Document' },
+  { value: 'selection', label: translateText("Selection") },
+  { value: 'mask', label: translateText("Layer Mask") },
+  { value: 'layer', label: translateText("New Layer") },
+  { value: 'layer-mask', label: translateText("New Layer with Layer Mask") },
+  { value: 'document', label: translateText("New Document") },
 ];
 
 const TOOLS = [
-  { value: 'brush', label: 'Brush', hint: 'Paint subject; hold Alt to paint background' },
-  { value: 'refine', label: 'Refine Edge', hint: 'Hand the boundary back to the matting pass' },
-  { value: 'lasso', label: 'Lasso', hint: 'Enclose an area to mark it' },
+  { value: 'brush', label: translateText("Brush"), hint: 'Paint subject; hold Alt to paint background' },
+  { value: 'refine', label: translateText("Refine Edge"), hint: 'Hand the boundary back to the matting pass' },
+  { value: 'lasso', label: translateText("Lasso"), hint: translateText("Enclose an area to mark it") },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -547,27 +548,27 @@ export async function showSelectAndMask(doc, opts = {}) {
   /* --- controls -------------------------------------------------------- */
 
   const params = [
-    { key: 'view', label: 'View', type: 'select', options: VIEW_MODES },
-    { key: 'opacity', label: 'Opacity', type: 'slider', min: 0, max: 100, unit: '%',
+    { key: 'view', label: translateText("View"), type: 'select', options: VIEW_MODES },
+    { key: 'opacity', label: translateText("Opacity"), type: 'slider', min: 0, max: 100, unit: '%',
       when: (s) => s.view === 'onion' || s.view === 'overlay' },
     { type: 'separator' },
-    { key: 'tool', label: 'Tool', type: 'radio', options: TOOLS },
-    { key: 'brushSize', label: 'Brush Size', type: 'slider', min: 1, max: Math.max(40, Math.round(Math.min(W, H) / 2)), unit: 'px' },
+    { key: 'tool', label: translateText("Tool"), type: 'radio', options: TOOLS },
+    { key: 'brushSize', label: translateText("Brush Size"), type: 'slider', min: 1, max: Math.max(40, Math.round(Math.min(W, H) / 2)), unit: 'px' },
     { type: 'separator' },
-    { type: 'label', label: 'Edge Detection' },
-    { key: 'radius', label: 'Radius', type: 'slider', min: 0, max: 100, unit: 'px' },
-    { key: 'smart', label: 'Smart Radius', type: 'checkbox' },
-    { type: 'label', label: 'Global Refinements' },
-    { key: 'smooth', label: 'Smooth', type: 'slider', min: 0, max: 20 },
-    { key: 'feather', label: 'Feather', type: 'slider', min: 0, max: 50, unit: 'px' },
-    { key: 'contrast', label: 'Contrast', type: 'slider', min: 0, max: 100, unit: '%' },
-    { key: 'shift', label: 'Shift Edge', type: 'slider', min: -100, max: 100, unit: '%' },
+    { type: 'label', label: translateText("Edge Detection") },
+    { key: 'radius', label: translateText("Radius"), type: 'slider', min: 0, max: 100, unit: 'px' },
+    { key: 'smart', label: translateText("Smart Radius"), type: 'checkbox' },
+    { type: 'label', label: translateText("Global Refinements") },
+    { key: 'smooth', label: translateText("Smooth"), type: 'slider', min: 0, max: 20 },
+    { key: 'feather', label: translateText("Feather"), type: 'slider', min: 0, max: 50, unit: 'px' },
+    { key: 'contrast', label: translateText("Contrast"), type: 'slider', min: 0, max: 100, unit: '%' },
+    { key: 'shift', label: translateText("Shift Edge"), type: 'slider', min: -100, max: 100, unit: '%' },
     { type: 'separator' },
-    { type: 'label', label: 'Output Settings' },
-    { key: 'decontaminate', label: 'Decontaminate Colors', type: 'checkbox' },
-    { key: 'decontaminateAmount', label: 'Amount', type: 'slider', min: 0, max: 100, unit: '%',
+    { type: 'label', label: translateText("Output Settings") },
+    { key: 'decontaminate', label: translateText("Decontaminate Colors"), type: 'checkbox' },
+    { key: 'decontaminateAmount', label: translateText("Amount"), type: 'slider', min: 0, max: 100, unit: '%',
       when: (s) => s.decontaminate },
-    { key: 'output', label: 'Output To', type: 'select', options: OUTPUTS },
+    { key: 'output', label: translateText("Output To"), type: 'select', options: OUTPUTS },
   ];
 
   let form = null;
@@ -585,7 +586,7 @@ export async function showSelectAndMask(doc, opts = {}) {
 
   /* --- assembly -------------------------------------------------------- */
 
-  const dialog = new Dialog({ title: 'Select and Mask', width: 980, className: 'pk-sam' });
+  const dialog = new Dialog({ title: translateText("Select and Mask"), width: 980, className: 'pk-sam' });
   form = buildForm(params, state, onChange);
 
   /** Saliency guess -> cut -> adopt as the seed. Shared by the button and open. */
@@ -603,12 +604,12 @@ export async function showSelectAndMask(doc, opts = {}) {
 
   const actions = el('div.pk-sam-actions', {},
     el('button.pk-btn.subtle', {
-      text: 'Select Subject',
+      text: translateText("Select Subject"),
       title: 'Guess the subject with saliency plus a graph cut — no model, so no magic',
       onclick: () => { selectSubject(); draw(); },
     }),
     el('button.pk-btn.subtle', {
-      text: 'Reset',
+      text: translateText("Reset"),
       onclick: () => {
         strokes.fill(0xff);
         refineBand.fill(0);
@@ -629,9 +630,9 @@ export async function showSelectAndMask(doc, opts = {}) {
 
   let applied = false;
   dialog.setButtons([
-    { label: 'Cancel', value: false, subtle: true },
+    { label: translateText("Cancel"), value: false, subtle: true },
     {
-      label: 'OK',
+      label: translateText("OK"),
       primary: true,
       onClick: () => { applied = true; return true; },
       value: true,

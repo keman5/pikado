@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import './basic.css';
 import { registerAdjustment, buildLUT, buildLUTf, sampleLUT, applyLUT } from './registry.js';
 import { el, clamp, clamp255 } from '../core/util.js';
@@ -148,9 +149,9 @@ registerAdjustment({
   name: 'Brightness/Contrast...',
   group: 'tone',
   params: [
-    { key: 'brightness', label: 'Brightness', type: 'slider', min: -150, max: 150, step: 1, default: 0 },
-    { key: 'contrast', label: 'Contrast', type: 'slider', min: -50, max: 100, step: 1, default: 0 },
-    { key: 'useLegacy', label: 'Use Legacy', type: 'checkbox', default: false },
+    { key: 'brightness', label: translateText("Brightness"), type: 'slider', min: -150, max: 150, step: 1, default: 0 },
+    { key: 'contrast', label: translateText("Contrast"), type: 'slider', min: -50, max: 100, step: 1, default: 0 },
+    { key: 'useLegacy', label: translateText("Use Legacy"), type: 'checkbox', default: false },
   ],
   apply(imageData, p) {
     if (!p.brightness && !p.contrast) return;
@@ -272,7 +273,7 @@ function buildLevelsWidget(container, key, state, onChange) {
   });
 
   const autoBtn = el('button.pk-btn.subtle', {
-    type: 'button', text: 'Auto', title: 'Clip 0.1% of each channel',
+    type: 'button', text: translateText("Auto"), title: translateText("Clip 0.1% of each channel"),
     onclick: () => {
       const next = cloneLevels(value);
       for (const ch of ['r', 'g', 'b']) {
@@ -286,7 +287,7 @@ function buildLevelsWidget(container, key, state, onChange) {
     },
   });
   const resetBtn = el('button.pk-btn.subtle', {
-    type: 'button', text: 'Reset', title: 'Reset this channel',
+    type: 'button', text: translateText("Reset"), title: translateText("Reset this channel"),
     onclick: () => {
       const next = cloneLevels(value);
       next[next.channel] = blankLevels();
@@ -322,13 +323,13 @@ function buildLevelsWidget(container, key, state, onChange) {
 
   const root = el('div.pk-levels', {},
     el('div.pk-levels-head', {},
-      el('span.pk-levels-lbl', { text: 'Channel' }), chanSelect,
+      el('span.pk-levels-lbl', { text: translateText("Channel") }), chanSelect,
       el('div.pk-spacer'), autoBtn, resetBtn),
     canvas,
     el('div.pk-levels-nums', {},
-      el('span.pk-levels-lbl', { text: 'Input' }), ibNum, igNum, iwNum,
+      el('span.pk-levels-lbl', { text: translateText("Input") }), ibNum, igNum, iwNum,
       el('div.pk-spacer'),
-      el('span.pk-levels-lbl', { text: 'Output' }), obNum, owNum)
+      el('span.pk-levels-lbl', { text: translateText("Output") }), obNum, owNum)
   );
   container.appendChild(root);
 
@@ -516,9 +517,9 @@ registerAdjustment({
   name: 'Exposure...',
   group: 'tone',
   params: [
-    { key: 'exposure', label: 'Exposure', type: 'slider', min: -20, max: 20, step: 0.01, default: 0 },
-    { key: 'offset', label: 'Offset', type: 'slider', min: -0.5, max: 0.5, step: 0.0001, default: 0 },
-    { key: 'gamma', label: 'Gamma Correction', type: 'slider', min: 0.01, max: 9.99, step: 0.01, default: 1 },
+    { key: 'exposure', label: translateText("Exposure"), type: 'slider', min: -20, max: 20, step: 0.01, default: 0 },
+    { key: 'offset', label: translateText("Offset"), type: 'slider', min: -0.5, max: 0.5, step: 0.0001, default: 0 },
+    { key: 'gamma', label: translateText("Gamma Correction"), type: 'slider', min: 0.01, max: 9.99, step: 0.01, default: 1 },
   ],
   apply(imageData, p) {
     const e = clamp(p.exposure, -20, 20);
@@ -547,8 +548,8 @@ registerAdjustment({
   name: 'Vibrance...',
   group: 'color',
   params: [
-    { key: 'vibrance', label: 'Vibrance', type: 'slider', min: -100, max: 100, step: 1, default: 0 },
-    { key: 'saturation', label: 'Saturation', type: 'slider', min: -100, max: 100, step: 1, default: 0 },
+    { key: 'vibrance', label: translateText("Vibrance"), type: 'slider', min: -100, max: 100, step: 1, default: 0 },
+    { key: 'saturation', label: translateText("Saturation"), type: 'slider', min: -100, max: 100, step: 1, default: 0 },
   ],
   apply(imageData, p) {
     const vib = clamp(p.vibrance, -100, 100) / 100;
@@ -586,13 +587,13 @@ registerAdjustment({
 /* ================================================================== */
 
 const HS_RANGES = [
-  { id: 'master', label: 'Master', center: -1 },
-  { id: 'reds', label: 'Reds', center: 0 },
-  { id: 'yellows', label: 'Yellows', center: 60 },
-  { id: 'greens', label: 'Greens', center: 120 },
-  { id: 'cyans', label: 'Cyans', center: 180 },
-  { id: 'blues', label: 'Blues', center: 240 },
-  { id: 'magentas', label: 'Magentas', center: 300 },
+  { id: 'master', label: translateText("Master"), center: -1 },
+  { id: 'reds', label: translateText("Reds"), center: 0 },
+  { id: 'yellows', label: translateText("Yellows"), center: 60 },
+  { id: 'greens', label: translateText("Greens"), center: 120 },
+  { id: 'cyans', label: translateText("Cyans"), center: 180 },
+  { id: 'blues', label: translateText("Blues"), center: 240 },
+  { id: 'magentas', label: translateText("Magentas"), center: 300 },
 ];
 
 /** 1 inside the ±15° core, fading to 0 across the next 30°. */
@@ -604,20 +605,20 @@ function bandWeight(hue, center) {
 }
 
 const hsParams = [
-  { key: 'range', label: 'Edit', type: 'select', default: 'master', options: HS_RANGES.map((r) => ({ value: r.id, label: r.label })), when: (s) => !s.colorize },
-  { key: 'colorize', label: 'Colorize', type: 'checkbox', default: false },
+  { key: 'range', label: translateText("Edit"), type: 'select', default: 'master', options: HS_RANGES.map((r) => ({ value: r.id, label: r.label })), when: (s) => !s.colorize },
+  { key: 'colorize', label: translateText("Colorize"), type: 'checkbox', default: false },
 ];
 for (const r of HS_RANGES) {
   hsParams.push(
-    { key: `${r.id}Hue`, label: 'Hue', type: 'slider', min: -180, max: 180, step: 1, default: 0, when: (s) => !s.colorize && s.range === r.id },
-    { key: `${r.id}Sat`, label: 'Saturation', type: 'slider', min: -100, max: 100, step: 1, default: 0, when: (s) => !s.colorize && s.range === r.id },
-    { key: `${r.id}Light`, label: 'Lightness', type: 'slider', min: -100, max: 100, step: 1, default: 0, when: (s) => !s.colorize && s.range === r.id }
+    { key: `${r.id}Hue`, label: translateText("Hue"), type: 'slider', min: -180, max: 180, step: 1, default: 0, when: (s) => !s.colorize && s.range === r.id },
+    { key: `${r.id}Sat`, label: translateText("Saturation"), type: 'slider', min: -100, max: 100, step: 1, default: 0, when: (s) => !s.colorize && s.range === r.id },
+    { key: `${r.id}Light`, label: translateText("Lightness"), type: 'slider', min: -100, max: 100, step: 1, default: 0, when: (s) => !s.colorize && s.range === r.id }
   );
 }
 hsParams.push(
-  { key: 'colorizeHue', label: 'Hue', type: 'slider', min: 0, max: 360, step: 1, default: 30, when: (s) => s.colorize },
-  { key: 'colorizeSat', label: 'Saturation', type: 'slider', min: 0, max: 100, step: 1, default: 25, when: (s) => s.colorize },
-  { key: 'colorizeLight', label: 'Lightness', type: 'slider', min: -100, max: 100, step: 1, default: 0, when: (s) => s.colorize }
+  { key: 'colorizeHue', label: translateText("Hue"), type: 'slider', min: 0, max: 360, step: 1, default: 30, when: (s) => s.colorize },
+  { key: 'colorizeSat', label: translateText("Saturation"), type: 'slider', min: 0, max: 100, step: 1, default: 25, when: (s) => s.colorize },
+  { key: 'colorizeLight', label: translateText("Lightness"), type: 'slider', min: -100, max: 100, step: 1, default: 0, when: (s) => s.colorize }
 );
 
 function applyLightness(l, amount) {
@@ -685,9 +686,9 @@ registerAdjustment({
 
 const CB_TONES = ['shadows', 'midtones', 'highlights'];
 const CB_AXES = [
-  { key: 'CR', label: 'Cyan / Red', channel: 0 },
-  { key: 'MG', label: 'Magenta / Green', channel: 1 },
-  { key: 'YB', label: 'Yellow / Blue', channel: 2 },
+  { key: 'CR', label: translateText("Cyan / Red"), channel: 0 },
+  { key: 'MG', label: translateText("Magenta / Green"), channel: 1 },
+  { key: 'YB', label: translateText("Yellow / Blue"), channel: 2 },
 ];
 
 const cbParams = [];
@@ -701,7 +702,7 @@ for (const tone of CB_TONES) {
   }
 }
 cbParams.push({ type: 'separator' });
-cbParams.push({ key: 'preserveLuminosity', label: 'Preserve Luminosity', type: 'checkbox', default: true });
+cbParams.push({ key: 'preserveLuminosity', label: translateText("Preserve Luminosity"), type: 'checkbox', default: true });
 
 /** GIMP-style tonal weighting: smooth, overlapping shadow/midtone/highlight bands. */
 function toneWeights(t) {
@@ -793,16 +794,16 @@ registerAdjustment({
   name: 'Black & White...',
   group: 'color',
   params: [
-    presetParam({ key: 'preset', label: 'Preset', presets: BW_PRESETS, default: 'Default' }),
-    { key: 'reds', label: 'Reds', type: 'slider', min: -200, max: 300, step: 1, default: 40 },
-    { key: 'yellows', label: 'Yellows', type: 'slider', min: -200, max: 300, step: 1, default: 60 },
-    { key: 'greens', label: 'Greens', type: 'slider', min: -200, max: 300, step: 1, default: 40 },
-    { key: 'cyans', label: 'Cyans', type: 'slider', min: -200, max: 300, step: 1, default: 60 },
-    { key: 'blues', label: 'Blues', type: 'slider', min: -200, max: 300, step: 1, default: 20 },
-    { key: 'magentas', label: 'Magentas', type: 'slider', min: -200, max: 300, step: 1, default: 80 },
+    presetParam({ key: 'preset', label: translateText("Preset"), presets: BW_PRESETS, default: 'Default' }),
+    { key: 'reds', label: translateText("Reds"), type: 'slider', min: -200, max: 300, step: 1, default: 40 },
+    { key: 'yellows', label: translateText("Yellows"), type: 'slider', min: -200, max: 300, step: 1, default: 60 },
+    { key: 'greens', label: translateText("Greens"), type: 'slider', min: -200, max: 300, step: 1, default: 40 },
+    { key: 'cyans', label: translateText("Cyans"), type: 'slider', min: -200, max: 300, step: 1, default: 60 },
+    { key: 'blues', label: translateText("Blues"), type: 'slider', min: -200, max: 300, step: 1, default: 20 },
+    { key: 'magentas', label: translateText("Magentas"), type: 'slider', min: -200, max: 300, step: 1, default: 80 },
     { type: 'separator' },
-    { key: 'tint', label: 'Tint', type: 'checkbox', default: false },
-    { key: 'tintColor', label: 'Tint Color', type: 'color', default: '#d9b48f', when: (s) => s.tint },
+    { key: 'tint', label: translateText("Tint"), type: 'checkbox', default: false },
+    { key: 'tintColor', label: translateText("Tint Color"), type: 'color', default: '#d9b48f', when: (s) => s.tint },
   ],
   apply(imageData, p) {
     const w = BW_KEYS.map((k) => clamp(p[k] == null ? 0 : p[k], -200, 300) / 100);
@@ -862,12 +863,12 @@ registerAdjustment({
   group: 'color',
   params: [
     {
-      key: 'filter', label: 'Filter', type: 'select', default: 'Warming Filter (85)',
+      key: 'filter', label: translateText("Filter"), type: 'select', default: 'Warming Filter (85)',
       options: Object.keys(PHOTO_FILTERS),
     },
-    { key: 'color', label: 'Color', type: 'color', default: '#ec8a00', when: (s) => s.filter === 'Custom' },
-    { key: 'density', label: 'Density', type: 'slider', min: 1, max: 100, step: 1, default: 25, unit: '%' },
-    { key: 'preserveLuminosity', label: 'Preserve Luminosity', type: 'checkbox', default: true },
+    { key: 'color', label: translateText("Color"), type: 'color', default: '#ec8a00', when: (s) => s.filter === 'Custom' },
+    { key: 'density', label: translateText("Density"), type: 'slider', min: 1, max: 100, step: 1, default: 25, unit: '%' },
+    { key: 'preserveLuminosity', label: translateText("Preserve Luminosity"), type: 'checkbox', default: true },
   ],
   apply(imageData, p) {
     const hex = PHOTO_FILTERS[p.filter] || p.color || '#ec8a00';
@@ -908,10 +909,10 @@ const CM_PRESETS = {
 };
 
 const cmParams = [
-  presetParam({ key: 'preset', label: 'Preset', presets: CM_PRESETS, default: 'Default' }),
-  { key: 'monochrome', label: 'Monochrome', type: 'checkbox', default: false },
+  presetParam({ key: 'preset', label: translateText("Preset"), presets: CM_PRESETS, default: 'Default' }),
+  { key: 'monochrome', label: translateText("Monochrome"), type: 'checkbox', default: false },
   {
-    key: 'outputChannel', label: 'Output Channel', type: 'select', default: 'red',
+    key: 'outputChannel', label: translateText("Output Channel"), type: 'select', default: 'red',
     options: CM_OUTPUTS.map((c) => ({ value: c, label: c[0].toUpperCase() + c.slice(1) })),
     when: (s) => !s.monochrome,
   },
@@ -930,7 +931,7 @@ for (const out of [...CM_OUTPUTS, 'gray']) {
     });
   }
   cmParams.push({
-    key: `${prefix}C`, label: 'Constant', type: 'slider', min: -200, max: 200, step: 1,
+    key: `${prefix}C`, label: translateText("Constant"), type: 'slider', min: -200, max: 200, step: 1,
     default: 0, unit: '%', when: vis,
   });
 }
@@ -1142,8 +1143,8 @@ registerAdjustment({
   name: 'Color Lookup...',
   group: 'color',
   params: [
-    { key: 'lut', label: 'Look', type: 'select', default: 'Crisp Warm', options: Object.keys(LOOKS) },
-    { key: 'amount', label: 'Amount', type: 'slider', min: 0, max: 100, step: 1, default: 100, unit: '%' },
+    { key: 'lut', label: translateText("Look"), type: 'select', default: 'Crisp Warm', options: Object.keys(LOOKS) },
+    { key: 'amount', label: translateText("Amount"), type: 'slider', min: 0, max: 100, step: 1, default: 100, unit: '%' },
   ],
   apply(imageData, p) {
     const look = LOOKS[p.lut];

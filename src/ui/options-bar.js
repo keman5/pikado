@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { el, clamp } from '../core/util.js';
 import { app } from '../core/app.js';
 import { icon } from './icons.js';
@@ -64,14 +65,14 @@ function rebuild() {
   shownSession = app.transformSession || null;
 
   if (!tool) {
-    root.appendChild(el('span.pk-ob-static', { text: 'No tool selected' }));
+    root.appendChild(el('span.pk-ob-static', { text: translateText("No tool selected") }));
     return;
   }
 
   root.appendChild(
-    el('div.pk-ob-tool', { title: tool.name },
+    el('div.pk-ob-tool', { title: translateText(tool.name) },
       el('span.pk-ob-tool-ico', { html: icon(tool.icon || tool.id, { size: 18 }) }),
-      el('span.pk-ob-tool-name', { text: tool.name })
+      el('span.pk-ob-tool-name', { text: translateText(tool.name) })
     )
   );
   root.appendChild(el('div.pk-vsep'));
@@ -137,7 +138,7 @@ function optionsOf(p) {
 }
 
 const valueOf = (o) => (typeof o === 'object' && o ? o.value : o);
-const labelOf = (o) => (typeof o === 'object' && o ? o.label : String(o));
+const labelOf = (o) => translateText(typeof o === 'object' && o ? o.label : String(o));
 
 function renderOption(p, tool) {
   if (!p) return null;
@@ -459,8 +460,8 @@ const TRANSFORM_FIELDS = [
   { key: 'y', label: 'Y', unit: 'px', step: 1, fallback: 0 },
   { key: 'width', label: 'W', unit: '%', step: 0.1, fallback: 100 },
   { key: 'height', label: 'H', unit: '%', step: 0.1, fallback: 100 },
-  { key: 'angle', label: 'Angle', unit: '°', step: 0.1, fallback: 0 },
-  { key: 'skewX', label: 'Skew', unit: '°', step: 0.1, fallback: 0 },
+  { key: 'angle', label: translateText("Angle"), unit: '°', step: 0.1, fallback: 0 },
+  { key: 'skewX', label: translateText("Skew"), unit: '°', step: 0.1, fallback: 0 },
 ];
 
 function ensureTransformModule() {
@@ -519,14 +520,14 @@ function renderTransform() {
   root.appendChild(el('div.pk-vsep'));
   root.appendChild(
     el('button.pk-icon-btn.pk-ob-cancel', {
-      type: 'button', title: 'Cancel transform (Esc)',
+      type: 'button', title: translateText("Cancel transform (Esc)"),
       html: icon('close', { size: 15 }),
       onclick: () => endTransform('cancel'),
     })
   );
   root.appendChild(
     el('button.pk-icon-btn.pk-ob-commit', {
-      type: 'button', title: 'Commit transform (Enter)',
+      type: 'button', title: translateText("Commit transform (Enter)"),
       html: icon('check', { size: 15 }),
       onclick: () => endTransform('commit'),
     })

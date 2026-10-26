@@ -1,7 +1,9 @@
 import { defineConfig } from 'vite';
+import { localizedShell } from './scripts/localized-shell.mjs';
 
 export default defineConfig({
   base: './',
+  plugins: [localizedShell()],
   server: { port: 5173, open: false },
   build: {
     target: 'es2022',

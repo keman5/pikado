@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { Tool, registerTool } from './base.js';
 import { app } from '../core/app.js';
 import { Selection } from '../core/selection.js';
@@ -11,10 +12,10 @@ import { cmd, sep } from '../ui/canvas-menu.js';
  */
 
 const ALL_MODES = [
-  { value: 'replace', label: 'New' },
-  { value: 'add', label: 'Add' },
-  { value: 'subtract', label: 'Subtract' },
-  { value: 'intersect', label: 'Intersect' },
+  { value: 'replace', label: translateText("New") },
+  { value: 'add', label: translateText("Add") },
+  { value: 'subtract', label: translateText("Subtract") },
+  { value: 'intersect', label: translateText("Intersect") },
 ];
 
 /**
@@ -26,10 +27,10 @@ const ALL_MODES = [
 export function selectionOptions(modes, extra = []) {
   const opts = modes ? ALL_MODES.filter((m) => modes.includes(m.value)) : ALL_MODES;
   return [
-    { key: 'mode', label: 'Mode', type: 'radio', options: opts, default: opts[0].value },
+    { key: 'mode', label: translateText("Mode"), type: 'radio', options: opts, default: opts[0].value },
     ...extra,
-    { key: 'feather', label: 'Feather', type: 'slider', min: 0, max: 250, step: 1, default: 0, unit: 'px' },
-    { key: 'antialias', label: 'Anti-alias', type: 'checkbox', default: true },
+    { key: 'feather', label: translateText("Feather"), type: 'slider', min: 0, max: 250, step: 1, default: 0, unit: 'px' },
+    { key: 'antialias', label: translateText("Anti-alias"), type: 'checkbox', default: true },
   ];
 }
 
@@ -140,20 +141,20 @@ export class SelectionTool extends Tool {
 
     if (!doc.selection.active) {
       return [
-        cmd('select.all', { label: 'Select All' }),
+        cmd('select.all', { label: translateText("Select All") }),
         cmd('select.reselect', { hideWhenDisabled: true }),
         sep(),
         cmd('select.subject'),
         cmd('select.select-and-mask'),
         sep(),
-        cmd('layer.new', { label: 'New Layer' }),
+        cmd('layer.new', { label: translateText("New Layer") }),
         cmd('select.load'),
       ];
     }
 
     return [
       cmd('select.deselect'),
-      cmd('select.inverse', { label: 'Select Inverse' }),
+      cmd('select.inverse', { label: translateText("Select Inverse") }),
       sep(),
       cmd('select.select-and-mask'),
       ...this.selectionModifyItems(),
@@ -231,17 +232,17 @@ export function strokeDashedEllipse(ctx, view, rect) {
 
 const STYLE_OPTIONS = [
   {
-    key: 'style', label: 'Style', type: 'select', default: 'normal',
+    key: 'style', label: translateText("Style"), type: 'select', default: 'normal',
     options: [
-      { value: 'normal', label: 'Normal' },
-      { value: 'ratio', label: 'Fixed Ratio' },
-      { value: 'size', label: 'Fixed Size' },
+      { value: 'normal', label: translateText("Normal") },
+      { value: 'ratio', label: translateText("Fixed Ratio") },
+      { value: 'size', label: translateText("Fixed Size") },
     ],
   },
-  { key: 'ratioW', label: 'Width', type: 'number', min: 0.01, step: 0.01, default: 1, when: (s) => s.style === 'ratio' },
-  { key: 'ratioH', label: 'Height', type: 'number', min: 0.01, step: 0.01, default: 1, when: (s) => s.style === 'ratio' },
-  { key: 'fixedW', label: 'Width', type: 'number', min: 1, step: 1, default: 200, unit: 'px', when: (s) => s.style === 'size' },
-  { key: 'fixedH', label: 'Height', type: 'number', min: 1, step: 1, default: 200, unit: 'px', when: (s) => s.style === 'size' },
+  { key: 'ratioW', label: translateText("Width"), type: 'number', min: 0.01, step: 0.01, default: 1, when: (s) => s.style === 'ratio' },
+  { key: 'ratioH', label: translateText("Height"), type: 'number', min: 0.01, step: 0.01, default: 1, when: (s) => s.style === 'ratio' },
+  { key: 'fixedW', label: translateText("Width"), type: 'number', min: 1, step: 1, default: 200, unit: 'px', when: (s) => s.style === 'size' },
+  { key: 'fixedH', label: translateText("Height"), type: 'number', min: 1, step: 1, default: 200, unit: 'px', when: (s) => s.style === 'size' },
 ];
 
 class MarqueeShapeTool extends SelectionTool {

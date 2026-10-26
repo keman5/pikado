@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { app } from '../core/app.js';
 import { el } from '../core/util.js';
 import './offline.css';
@@ -137,19 +138,19 @@ function buildIndicator() {
 
   indicator = el('div.pk-net', {
     hidden: true,
-    title: 'No network connection. Pikado runs locally and keeps your projects in this browser.',
+    title: translateText("No network connection. Pikado runs locally and keeps your projects in this browser."),
   },
   el('span.pk-net-dot'),
-  el('span.pk-net-label.pk-micro', { text: 'Offline' }));
+  el('span.pk-net-label.pk-micro', { text: translateText("Offline") }));
 
   updateBtn = el('button.pk-net.pk-net-update', {
     hidden: true,
     type: 'button',
-    title: 'Reload to run the newest version of Pikado.',
+    title: translateText("Reload to run the newest version of Pikado."),
     onclick: () => location.reload(),
   },
   el('span.pk-net-dot'),
-  el('span.pk-net-label.pk-micro', { text: 'Update ready' }));
+  el('span.pk-net-label.pk-micro', { text: translateText("Update ready") }));
 
   host.append(indicator, updateBtn);
 }

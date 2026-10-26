@@ -1,3 +1,4 @@
+import { t as translateText } from '../../i18n/index.js';
 import { app } from '../../core/app.js';
 import { el } from '../../core/util.js';
 import { decodeImage } from '../../io/decode.js';
@@ -46,17 +47,17 @@ export async function showSmartTransformDialog(doc, layer) {
   }, s.sourceWidth, s.sourceHeight);
 
   const result = await paramDialog({
-    title: 'Transform Smart Object',
+    title: translateText("Transform Smart Object"),
     width: 340,
     state,
     params: [
-      { key: 'x', label: 'Center X', type: 'number', step: 1, unit: 'px' },
-      { key: 'y', label: 'Center Y', type: 'number', step: 1, unit: 'px' },
-      { key: 'linked', label: 'Constrain proportions', type: 'checkbox' },
-      { key: 'scaleX', label: 'Width', type: 'number', min: 0.1, max: 4000, step: 0.1, unit: '%' },
-      { key: 'scaleY', label: 'Height', type: 'number', min: 0.1, max: 4000, step: 0.1, unit: '%', when: (v) => !v.linked },
+      { key: 'x', label: translateText("Center X"), type: 'number', step: 1, unit: 'px' },
+      { key: 'y', label: translateText("Center Y"), type: 'number', step: 1, unit: 'px' },
+      { key: 'linked', label: translateText("Constrain proportions"), type: 'checkbox' },
+      { key: 'scaleX', label: translateText("Width"), type: 'number', min: 0.1, max: 4000, step: 0.1, unit: '%' },
+      { key: 'scaleY', label: translateText("Height"), type: 'number', min: 0.1, max: 4000, step: 0.1, unit: '%', when: (v) => !v.linked },
       {
-        key: 'angle', label: 'Rotate', type: 'angle',
+        key: 'angle', label: translateText("Rotate"), type: 'angle',
         hint: `Source is ${s.sourceWidth} × ${s.sourceHeight} px — every change resamples it from scratch.`,
       },
     ],
@@ -73,7 +74,7 @@ export async function showSmartTransformDialog(doc, layer) {
     setSmartTransform(doc, layer, before, { commit: false });
     return false;
   }
-  setSmartTransform(doc, layer, matrixFor(result), { label: 'Transform Smart Object' });
+  setSmartTransform(doc, layer, matrixFor(result), { label: translateText("Transform Smart Object") });
   return true;
 }
 

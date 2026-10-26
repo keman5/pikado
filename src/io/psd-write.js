@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { LayerType } from '../core/layer.js';
 import { getComposite } from '../render/compositor.js';
 import { createCanvas, ctx2dRead } from '../core/util.js';
@@ -521,8 +522,11 @@ export const SELECTION_CHANNEL_NAME = 'Pikado Selection';
 export async function writePSD(doc) {
   const width = doc.width;
   const height = doc.height;
-  const w = new ByteWriter(1 << 20);
   const extras = collectExtraChannels(doc);
+  if (width > 30000 || height > 30000 || 4 + extras.length > 56) {
+    throw new Error(translateText('This document exceeds PSD limits (30,000 pixels per side or 56 channels). Save as PKD instead.'));
+  }
+  const w = new ByteWriter(1 << 20);
 
   /* --- File header ------------------------------------------------- */
   w.ascii('8BPS');

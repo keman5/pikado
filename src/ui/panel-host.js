@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { el, clamp } from '../core/util.js';
 import { icon } from './icons.js';
 import './panels/panels.css';
@@ -296,7 +297,7 @@ function buildGroup(g) {
 
   const menuBtn = el('button.pk-pgroup-menu.pk-icon-btn', {
     type: 'button',
-    title: 'Panel menu',
+    title: translateText("Panel menu"),
     html: '<svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><path d="M3 5h10M3 8h10M3 11h10"/></svg>',
     onclick: (e) => {
       e.stopPropagation();
@@ -310,7 +311,7 @@ function buildGroup(g) {
 
   const chevron = el('button.pk-pgroup-collapse.pk-icon-btn', {
     type: 'button',
-    title: 'Collapse',
+    title: translateText("Collapse"),
     html: icon('chevron', { size: 14 }),
     onclick: (e) => {
       e.stopPropagation();
@@ -364,7 +365,7 @@ function sync() {
       }
     }
     n.menuBtn.hidden = !active || !panelMenuItems(active).length;
-    n.chevron.title = collapsed ? 'Expand' : 'Collapse';
+    n.chevron.title = collapsed ? translateText("Expand") : translateText("Collapse");
   }
   savePrefs();
 }

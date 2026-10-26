@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 /**
  * Face-aware Liquify: the sliders, not the detector.
  *
@@ -60,22 +61,22 @@ export const FACE_PROPORTIONS = {
 
 /** Every slider, with the range the dialog offers. All default to 0. */
 export const FACE_SLIDERS = [
-  { key: 'eyeSize', label: 'Eye Size', group: 'Eyes' },
-  { key: 'eyeHeight', label: 'Eye Height', group: 'Eyes' },
-  { key: 'eyeWidth', label: 'Eye Width', group: 'Eyes' },
-  { key: 'eyeTilt', label: 'Eye Tilt', group: 'Eyes' },
-  { key: 'eyeDistance', label: 'Eye Distance', group: 'Eyes' },
-  { key: 'noseHeight', label: 'Nose Height', group: 'Nose' },
-  { key: 'noseWidth', label: 'Nose Width', group: 'Nose' },
-  { key: 'smile', label: 'Smile', group: 'Mouth' },
-  { key: 'upperLip', label: 'Upper Lip', group: 'Mouth' },
-  { key: 'lowerLip', label: 'Lower Lip', group: 'Mouth' },
-  { key: 'mouthWidth', label: 'Mouth Width', group: 'Mouth' },
-  { key: 'mouthHeight', label: 'Mouth Height', group: 'Mouth' },
-  { key: 'forehead', label: 'Forehead', group: 'Face Shape' },
-  { key: 'chinHeight', label: 'Chin Height', group: 'Face Shape' },
-  { key: 'jawline', label: 'Jawline', group: 'Face Shape' },
-  { key: 'faceWidth', label: 'Face Width', group: 'Face Shape' },
+  { key: 'eyeSize', label: translateText("Eye Size"), group: 'Eyes' },
+  { key: 'eyeHeight', label: translateText("Eye Height"), group: 'Eyes' },
+  { key: 'eyeWidth', label: translateText("Eye Width"), group: 'Eyes' },
+  { key: 'eyeTilt', label: translateText("Eye Tilt"), group: 'Eyes' },
+  { key: 'eyeDistance', label: translateText("Eye Distance"), group: 'Eyes' },
+  { key: 'noseHeight', label: translateText("Nose Height"), group: 'Nose' },
+  { key: 'noseWidth', label: translateText("Nose Width"), group: 'Nose' },
+  { key: 'smile', label: translateText("Smile"), group: 'Mouth' },
+  { key: 'upperLip', label: translateText("Upper Lip"), group: 'Mouth' },
+  { key: 'lowerLip', label: translateText("Lower Lip"), group: 'Mouth' },
+  { key: 'mouthWidth', label: translateText("Mouth Width"), group: 'Mouth' },
+  { key: 'mouthHeight', label: translateText("Mouth Height"), group: 'Mouth' },
+  { key: 'forehead', label: translateText("Forehead"), group: 'Face Shape' },
+  { key: 'chinHeight', label: translateText("Chin Height"), group: 'Face Shape' },
+  { key: 'jawline', label: translateText("Jawline"), group: 'Face Shape' },
+  { key: 'faceWidth', label: translateText("Face Width"), group: 'Face Shape' },
 ];
 
 export function defaultFaceParams() {

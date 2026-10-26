@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 /**
  * Failure modes of a generation, and what to say about each.
  *
@@ -126,7 +127,7 @@ export function messageFor(err) {
     case GEN_ERRORS.REFUSED:
       return { text: `${p} declined this prompt. Describing the result rather than the subject often helps.`, action: null };
     case GEN_ERRORS.OFFLINE:
-      return { text: 'No connection. Generative Fill is the one thing in Pikado that needs one — everything else still works.', action: null };
+      return { text: translateText("No connection. Generative Fill is the one thing in Pikado that needs one — everything else still works."), action: null };
     case GEN_ERRORS.ABORTED:
       return { text: `Stopped. ${p} may still charge for a generation that had already started.`, action: null };
     case GEN_ERRORS.TIMEOUT:

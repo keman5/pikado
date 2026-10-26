@@ -1,3 +1,4 @@
+import { t as translateText } from '../../i18n/index.js';
 import './dialogs.css';
 import './fonts.css';
 import { el } from '../../core/util.js';
@@ -55,7 +56,7 @@ function catalogRow(e) {
  * @returns {Promise<string|null>} the chosen font id, or null
  */
 export async function showFontsDialog(opts = {}) {
-  const dlg = new Dialog({ title: 'Fonts', width: 760, className: 'pkf-dialog' });
+  const dlg = new Dialog({ title: translateText("Fonts"), width: 760, className: 'pkf-dialog' });
   await Promise.all([loadCatalog(), hydrateInstalledFonts()]);
 
   let chosen = normalizeFontId(opts.initial || '');
@@ -71,8 +72,8 @@ export async function showFontsDialog(opts = {}) {
 
   /* --- controls ---------------------------------------------------- */
 
-  const search = el('input.pk-input.pkf-search', { type: 'search', placeholder: 'Search fonts…' });
-  const previewInput = el('input.pk-input.pkf-sample', { type: 'text', placeholder: 'Preview text…', value: sample });
+  const search = el('input.pk-input.pkf-search', { type: 'search', placeholder: translateText("Search fonts…") });
+  const previewInput = el('input.pk-input.pkf-sample', { type: 'text', placeholder: translateText("Preview text…"), value: sample });
 
   const cats = el('div.pkd-cats');
   const catButton = (value, label) => {
@@ -141,7 +142,7 @@ export async function showFontsDialog(opts = {}) {
   };
 
   const actionFor = (entry) => {
-    if (entry.builtin && !entry.google) return [el('span.pkf-tag', { text: 'Built-in' })];
+    if (entry.builtin && !entry.google) return [el('span.pkf-tag', { text: translateText("Built-in") })];
     if (isInstalled(entry.id)) {
       const meta = installedFamilies().find((f) => f.family === googleNameFor(entry.id));
       return [
@@ -154,7 +155,7 @@ export async function showFontsDialog(opts = {}) {
     }
     const btn = el('button.pk-btn.subtle.pkf-get', {
       type: 'button',
-      text: 'Get',
+      text: translateText("Get"),
       disabled: isOffline() || !webfontsAllowed(),
       title: isOffline() ? 'You are offline'
         : !webfontsAllowed() ? 'Downloading fonts is turned off in Preferences' : '',
@@ -189,7 +190,7 @@ export async function showFontsDialog(opts = {}) {
       users
         ? `${family} is used by ${users} open ${users === 1 ? 'document' : 'documents'}. They will render in a substitute face.`
         : `Remove ${family}?`,
-      `Remove ${family}`, 'Remove', { danger: true },
+      `Remove ${family}`, translateText("Remove"), { danger: true },
     );
     if (!ok) return;
     await removeFamily(family);
@@ -277,7 +278,7 @@ export async function showFontsDialog(opts = {}) {
     empty.replaceChildren(
       el('p', { text: query ? `Nothing matches “${query}”.` : 'Nothing here yet.' }),
       el('button.pk-btn.subtle', {
-        type: 'button', text: 'Clear filters',
+        type: 'button', text: translateText("Clear filters"),
         onclick: () => { query = ''; category = ''; scope = 'all'; search.value = ''; paintChips(); rebuild(); },
       }),
     );
@@ -294,7 +295,7 @@ export async function showFontsDialog(opts = {}) {
     strip.replaceChildren(
       el('span', { text: off ? 'Offline — previews and downloads are unavailable.' : 'Some previews could not be loaded.' }),
       ...(off ? [] : [el('button.pk-btn.subtle', {
-        type: 'button', text: 'Retry previews',
+        type: 'button', text: translateText("Retry previews"),
         onclick: () => { retryFailedPreviews(); render(); },
       })]),
     );
@@ -359,7 +360,7 @@ export async function showFontsDialog(opts = {}) {
     const entry = rows[active];
     const needsGet = entry && !entry.builtin && !isInstalled(entry.id);
     dlg.setButtons([
-      { label: 'Cancel', value: null, subtle: true },
+      { label: translateText("Cancel"), value: null, subtle: true },
       {
         label: needsGet ? 'Download and use' : 'Use font',
         primary: true,

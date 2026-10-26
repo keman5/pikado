@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { Tool, registerTool } from './base.js';
 import { app } from '../core/app.js';
 import { deg2rad, rad2deg } from '../core/util.js';
@@ -46,8 +47,8 @@ function actualPixels() {
 }
 
 const VIEW_BUTTONS = [
-  { type: 'button', label: 'Fit Screen', onClick: fitScreen },
-  { type: 'button', label: 'Fill Screen', onClick: fillScreen },
+  { type: 'button', label: translateText("Fit Screen"), onClick: fitScreen },
+  { type: 'button', label: translateText("Fill Screen"), onClick: fillScreen },
   { type: 'button', label: '100%', onClick: actualPixels },
 ];
 
@@ -126,8 +127,8 @@ class RotateViewTool extends Tool {
       group: 'nav',
       groupOrder: 18,
       options: [
-        { key: 'angle', type: 'number', label: 'Rotation Angle', min: -360, max: 360, step: 1, unit: '°', default: 0 },
-        { type: 'button', label: 'Reset View', onClick: () => rotateViewTool.reset() },
+        { key: 'angle', type: 'number', label: translateText("Rotation Angle"), min: -360, max: 360, step: 1, unit: '°', default: 0 },
+        { type: 'button', label: translateText("Reset View"), onClick: () => rotateViewTool.reset() },
       ],
     });
     this.spin = null;
@@ -197,7 +198,7 @@ class RotateViewTool extends Tool {
   contextMenu() {
     return [
       {
-        label: 'Reset View Rotation',
+        label: translateText("Reset View Rotation"),
         run: () => this.reset(),
         disabled: !this.app.viewport.rotation,
         hideWhenDisabled: true,
@@ -246,11 +247,11 @@ class ZoomTool extends Tool {
       options: [
         {
           key: 'dir', type: 'radio', label: '', default: 'in',
-          options: [{ value: 'in', label: 'Zoom In' }, { value: 'out', label: 'Zoom Out' }],
+          options: [{ value: 'in', label: translateText("Zoom In") }, { value: 'out', label: translateText("Zoom Out") }],
         },
         {
           key: 'resizeWindows', type: 'checkbox', default: false,
-          label: 'Resize Windows to Fit',
+          label: translateText("Resize Windows to Fit"),
           hint: 'Re-centres the document after zooming when it fits on screen.',
         },
         ...VIEW_BUTTONS,

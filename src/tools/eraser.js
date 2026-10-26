@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { Tool, registerTool } from './base.js';
 import { app } from '../core/app.js';
 import { PaintStroke, EffectStroke, brushOptionDescriptors, brushFromOptions } from '../paint/brush-engine.js';
@@ -13,9 +14,9 @@ import { cmd, sep } from '../ui/canvas-menu.js';
  */
 
 const LIMIT_OPTIONS = [
-  { value: 'discontiguous', label: 'Discontiguous' },
-  { value: 'contiguous', label: 'Contiguous' },
-  { value: 'find-edges', label: 'Find Edges' },
+  { value: 'discontiguous', label: translateText("Discontiguous") },
+  { value: 'contiguous', label: translateText("Contiguous") },
+  { value: 'find-edges', label: translateText("Find Edges") },
 ];
 
 /** Block eraser is a fixed 16 *screen* pixel square, like Photoshop's. */
@@ -35,14 +36,14 @@ class EraserTool extends BrushToolBase {
       group: 'eraser', groupOrder: 10,
       strokeLabel: 'Eraser',
       options: [
-        { key: 'mode', label: 'Mode', type: 'select', default: 'brush',
+        { key: 'mode', label: translateText("Mode"), type: 'select', default: 'brush',
           options: [
-            { value: 'brush', label: 'Brush' },
-            { value: 'pencil', label: 'Pencil' },
-            { value: 'block', label: 'Block' },
+            { value: 'brush', label: translateText("Brush") },
+            { value: 'pencil', label: translateText("Pencil") },
+            { value: 'block', label: translateText("Block") },
           ] },
         ...tweakDefaults(base, { size: 40, hardness: 100 }),
-        { key: 'eraseToHistory', label: 'Erase to History', type: 'checkbox', default: false },
+        { key: 'eraseToHistory', label: translateText("Erase to History"), type: 'checkbox', default: false },
       ],
     });
   }
@@ -145,15 +146,15 @@ class BackgroundEraserTool extends BrushToolBase {
       strokeLabel: 'Background Eraser',
       options: [
         ...tweakDefaults(brushOptionDescriptors({ opacity: false, airbrush: false }), { size: 60, hardness: 100 }),
-        { key: 'sampling', label: 'Sampling', type: 'select', default: 'continuous',
+        { key: 'sampling', label: translateText("Sampling"), type: 'select', default: 'continuous',
           options: [
-            { value: 'continuous', label: 'Continuous' },
-            { value: 'once', label: 'Once' },
-            { value: 'background', label: 'Background Swatch' },
+            { value: 'continuous', label: translateText("Continuous") },
+            { value: 'once', label: translateText("Once") },
+            { value: 'background', label: translateText("Background Swatch") },
           ] },
-        { key: 'limits', label: 'Limits', type: 'select', options: LIMIT_OPTIONS, default: 'contiguous' },
-        { key: 'tolerance', label: 'Tolerance', type: 'slider', min: 1, max: 100, step: 1, default: 30, unit: '%' },
-        { key: 'protectForeground', label: 'Protect Foreground Color', type: 'checkbox', default: false },
+        { key: 'limits', label: translateText("Limits"), type: 'select', options: LIMIT_OPTIONS, default: 'contiguous' },
+        { key: 'tolerance', label: translateText("Tolerance"), type: 'slider', min: 1, max: 100, step: 1, default: 30, unit: '%' },
+        { key: 'protectForeground', label: translateText("Protect Foreground Color"), type: 'checkbox', default: false },
       ],
     });
   }
@@ -274,11 +275,11 @@ class MagicEraserTool extends Tool {
       id: 'magic-eraser', name: 'Magic Eraser Tool', icon: 'magic-eraser',
       cursor: 'crosshair', shortcut: 'E', group: 'eraser', groupOrder: 10,
       options: [
-        { key: 'tolerance', label: 'Tolerance', type: 'slider', min: 0, max: 255, step: 1, default: 32 },
-        { key: 'antialias', label: 'Anti-alias', type: 'checkbox', default: true },
-        { key: 'contiguous', label: 'Contiguous', type: 'checkbox', default: true },
-        { key: 'sampleAllLayers', label: 'Sample All Layers', type: 'checkbox', default: false },
-        { key: 'opacity', label: 'Opacity', type: 'slider', min: 1, max: 100, step: 1, default: 100, unit: '%' },
+        { key: 'tolerance', label: translateText("Tolerance"), type: 'slider', min: 0, max: 255, step: 1, default: 32 },
+        { key: 'antialias', label: translateText("Anti-alias"), type: 'checkbox', default: true },
+        { key: 'contiguous', label: translateText("Contiguous"), type: 'checkbox', default: true },
+        { key: 'sampleAllLayers', label: translateText("Sample All Layers"), type: 'checkbox', default: false },
+        { key: 'opacity', label: translateText("Opacity"), type: 'slider', min: 1, max: 100, step: 1, default: 100, unit: '%' },
       ],
     });
     this.app = app;
@@ -297,7 +298,7 @@ class MagicEraserTool extends Tool {
       flag('antialias', 'Anti-alias'),
       flag('sampleAllLayers', 'Sample All Layers'),
       sep(),
-      cmd('layer.new', { label: 'New Layer' }),
+      cmd('layer.new', { label: translateText("New Layer") }),
       cmd('edit.fill'),
       sep(),
       cmd('edit.undo'),

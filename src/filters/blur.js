@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 /**
  * Filter > Blur.
  *
@@ -740,7 +741,7 @@ registerFilter({
   name: 'Box Blur...',
   menu: 'Blur',
   params: [
-    { key: 'radius', label: 'Radius', type: 'slider', min: 1, max: 500, step: 1, default: 8, unit: 'px' },
+    { key: 'radius', label: translateText("Radius"), type: 'slider', min: 1, max: 500, step: 1, default: 8, unit: 'px' },
   ],
   apply(imageData, p) {
     const w = imageData.width, h = imageData.height;
@@ -755,7 +756,7 @@ registerFilter({
   name: 'Gaussian Blur...',
   menu: 'Blur',
   params: [
-    { key: 'radius', label: 'Radius', type: 'slider', min: 0.1, max: 1000, step: 0.1, default: 4, unit: 'px' },
+    { key: 'radius', label: translateText("Radius"), type: 'slider', min: 0.1, max: 1000, step: 0.1, default: 4, unit: 'px' },
   ],
   apply(imageData, p) {
     if (!(p.radius > 0.05)) return;
@@ -775,11 +776,11 @@ registerFilter({
   menu: 'Blur',
   dialogWidth: 420,
   params: [
-    { key: 'radius', label: 'Radius', type: 'slider', min: 1, max: 200, step: 1, default: 15, unit: 'px' },
-    { key: 'blades', label: 'Blades', type: 'slider', min: 3, max: 8, step: 1, default: 6 },
-    { key: 'rotation', label: 'Blade Rotation', type: 'angle', min: 0, max: 360, step: 1, default: 0 },
-    { key: 'brightness', label: 'Specular Brightness', type: 'slider', min: 0, max: 100, step: 1, default: 40 },
-    { key: 'threshold', label: 'Specular Threshold', type: 'slider', min: 0, max: 255, step: 1, default: 200 },
+    { key: 'radius', label: translateText("Radius"), type: 'slider', min: 1, max: 200, step: 1, default: 15, unit: 'px' },
+    { key: 'blades', label: translateText("Blades"), type: 'slider', min: 3, max: 8, step: 1, default: 6 },
+    { key: 'rotation', label: translateText("Blade Rotation"), type: 'angle', min: 0, max: 360, step: 1, default: 0 },
+    { key: 'brightness', label: translateText("Specular Brightness"), type: 'slider', min: 0, max: 100, step: 1, default: 40 },
+    { key: 'threshold', label: translateText("Specular Threshold"), type: 'slider', min: 0, max: 255, step: 1, default: 200 },
   ],
   apply(imageData, p) {
     const w = imageData.width, h = imageData.height;
@@ -830,8 +831,8 @@ registerFilter({
   name: 'Motion Blur...',
   menu: 'Blur',
   params: [
-    { key: 'angle', label: 'Angle', type: 'angle', min: -360, max: 360, step: 1, default: 0 },
-    { key: 'distance', label: 'Distance', type: 'slider', min: 1, max: 2000, step: 1, default: 24, unit: 'px' },
+    { key: 'angle', label: translateText("Angle"), type: 'angle', min: -360, max: 360, step: 1, default: 0 },
+    { key: 'distance', label: translateText("Distance"), type: 'slider', min: 1, max: 2000, step: 1, default: 24, unit: 'px' },
   ],
   apply(imageData, p) {
     const w = imageData.width, h = imageData.height;
@@ -850,15 +851,15 @@ registerFilter({
   menu: 'Blur',
   dialogWidth: 420,
   params: [
-    { key: 'amount', label: 'Amount', type: 'slider', min: 1, max: 100, step: 1, default: 10 },
-    { key: 'method', label: 'Blur Method', type: 'radio', default: 'spin', options: [
-      { value: 'spin', label: 'Spin' }, { value: 'zoom', label: 'Zoom' },
+    { key: 'amount', label: translateText("Amount"), type: 'slider', min: 1, max: 100, step: 1, default: 10 },
+    { key: 'method', label: translateText("Blur Method"), type: 'radio', default: 'spin', options: [
+      { value: 'spin', label: translateText("Spin") }, { value: 'zoom', label: translateText("Zoom") },
     ] },
-    { key: 'quality', label: 'Quality', type: 'select', default: 'good', options: [
-      { value: 'draft', label: 'Draft' }, { value: 'good', label: 'Good' }, { value: 'best', label: 'Best' },
+    { key: 'quality', label: translateText("Quality"), type: 'select', default: 'good', options: [
+      { value: 'draft', label: translateText("Draft") }, { value: 'good', label: translateText("Good") }, { value: 'best', label: translateText("Best") },
     ] },
-    { key: 'centerX', label: 'Center X', type: 'slider', min: 0, max: 100, step: 1, default: 50, unit: '%' },
-    { key: 'centerY', label: 'Center Y', type: 'slider', min: 0, max: 100, step: 1, default: 50, unit: '%' },
+    { key: 'centerX', label: translateText("Center X"), type: 'slider', min: 0, max: 100, step: 1, default: 50, unit: '%' },
+    { key: 'centerY', label: translateText("Center Y"), type: 'slider', min: 0, max: 100, step: 1, default: 50, unit: '%' },
   ],
   apply(imageData, p) {
     const w = imageData.width, h = imageData.height;
@@ -949,15 +950,15 @@ registerFilter({
   menu: 'Blur',
   dialogWidth: 420,
   params: [
-    { key: 'radius', label: 'Radius', type: 'slider', min: 0.1, max: 100, step: 0.1, default: 5 },
-    { key: 'threshold', label: 'Threshold', type: 'slider', min: 0.1, max: 100, step: 0.1, default: 25 },
-    { key: 'quality', label: 'Quality', type: 'select', default: 'medium', options: [
-      { value: 'low', label: 'Low' }, { value: 'medium', label: 'Medium' }, { value: 'high', label: 'High' },
+    { key: 'radius', label: translateText("Radius"), type: 'slider', min: 0.1, max: 100, step: 0.1, default: 5 },
+    { key: 'threshold', label: translateText("Threshold"), type: 'slider', min: 0.1, max: 100, step: 0.1, default: 25 },
+    { key: 'quality', label: translateText("Quality"), type: 'select', default: 'medium', options: [
+      { value: 'low', label: translateText("Low") }, { value: 'medium', label: translateText("Medium") }, { value: 'high', label: translateText("High") },
     ] },
-    { key: 'mode', label: 'Mode', type: 'select', default: 'normal', options: [
-      { value: 'normal', label: 'Normal' },
-      { value: 'edge-only', label: 'Edge Only' },
-      { value: 'overlay-edge', label: 'Overlay Edge' },
+    { key: 'mode', label: translateText("Mode"), type: 'select', default: 'normal', options: [
+      { value: 'normal', label: translateText("Normal") },
+      { value: 'edge-only', label: translateText("Edge Only") },
+      { value: 'overlay-edge', label: translateText("Overlay Edge") },
     ] },
   ],
   apply(imageData, p) {
@@ -995,8 +996,8 @@ registerFilter({
   name: 'Surface Blur...',
   menu: 'Blur',
   params: [
-    { key: 'radius', label: 'Radius', type: 'slider', min: 1, max: 100, step: 1, default: 5, unit: 'px' },
-    { key: 'threshold', label: 'Threshold', type: 'slider', min: 2, max: 255, step: 1, default: 15, unit: 'levels' },
+    { key: 'radius', label: translateText("Radius"), type: 'slider', min: 1, max: 100, step: 1, default: 5, unit: 'px' },
+    { key: 'threshold', label: translateText("Threshold"), type: 'slider', min: 2, max: 255, step: 1, default: 15, unit: 'levels' },
   ],
   apply(imageData, p) {
     const r = Math.max(1, Math.round(p.radius));
@@ -1010,12 +1011,12 @@ registerFilter({
   name: 'Shape Blur...',
   menu: 'Blur',
   params: [
-    { key: 'radius', label: 'Radius', type: 'slider', min: 1, max: 500, step: 1, default: 20, unit: 'px' },
-    { key: 'shape', label: 'Shape', type: 'select', default: 'circle', options: [
-      { value: 'circle', label: 'Circle' },
-      { value: 'square', label: 'Square' },
-      { value: 'star', label: 'Star' },
-      { value: 'cross', label: 'Cross' },
+    { key: 'radius', label: translateText("Radius"), type: 'slider', min: 1, max: 500, step: 1, default: 20, unit: 'px' },
+    { key: 'shape', label: translateText("Shape"), type: 'select', default: 'circle', options: [
+      { value: 'circle', label: translateText("Circle") },
+      { value: 'square', label: translateText("Square") },
+      { value: 'star', label: translateText("Star") },
+      { value: 'cross', label: translateText("Cross") },
     ] },
   ],
   apply(imageData, p) {

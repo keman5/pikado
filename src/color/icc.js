@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { isHEIF, heifColour } from '../io/heif-info.js';
 
 /**
@@ -278,10 +279,10 @@ export function matrixOf(profile) {
 /* ------------------------------------------------------------------ */
 
 export const INTENTS = [
-  { value: 'relative', label: 'Relative Colorimetric' },
-  { value: 'absolute', label: 'Absolute Colorimetric' },
-  { value: 'perceptual', label: 'Perceptual' },
-  { value: 'saturation', label: 'Saturation' },
+  { value: 'relative', label: translateText("Relative Colorimetric") },
+  { value: 'absolute', label: translateText("Absolute Colorimetric") },
+  { value: 'perceptual', label: translateText("Perceptual") },
+  { value: 'saturation', label: translateText("Saturation") },
 ];
 
 /**

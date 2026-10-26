@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import './gradient-editor.css';
 import { el, clamp } from '../core/util.js';
 import { parseColor, toHex } from '../core/color.js';
@@ -323,16 +324,16 @@ function buildGradientEditor(container, cfg) {
   const opacityRow = el('div.pk-grad-row.opacity');
   const track = el('div.pk-grad-track', {}, opacityRow, bar, colorRow);
 
-  const swatch = el('button.pk-color-swatch.pk-grad-swatch', { type: 'button', title: 'Stop colour' });
+  const swatch = el('button.pk-color-swatch.pk-grad-swatch', { type: 'button', title: translateText("Stop colour") });
   const colorInput = el('input', { type: 'color', style: { display: 'none' } });
-  const opacityNum = el('input.pk-num', { type: 'number', min: 0, max: 100, step: 1, value: 100, title: 'Opacity %' });
-  const locNum = el('input.pk-num', { type: 'number', min: 0, max: 100, step: 1, value: 0, title: 'Location %' });
-  const delBtn = el('button.pk-btn.subtle', { type: 'button', text: 'Delete' });
+  const opacityNum = el('input.pk-num', { type: 'number', min: 0, max: 100, step: 1, value: 100, title: translateText("Opacity %") });
+  const locNum = el('input.pk-num', { type: 'number', min: 0, max: 100, step: 1, value: 0, title: translateText("Location %") });
+  const delBtn = el('button.pk-btn.subtle', { type: 'button', text: translateText("Delete") });
 
   const editRow = el('div.pk-grad-edit', {},
-    el('span.pk-grad-group.only-color', {}, el('span.pk-grad-lbl', { text: 'Color' }), swatch, colorInput),
-    el('span.pk-grad-group.only-opacity', {}, el('span.pk-grad-lbl', { text: 'Opacity' }), opacityNum, el('span.pk-unit', { text: '%' })),
-    el('span.pk-grad-group', {}, el('span.pk-grad-lbl', { text: 'Location' }), locNum, el('span.pk-unit', { text: '%' })),
+    el('span.pk-grad-group.only-color', {}, el('span.pk-grad-lbl', { text: translateText("Color") }), swatch, colorInput),
+    el('span.pk-grad-group.only-opacity', {}, el('span.pk-grad-lbl', { text: translateText("Opacity") }), opacityNum, el('span.pk-unit', { text: '%' })),
+    el('span.pk-grad-group', {}, el('span.pk-grad-lbl', { text: translateText("Location") }), locNum, el('span.pk-unit', { text: '%' })),
     el('div.pk-spacer'), delBtn
   );
 

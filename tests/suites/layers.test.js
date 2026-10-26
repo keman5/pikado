@@ -678,3 +678,72 @@ suite('layers / undo integrity sweep (20+ mixed operations)', async (t) => {
   t.eq(redoFails.length, 0, `FIRST BROKEN REDO: ${redoFails[0] || 'none'}`);
   t.notOk(doc.history.canRedo, 'the whole sequence has been replayed');
 });
+
+suite('layers / canvas picking selects and reveals the matching panel row', async (t) => {
+  const { app } = await import('/src/core/app.js');
+  const { tools } = await import('/src/tools/base.js');
+  const move = tools.get('move');
+  const previousState = { ...move.state };
+  const previousTool = app.tool.id;
+  const frame = () => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  const rowFor = layer => document.querySelector(`.pk-lay-row[data-id="${layer.id}"]`);
+  const click = (x, y, mods = {}) => {
+    const event = { x, y, button: 0, ctrlKey: false, metaKey: false, shiftKey: false, altKey: false, ...mods };
+    move.onPointerDown(event);
+    move.onPointerUp(event);
+  };
+  try {
+    t.eq(move.state.autoSelect, true, 'canvas picking is enabled by default');
+    app.setTool('move');
+    move.state.showTransform = false;
+    move.state.autoSelectKind = 'layer';
+    const doc = t.doc(64, 48, '#ffffff', 'canvas-panel-sync');
+    const outer = createGroupLayer('outer');
+    const inner = createGroupLayer('inner');
+    doc.addLayer(outer);
+    doc.addLayer(inner, { parent: outer, above: null });
+    const red = createRasterLayer(64, 48, 'red');
+    t.fill(red, '#ff0000', 0, 0, 16, 16);
+    doc.addLayer(red, { parent: inner, above: null });
+    const blue = addFilled(doc, 'blue', '#0000ff', 32, 0, 16, 16);
+    doc.moveLayer(blue, null, 0);
+    for (let i = 0; i < 30; i++) doc.addLayer(createRasterLayer(64, 48, `empty-${i}`), { parent: null, above: null });
+    outer.expanded = inner.expanded = false;
+    await frame();
+    const focus = document.activeElement;
+    click(8, 8);
+    await frame();
+    t.eq(doc.selectedLayerIds, [red.id], 'plain canvas click selects the hit layer');
+    t.ok(outer.expanded && inner.expanded, 'both collapsed ancestors are revealed');
+    const redRow = rowFor(red);
+    t.ok(redRow?.classList.contains('selected') && redRow.classList.contains('active'), 'the panel highlights the same layer');
+    const list = redRow.closest('.pk-lay-list');
+    const rowRect = redRow.querySelector('.pk-lay-main').getBoundingClientRect();
+    const listRect = list.getBoundingClientRect();
+    t.ok(list.scrollTop > 0 && rowRect.top >= listRect.top - 1 && rowRect.bottom <= listRect.bottom + 1,
+      'an offscreen selected layer scrolls into the panel viewport');
+    t.ok(document.activeElement === focus, 'revealing the row does not take focus');
+
+    click(40, 8, { shiftKey: true });
+    await frame();
+    t.eq(doc.selectedLayerIds, [red.id, blue.id], 'Shift-click adds a canvas layer to selection');
+    t.ok(rowFor(red).classList.contains('selected') && rowFor(blue).classList.contains('selected'), 'the panel preserves both selected rows');
+    click(8, 8, { ctrlKey: true });
+    t.eq(doc.activeLayerId, blue.id, 'Ctrl temporarily disables automatic picking');
+    move.state.autoSelect = false;
+    click(8, 8);
+    t.eq(doc.activeLayerId, blue.id, 'turning auto-select off keeps the chosen layer');
+    click(8, 8, { ctrlKey: true });
+    await frame();
+    t.eq(doc.activeLayerId, red.id, 'Ctrl temporarily enables picking when disabled');
+    rowFor(blue).querySelector('.pk-lay-main').dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, button: 0 }));
+    window.dispatchEvent(new PointerEvent('pointerup', { button: 0 }));
+    await frame();
+    t.eq(doc.selectedLayerIds, [blue.id], 'panel click updates the same document selection');
+    t.ok(rowFor(blue).classList.contains('active') && !rowFor(red).classList.contains('selected'), 'panel and document remain synchronized');
+  } finally {
+    move.cancel();
+    Object.assign(move.state, previousState);
+    app.setTool(previousTool);
+  }
+});

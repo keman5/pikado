@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { el, formatBytes, clamp, rafThrottle } from '../core/util.js';
 import { app } from '../core/app.js';
 import './statusbar.css';
@@ -63,7 +64,7 @@ export function buildStatusBar(rootEl) {
   if (!rootEl) return;
   rootEl.replaceChildren();
 
-  const zoomInput = el('input.pk-input.pk-sb-zoom', { type: 'text', value: '100', title: 'Zoom level' });
+  const zoomInput = el('input.pk-input.pk-sb-zoom', { type: 'text', value: '100', title: translateText("Zoom level") });
   const commitZoom = () => {
     const v = parseFloat(String(zoomInput.value).replace(/[^0-9.\-]/g, ''));
     if (!Number.isFinite(v) || v <= 0) { syncZoom(); return; }
@@ -78,10 +79,10 @@ export function buildStatusBar(rootEl) {
     if (e.key === 'Enter') { e.stopPropagation(); commitZoom(); zoomInput.blur(); }
   });
 
-  const zoomSelect = el('select.pk-select.pk-sb-zoomsel', { title: 'Zoom presets' },
-    el('option', { value: '', text: 'Custom' }),
-    el('option', { value: 'fit', text: 'Fit on Screen' }),
-    el('option', { value: 'fill', text: 'Fill Screen' }),
+  const zoomSelect = el('select.pk-select.pk-sb-zoomsel', { title: translateText("Zoom presets") },
+    el('option', { value: '', text: translateText("Custom") }),
+    el('option', { value: 'fit', text: translateText("Fit on Screen") }),
+    el('option', { value: 'fill', text: translateText("Fill Screen") }),
     ...ZOOM_PRESETS.map((z) => el('option', { value: String(z), text: `${z}%` }))
   );
   zoomSelect.addEventListener('change', () => {
@@ -100,8 +101,8 @@ export function buildStatusBar(rootEl) {
   });
 
   const dims = el('span.pk-sb-dims');
-  const statusSelect = el('select.pk-select.pk-sb-mode', { title: 'Status information' },
-    ...STATUS_MODES.map((m) => el('option', { value: m, text: m }))
+  const statusSelect = el('select.pk-select.pk-sb-mode', { title: translateText("Status information") },
+    ...STATUS_MODES.map((m) => el('option', { value: m, text: translateText(m) }))
   );
   statusSelect.value = statusMode;
   statusSelect.addEventListener('change', () => {
@@ -167,8 +168,8 @@ function sync() {
   syncZoom();
 
   nodes.dims.textContent = doc ? `${doc.width} × ${doc.height} px` : '—';
-  nodes.toolName.textContent = app.tool ? app.tool.name : '—';
-  nodes.memory.textContent = doc ? `Mem: ${formatBytes(doc.memoryUse())}` : 'Mem: —';
+  nodes.toolName.textContent = app.tool ? translateText(app.tool.name) : '—';
+  nodes.memory.textContent = doc ? translateText("Mem: {0}", formatBytes(doc.memoryUse())) : translateText("Mem: —");
   nodes.statusText.textContent = statusValue(doc);
   nodes.hint.textContent = hintFor(app.tool);
 }
@@ -202,7 +203,7 @@ function statusValue(doc) {
     case 'Timing':
       return `${lastTiming.toFixed(2)}s`;
     case 'Current Tool':
-      return app.tool ? app.tool.name : '—';
+      return app.tool ? translateText(app.tool.name) : '—';
     default:
       return '—';
   }
@@ -211,7 +212,7 @@ function statusValue(doc) {
 function hintFor(tool) {
   if (!tool) return 'Space+drag pans · Ctrl+wheel zooms';
   if (tool.hint) return tool.hint;
-  if (TOOL_HINTS[tool.id]) return TOOL_HINTS[tool.id];
-  if (GROUP_HINTS[tool.group]) return GROUP_HINTS[tool.group];
+  if (TOOL_HINTS[tool.id]) return translateText(TOOL_HINTS[tool.id]);
+  if (GROUP_HINTS[tool.group]) return translateText(GROUP_HINTS[tool.group]);
   return 'Space+drag pans · Ctrl+wheel zooms · Tab hides the panels';
 }

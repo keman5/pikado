@@ -1,3 +1,4 @@
+import { t as translateText } from '../../i18n/index.js';
 import './dialogs.css';
 import { app } from '../../core/app.js';
 import { el, debounce } from '../../core/util.js';
@@ -142,9 +143,9 @@ function accelFromEvent(e) {
 
 /** Edit > Keyboard Shortcuts… */
 export async function showKeyboardShortcutsDialog() {
-  const dlg = new Dialog({ title: 'Keyboard Shortcuts', width: 660, className: 'pkd-keys' });
+  const dlg = new Dialog({ title: translateText("Keyboard Shortcuts"), width: 660, className: 'pkd-keys' });
 
-  const search = el('input.pk-input', { type: 'text', placeholder: 'Search commands or keys…' });
+  const search = el('input.pk-input', { type: 'text', placeholder: translateText("Search commands or keys…") });
   const count = el('span.pk-hint');
   const scroll = el('div.pkd-keys-scroll');
   const table = el('table.pkd-keys-table');
@@ -182,8 +183,8 @@ export async function showKeyboardShortcutsDialog() {
     }
     table.replaceChildren(
       el('thead', {}, el('tr', {},
-        el('th', { text: 'Command' }),
-        el('th', { text: 'Shortcut', style: { width: '140px' } }),
+        el('th', { text: translateText("Command") }),
+        el('th', { text: translateText("Shortcut"), style: { width: '140px' } }),
         el('th', { text: '', style: { width: '60px' } })
       )),
       body
@@ -199,7 +200,7 @@ export async function showKeyboardShortcutsDialog() {
       title: cmd.accel || 'No shortcut assigned',
     });
     const clearBtn = el('button.pk-btn.subtle.pkd-key-clear', {
-      type: 'button', text: 'Reset',
+      type: 'button', text: translateText("Reset"),
       style: { padding: '2px 8px', height: 'auto' },
       onclick: () => { setOverride(cmd.id, null); render(); },
     });
@@ -247,7 +248,7 @@ export async function showKeyboardShortcutsDialog() {
 
   dlg.setButtons([
     {
-      label: 'Reset All', subtle: true,
+      label: translateText("Reset All"), subtle: true,
       onClick: () => {
         for (const id of Object.keys(overrides)) setOverride(id, null);
         overrides = {};
@@ -257,7 +258,7 @@ export async function showKeyboardShortcutsDialog() {
         return false;
       },
     },
-    { label: 'Done', value: true, primary: true },
+    { label: translateText("Done"), value: true, primary: true },
   ]);
 
   render();

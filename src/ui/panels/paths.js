@@ -1,3 +1,4 @@
+import { t as translateText } from '../../i18n/index.js';
 import { registerPanel } from '../panel-host.js';
 import { app } from '../../core/app.js';
 import { el, uid, createCanvas } from '../../core/util.js';
@@ -241,7 +242,7 @@ function maskForPath(doc, path) {
 
 registerPanel({
   id: 'paths',
-  title: 'Paths',
+  title: translateText("Paths"),
   icon: 'path',
   group: 'top',
   order: 2,
@@ -397,7 +398,7 @@ registerPanel({
       const d = doc();
       list.replaceChildren();
       if (!d) {
-        list.appendChild(el('div.pkp-empty', { text: 'No document open.' }));
+        list.appendChild(el('div.pkp-empty', { text: translateText("No document open.") }));
         renderFooter();
         return;
       }
@@ -407,7 +408,7 @@ registerPanel({
           title: 'Draw with the Pen tool or use "Make work path from selection" to create one',
         },
           el('div.pkp-thumb.pk-checker'),
-          el('span.pkp-name.pk-truncate', { text: 'Work Path' }),
+          el('span.pkp-name.pk-truncate', { text: translateText("Work Path") }),
           el('span.pkp-tag', { text: 'empty' })
         ));
       }
@@ -442,13 +443,13 @@ registerPanel({
     const renderFooter = () => {
       const d = doc();
       footer.replaceChildren(
-        el('button.pk-icon-btn', { type: 'button', title: 'Fill path with the foreground colour', disabled: !d, onclick: fillPath }, iconEl('bucket')),
-        el('button.pk-icon-btn', { type: 'button', title: 'Stroke path with the current brush', disabled: !d, onclick: strokePath }, iconEl('brush')),
-        el('button.pk-icon-btn', { type: 'button', title: 'Load path as a selection', disabled: !d, onclick: pathToSelection }, iconEl('marquee-rect')),
-        el('button.pk-icon-btn', { type: 'button', title: 'Make a work path from the selection', disabled: !d, onclick: selectionToPath }, iconEl('pen')),
+        el('button.pk-icon-btn', { type: 'button', title: translateText("Fill path with the foreground colour"), disabled: !d, onclick: fillPath }, iconEl('bucket')),
+        el('button.pk-icon-btn', { type: 'button', title: translateText("Stroke path with the current brush"), disabled: !d, onclick: strokePath }, iconEl('brush')),
+        el('button.pk-icon-btn', { type: 'button', title: translateText("Load path as a selection"), disabled: !d, onclick: pathToSelection }, iconEl('marquee-rect')),
+        el('button.pk-icon-btn', { type: 'button', title: translateText("Make a work path from the selection"), disabled: !d, onclick: selectionToPath }, iconEl('pen')),
         el('div.pk-spacer'),
-        el('button.pk-icon-btn', { type: 'button', title: 'New path', disabled: !d, onclick: newPath }, iconEl('plus')),
-        el('button.pk-icon-btn', { type: 'button', title: 'Delete path', disabled: !d, onclick: deletePath }, iconEl('trash'))
+        el('button.pk-icon-btn', { type: 'button', title: translateText("New path"), disabled: !d, onclick: newPath }, iconEl('plus')),
+        el('button.pk-icon-btn', { type: 'button', title: translateText("Delete path"), disabled: !d, onclick: deletePath }, iconEl('trash'))
       );
     };
 

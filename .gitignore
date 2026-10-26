@@ -37,3 +37,7 @@ pnpm-debug.log*
 # Scratch files — Pikado documents used while testing by hand
 scratch/
 *.pkd.bak
+
+# Local Cloudflare state and disposable artifacts
+.wrangler/
+.artifacts/

@@ -1,3 +1,4 @@
+import { t as translateText } from '../../i18n/index.js';
 import './dialogs.css';
 import './ai-guide.css';
 import { el } from '../../core/util.js';
@@ -37,7 +38,7 @@ function p(text) {
 }
 
 export function showAiGuideDialog() {
-  const dlg = new Dialog({ title: 'Using Generative Fill', width: 560, className: 'pkd-guide' });
+  const dlg = new Dialog({ title: translateText("Using Generative Fill"), width: 560, className: 'pkd-guide' });
 
   dlg.setBody(
     p('Select part of your picture, describe what should be there instead, and the '
@@ -58,7 +59,7 @@ export function showAiGuideDialog() {
           + 'it; tick "Remember this key on this device" to keep it, which stores '
           + 'it in this browser’s local database in plain text.'))),
 
-    el('div.pkd-section', { text: 'Every time' }),
+    el('div.pkd-section', { text: translateText("Every time") }),
     el('ol.pkd-guide-steps', {},
       step(1, 'Select the area to replace. ',
         p('Any selection tool. The menu item stays greyed out until something is '
@@ -79,7 +80,7 @@ export function showAiGuideDialog() {
           + 'after your prompt — if you want a little more of what it painted, '
           + 'paint the layer mask.'))),
 
-    el('div.pkd-section', { text: 'Model and effort' }),
+    el('div.pkd-section', { text: translateText("Model and effort") }),
     p('Both live in Edit › AI Settings, per provider, and the effort dial also '
       + 'appears in the Generative Fill dialog because that is the moment it costs '
       + 'you something. Higher settings are slower and dearer; the cheapest model '
@@ -90,9 +91,9 @@ export function showAiGuideDialog() {
       + 'control disappears for models that do not accept one rather than sending '
       + 'a setting they would reject.'),
 
-    el('div.pkd-section', { text: 'What it costs, and what it cannot do' }),
+    el('div.pkd-section', { text: translateText("What it costs, and what it cannot do") }),
     el('ul', {},
-      el('li', { text: 'Your provider bills you directly. Pikado never sees the bill and takes no cut.' }),
+      el('li', { text: translateText("Your provider bills you directly. Pikado never sees the bill and takes no cut.") }),
       el('li', {
         text: 'Generation is 1024×1024. Fill a region larger than that and the '
           + 'result is softer than the rest of the image — the dialog says so before '
@@ -107,7 +108,7 @@ export function showAiGuideDialog() {
           + 'its reason, not as a silent failure.',
       })),
 
-    el('div.pkd-section', { text: 'What leaves your machine' }),
+    el('div.pkd-section', { text: translateText("What leaves your machine") }),
     p('Only the selected region and the pixels around it, only when you press '
       + 'Generate, and only after you have agreed to send to that host. Not the '
       + 'whole document, not your other open files, and nothing at all if you '
@@ -118,13 +119,13 @@ export function showAiGuideDialog() {
       + 'Forgetting it, and every send permission, is one button in AI Settings.'),
 
     el('div.pkd-note', {
-      text: 'Everything else in Pikado works with no key, no account and no network.',
+      text: translateText("Everything else in Pikado works with no key, no account and no network."),
     }),
   );
 
   dlg.setButtons([
-    { label: 'Open AI Settings…', value: 'settings' },
-    { label: 'Close', value: true, primary: true },
+    { label: translateText("Open AI Settings…"), value: 'settings' },
+    { label: translateText("Close"), value: true, primary: true },
   ]);
   return dlg.open();
 }

@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 /**
  * Font catalogue + measurement helpers for the type tools.
  *
@@ -92,20 +93,20 @@ export function fontFamilyOptions(current = '', installed = []) {
   if (key && !out.some((o) => o.value === key)) {
     out.unshift({ value: key, label: googleFamilyOf(key) || String(key) });
   }
-  out.push({ value: BROWSE_FONTS, label: 'Browse Google Fonts…' });
+  out.push({ value: BROWSE_FONTS, label: translateText("Browse Google Fonts…") });
   return out;
 }
 
 export const FONT_WEIGHTS = [
-  { value: 100, label: 'Thin' },
-  { value: 200, label: 'Extra Light' },
-  { value: 300, label: 'Light' },
-  { value: 400, label: 'Regular' },
-  { value: 500, label: 'Medium' },
-  { value: 600, label: 'Semibold' },
-  { value: 700, label: 'Bold' },
-  { value: 800, label: 'Extra Bold' },
-  { value: 900, label: 'Black' },
+  { value: 100, label: translateText("Thin") },
+  { value: 200, label: translateText("Extra Light") },
+  { value: 300, label: translateText("Light") },
+  { value: 400, label: translateText("Regular") },
+  { value: 500, label: translateText("Medium") },
+  { value: 600, label: translateText("Semibold") },
+  { value: 700, label: translateText("Bold") },
+  { value: 800, label: translateText("Extra Bold") },
+  { value: 900, label: translateText("Black") },
 ];
 
 /** Common type sizes offered in the options bar. */

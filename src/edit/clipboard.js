@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { app } from '../core/app.js';
 import { createCanvas, loadImage, clamp } from '../core/util.js';
 import { decodeImage } from '../io/decode.js';
@@ -169,7 +170,7 @@ export function copyMerged(doc) {
 
 export function cut(doc) {
   if (!copy(doc)) return false;
-  return clear(doc, { label: 'Cut' });
+  return clear(doc, { label: translateText("Cut") });
 }
 
 /* ------------------------------------------------------------------ */
@@ -291,7 +292,7 @@ export async function paste(doc) {
     app.toast('The clipboard is empty.');
     return null;
   }
-  return addPastedLayer(doc, clip, { label: 'Paste' });
+  return addPastedLayer(doc, clip, { label: translateText("Paste") });
 }
 
 /** Paste into the current selection — the selection becomes the layer mask. */
@@ -413,7 +414,7 @@ window.addEventListener('paste', async (e) => {
     // opened one rather than failing in the browser's own image loader.
     const img = await decodeImage(file);
     const clip = adoptImage(img);
-    if (app.activeDoc) addPastedLayer(app.activeDoc, clip, { label: 'Paste' });
+    if (app.activeDoc) addPastedLayer(app.activeDoc, clip, { label: translateText("Paste") });
     else app.addDocument((await import('../core/document.js')).PikaDocument.fromImage(img, 'Pasted'));
   } catch (err) {
     app.toast('Could not read the pasted image.', 'error');

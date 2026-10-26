@@ -1,3 +1,4 @@
+import { t as translateText } from '../../i18n/index.js';
 import './dialogs.css';
 import { el } from '../../core/util.js';
 import { Dialog, buildForm } from '../dialog.js';
@@ -44,11 +45,11 @@ export async function showAssignProfileDialog(doc = app.activeDoc) {
   const current = profileOf(doc);
   const state = { profile: current.id === 'embedded' ? 'embedded' : current.id };
 
-  const dialog = new Dialog({ title: 'Assign Profile', width: 420 });
+  const dialog = new Dialog({ title: translateText("Assign Profile"), width: 420 });
   const form = buildForm([
     { type: 'label', label: `This document is currently ${current.name}` },
     ...sourceNote(doc),
-    { key: 'profile', label: 'Profile', type: 'select', options: profileOptions(doc) },
+    { key: 'profile', label: translateText("Profile"), type: 'select', options: profileOptions(doc) },
     {
       type: 'label',
       className: 'pk-hint',
@@ -59,8 +60,8 @@ export async function showAssignProfileDialog(doc = app.activeDoc) {
 
   dialog.setBody(form.node);
   dialog.setButtons([
-    { label: 'Cancel', value: false, subtle: true },
-    { label: 'Assign', primary: true, value: true },
+    { label: translateText("Cancel"), value: false, subtle: true },
+    { label: translateText("Assign"), primary: true, value: true },
   ]);
   const ok = await dialog.open();
   if (!ok) return false;
@@ -81,7 +82,7 @@ export async function showConvertProfileDialog(doc = app.activeDoc) {
     blackPoint: true,
   };
 
-  const dialog = new Dialog({ title: 'Convert to Profile', width: 440 });
+  const dialog = new Dialog({ title: translateText("Convert to Profile"), width: 440 });
   let form = null;
   const note = el('div.pk-hint');
   const syncNote = () => {
@@ -94,9 +95,9 @@ export async function showConvertProfileDialog(doc = app.activeDoc) {
   form = buildForm([
     { type: 'label', label: `Source: ${current.name}` },
     ...sourceNote(doc),
-    { key: 'profile', label: 'Destination', type: 'select', options: profileOptions(doc) },
-    { key: 'intent', label: 'Intent', type: 'select', options: INTENTS },
-    { key: 'blackPoint', label: 'Use Black Point Compensation', type: 'checkbox' },
+    { key: 'profile', label: translateText("Destination"), type: 'select', options: profileOptions(doc) },
+    { key: 'intent', label: translateText("Intent"), type: 'select', options: INTENTS },
+    { key: 'blackPoint', label: translateText("Use Black Point Compensation"), type: 'checkbox' },
     {
       type: 'label',
       className: 'pk-hint',
@@ -115,8 +116,8 @@ export async function showConvertProfileDialog(doc = app.activeDoc) {
 
   dialog.setBody(form.node, note);
   dialog.setButtons([
-    { label: 'Cancel', value: false, subtle: true },
-    { label: 'Convert', primary: true, value: true },
+    { label: translateText("Cancel"), value: false, subtle: true },
+    { label: translateText("Convert"), primary: true, value: true },
   ]);
   const ok = await dialog.open();
   if (!ok) return false;
@@ -135,7 +136,7 @@ export async function showProofSetupDialog(doc = app.activeDoc) {
   const before = { ...proof };
   const state = { ...proof };
 
-  const dialog = new Dialog({ title: 'Proof Setup', width: 440 });
+  const dialog = new Dialog({ title: translateText("Proof Setup"), width: 440 });
   let form = null;
   const apply = () => {
     setProof(doc, state);
@@ -143,11 +144,11 @@ export async function showProofSetupDialog(doc = app.activeDoc) {
   };
 
   form = buildForm([
-    { key: 'profileId', label: 'Simulate', type: 'select', options: profileOptions(doc).filter((o) => o.value !== 'embedded') },
-    { key: 'intent', label: 'Intent', type: 'select', options: INTENTS },
-    { key: 'blackPoint', label: 'Black Point Compensation', type: 'checkbox' },
-    { key: 'enabled', label: 'Preview', type: 'checkbox' },
-    { key: 'gamutWarning', label: 'Show out-of-gamut areas', type: 'checkbox' },
+    { key: 'profileId', label: translateText("Simulate"), type: 'select', options: profileOptions(doc).filter((o) => o.value !== 'embedded') },
+    { key: 'intent', label: translateText("Intent"), type: 'select', options: INTENTS },
+    { key: 'blackPoint', label: translateText("Black Point Compensation"), type: 'checkbox' },
+    { key: 'enabled', label: translateText("Preview"), type: 'checkbox' },
+    { key: 'gamutWarning', label: translateText("Show out-of-gamut areas"), type: 'checkbox' },
     {
       type: 'label',
       className: 'pk-hint',
@@ -163,8 +164,8 @@ export async function showProofSetupDialog(doc = app.activeDoc) {
 
   dialog.setBody(form.node);
   dialog.setButtons([
-    { label: 'Cancel', value: false, subtle: true },
-    { label: 'OK', primary: true, value: true },
+    { label: translateText("Cancel"), value: false, subtle: true },
+    { label: translateText("OK"), primary: true, value: true },
   ]);
   // Show the proof while the dialog is open, whatever it was before.
   apply();

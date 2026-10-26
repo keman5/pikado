@@ -1,3 +1,4 @@
+import { t as translateText } from '/src/i18n/index.js';
 import { suite } from '../harness.js';
 import { developImage, isNeutralDevelop, CAMERA_RAW_DEFAULTS, CAMERA_RAW_BANDS } from '/src/filters/camera-raw.js';
 import { getFilter } from '/src/filters/registry.js';
@@ -89,7 +90,7 @@ suite('camera raw / registers as a filter, so it is also a smart filter', async 
   t.ok(f.needsDialog, 'and a dialog');
 
   const panels = f.params.filter((p) => p.type === 'label').map((p) => p.label);
-  t.eq(panels, ['White Balance', 'Tone', 'Presence', 'Tone Curve', 'Color Mixer', 'Color Grading', 'Detail', 'Effects'],
+  t.eq(panels, ['White Balance', 'Tone', 'Presence', 'Tone Curve', 'Color Mixer', 'Color Grading', 'Detail', 'Effects'].map((label) => translateText(label)),
     'the controls are grouped into the panels Camera Raw uses');
   t.ok(f.params.some((p) => p.key === 'curves'), 'the tone curve editor is one of them');
   t.eq(CAMERA_RAW_BANDS.length, 8, 'the colour mixer has eight bands');

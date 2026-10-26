@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 /**
  * Path Selection (black arrow) and Direct Selection (white arrow).
  *
@@ -62,8 +63,8 @@ class PathSelectTool extends Tool {
       shortcut: 'A', group: 'path-select', groupOrder: 16,
       options: [
         {
-          key: 'show', label: 'Show', type: 'select', default: 'all',
-          options: [{ value: 'all', label: 'All paths' }, { value: 'active', label: 'Active only' }],
+          key: 'show', label: translateText("Show"), type: 'select', default: 'all',
+          options: [{ value: 'all', label: translateText("All paths") }, { value: 'active', label: translateText("Active only") }],
         },
       ],
     });
@@ -231,7 +232,7 @@ class DirectSelectTool extends Tool {
       id: 'direct-select', name: 'Direct Selection Tool', icon: 'direct-select', cursor: 'default',
       shortcut: 'A', group: 'path-select', groupOrder: 16,
       options: [
-        { key: 'showHandles', label: 'Show all handles', type: 'checkbox', default: false },
+        { key: 'showHandles', label: translateText("Show all handles"), type: 'checkbox', default: false },
       ],
     });
     this.app = app;

@@ -1,3 +1,4 @@
+import { t as translateText } from '../../i18n/index.js';
 import './dialogs.css';
 import { app } from '../../core/app.js';
 import { el, createCanvas, formatBytes } from '../../core/util.js';
@@ -24,13 +25,13 @@ const ARROWS = {
 };
 
 const EXTENSION_COLORS = [
-  { value: 'background', label: 'Background' },
-  { value: 'foreground', label: 'Foreground' },
-  { value: 'white', label: 'White' },
-  { value: 'black', label: 'Black' },
+  { value: 'background', label: translateText("Background") },
+  { value: 'foreground', label: translateText("Foreground") },
+  { value: 'white', label: translateText("White") },
+  { value: 'black', label: translateText("Black") },
   { value: 'gray', label: '50% Gray' },
-  { value: 'transparent', label: 'Transparent' },
-  { value: 'custom', label: 'Other...' },
+  { value: 'transparent', label: translateText("Transparent") },
+  { value: 'custom', label: translateText("Other...") },
 ];
 
 function extensionCss(kind, custom) {
@@ -69,7 +70,7 @@ export async function showCanvasSizeDialog(doc = app.activeDoc) {
     custom: '#ffffff',
   };
 
-  const dlg = new Dialog({ title: 'Canvas Size', width: 460, className: 'pkd-canvassize' });
+  const dlg = new Dialog({ title: translateText("Canvas Size"), width: 460, className: 'pkd-canvassize' });
 
   const current = el('div.pkd-readout');
   const widthInput = el('input.pk-input', { type: 'number', step: 1 });
@@ -161,20 +162,20 @@ export async function showCanvasSizeDialog(doc = app.activeDoc) {
     );
   }
 
-  const field = (label, ...nodes) => el('div.pk-field', {}, el('label', { text: label }), ...nodes);
+  const field = (label, ...nodes) => el('div.pk-field', {}, el('label', { text: translateText(label) }), ...nodes);
 
   dlg.setBody(
     el('div.pkd-col', {},
       current,
-      el('div.pkd-section', { text: 'New Size' }),
+      el('div.pkd-section', { text: translateText("New Size") }),
       el('div.pkd-row', {},
         field('Width', widthInput),
         field('Height', heightInput),
-        el('div.pk-field.fixed', {}, el('label', { text: 'Units' }), unitSelect)
+        el('div.pk-field.fixed', {}, el('label', { text: translateText("Units") }), unitSelect)
       ),
-      el('label.pk-check', {}, relativeInput, el('span', { text: 'Relative' })),
+      el('label.pk-check', {}, relativeInput, el('span', { text: translateText("Relative") })),
       el('div.pkd-cols', {},
-        el('div.pk-field', {}, el('label', { text: 'Anchor' }), anchorGrid),
+        el('div.pk-field', {}, el('label', { text: translateText("Anchor") }), anchorGrid),
         el('div.pkd-col.grow', {},
           field('Canvas Extension Color', el('div.pkd-row', {}, extSelect, extSwatch, extPicker)),
           newReadout
@@ -184,8 +185,8 @@ export async function showCanvasSizeDialog(doc = app.activeDoc) {
   );
 
   dlg.setButtons([
-    { label: 'Cancel', value: null, subtle: true },
-    { label: 'OK', primary: true, onClick: (d) => { d.close({ ...state, target: targetSize() }); return false; } },
+    { label: translateText("Cancel"), value: null, subtle: true },
+    { label: translateText("OK"), primary: true, onClick: (d) => { d.close({ ...state, target: targetSize() }); return false; } },
   ]);
 
   sync();
@@ -195,7 +196,7 @@ export async function showCanvasSizeDialog(doc = app.activeDoc) {
   const { w, h } = result.target;
   if (w === origW && h === origH) return null;
 
-  await app.busy('Canvas Size', async () => {
+  await app.busy(translateText("Canvas Size"), async () => {
     doc.resizeCanvasTo(w, h, result.anchor);
 
     const css = extensionCss(result.extension, result.custom);

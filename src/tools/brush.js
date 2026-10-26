@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { Tool, registerTool } from './base.js';
 import { app } from '../core/app.js';
 import { PaintStroke, EffectStroke, brushOptionDescriptors, brushFromOptions } from '../paint/brush-engine.js';
@@ -106,7 +107,7 @@ export function brushContextMenu(tool, extra = []) {
     sep(),
     ...extra,
     sep(),
-    cmd('layer.new', { label: 'New Layer' }),
+    cmd('layer.new', { label: translateText("New Layer") }),
     cmd('edit.fill'),
     sep(),
     cmd('edit.undo'),
@@ -470,7 +471,7 @@ const BLEND_OPTIONS = BLEND_MODES.map((m) => ({ value: m.id, label: m.name }));
 
 /** Insert the blend-mode select right after the tip controls (size/hardness). */
 function withBlendMode(list) {
-  const mode = { key: 'blendMode', label: 'Mode', type: 'select', options: BLEND_OPTIONS, default: 'normal' };
+  const mode = { key: 'blendMode', label: translateText("Mode"), type: 'select', options: BLEND_OPTIONS, default: 'normal' };
   let at = 0;
   while (at < list.length && (list[at].key === 'size' || list[at].key === 'hardness')) at++;
   return [...list.slice(0, at), mode, ...list.slice(at)];
@@ -527,7 +528,7 @@ class PencilTool extends BrushToolBase {
       strokeLabel: 'Pencil',
       options: [
         ...withBlendMode(tweakDefaults(brushOptionDescriptors().filter((d) => d.key !== 'hardness'), { size: 4, smoothing: 0 })),
-        { key: 'autoErase', label: 'Auto Erase', type: 'checkbox', default: false,
+        { key: 'autoErase', label: translateText("Auto Erase"), type: 'checkbox', default: false,
           hint: 'Paint the background colour over foreground-coloured pixels' },
       ],
     });
@@ -569,9 +570,9 @@ registerTool(new PencilTool());
 /* ================================================================== */
 
 const LIMIT_OPTIONS = [
-  { value: 'discontiguous', label: 'Discontiguous' },
-  { value: 'contiguous', label: 'Contiguous' },
-  { value: 'find-edges', label: 'Find Edges' },
+  { value: 'discontiguous', label: translateText("Discontiguous") },
+  { value: 'contiguous', label: translateText("Contiguous") },
+  { value: 'find-edges', label: translateText("Find Edges") },
 ];
 
 /**
@@ -645,21 +646,21 @@ class ColorReplaceTool extends BrushToolBase {
       strokeLabel: 'Color Replacement',
       options: [
         ...tweakDefaults(brushOptionDescriptors({ opacity: false, airbrush: false }), { size: 24 }),
-        { key: 'mode', label: 'Mode', type: 'select', default: 'color',
+        { key: 'mode', label: translateText("Mode"), type: 'select', default: 'color',
           options: [
-            { value: 'hue', label: 'Hue' },
-            { value: 'saturation', label: 'Saturation' },
-            { value: 'color', label: 'Color' },
-            { value: 'luminosity', label: 'Luminosity' },
+            { value: 'hue', label: translateText("Hue") },
+            { value: 'saturation', label: translateText("Saturation") },
+            { value: 'color', label: translateText("Color") },
+            { value: 'luminosity', label: translateText("Luminosity") },
           ] },
-        { key: 'sampling', label: 'Sampling', type: 'select', default: 'continuous',
+        { key: 'sampling', label: translateText("Sampling"), type: 'select', default: 'continuous',
           options: [
-            { value: 'continuous', label: 'Continuous' },
-            { value: 'once', label: 'Once' },
-            { value: 'background', label: 'Background Swatch' },
+            { value: 'continuous', label: translateText("Continuous") },
+            { value: 'once', label: translateText("Once") },
+            { value: 'background', label: translateText("Background Swatch") },
           ] },
-        { key: 'limits', label: 'Limits', type: 'select', options: LIMIT_OPTIONS, default: 'contiguous' },
-        { key: 'tolerance', label: 'Tolerance', type: 'slider', min: 1, max: 100, step: 1, default: 30, unit: '%' },
+        { key: 'limits', label: translateText("Limits"), type: 'select', options: LIMIT_OPTIONS, default: 'contiguous' },
+        { key: 'tolerance', label: translateText("Tolerance"), type: 'slider', min: 1, max: 100, step: 1, default: 30, unit: '%' },
       ],
     });
   }
@@ -730,14 +731,14 @@ class MixerBrushTool extends BrushToolBase {
       strokeLabel: 'Mixer Brush',
       options: [
         ...tweakDefaults(brushOptionDescriptors({ opacity: false, flow: false }), { size: 40, hardness: 60 }),
-        { key: 'wet', label: 'Wet', type: 'slider', min: 0, max: 100, step: 1, default: 60, unit: '%',
+        { key: 'wet', label: translateText("Wet"), type: 'slider', min: 0, max: 100, step: 1, default: 60, unit: '%',
           hint: 'How much canvas colour the brush picks up' },
-        { key: 'load', label: 'Load', type: 'slider', min: 0, max: 100, step: 1, default: 70, unit: '%',
+        { key: 'load', label: translateText("Load"), type: 'slider', min: 0, max: 100, step: 1, default: 70, unit: '%',
           hint: 'How much paint the reservoir lays down' },
-        { key: 'mix', label: 'Mix', type: 'slider', min: 0, max: 100, step: 1, default: 50, unit: '%',
+        { key: 'mix', label: translateText("Mix"), type: 'slider', min: 0, max: 100, step: 1, default: 50, unit: '%',
           hint: 'Ratio of canvas colour to reservoir colour in each dab' },
-        { key: 'flow', label: 'Flow', type: 'slider', min: 1, max: 100, step: 1, default: 100, unit: '%' },
-        { key: 'cleanAfterStroke', label: 'Clean Brush After Stroke', type: 'checkbox', default: true },
+        { key: 'flow', label: translateText("Flow"), type: 'slider', min: 1, max: 100, step: 1, default: 100, unit: '%' },
+        { key: 'cleanAfterStroke', label: translateText("Clean Brush After Stroke"), type: 'checkbox', default: true },
       ],
     });
     /** Colour currently held on the bristles. */
@@ -830,7 +831,7 @@ class MixerBrushTool extends BrushToolBase {
     // "Clean" is the mixer's equivalent of clearing a sampled source: it drops
     // whatever colour the bristles are holding.
     return brushContextMenu(this, [{
-      label: 'Clean Brush',
+      label: translateText("Clean Brush"),
       disabled: !this.reservoir,
       run: () => {
         this.reservoir = null;

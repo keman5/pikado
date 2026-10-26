@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { el } from '../core/util.js';
 import { app } from '../core/app.js';
 import { icon } from './icons.js';
@@ -114,7 +115,7 @@ function syncTitle() {
   if (!bar.title) return;
   const doc = app.activeDoc;
   if (!doc) {
-    bar.title.replaceChildren(el('span.pk-doc-name.empty', { text: 'No document' }));
+    bar.title.replaceChildren(el('span.pk-doc-name.empty', { text: translateText("No document") }));
     return;
   }
   // NB: replaceChildren() is the native DOM API and stringifies null to the
@@ -122,7 +123,7 @@ function syncTitle() {
   bar.title.replaceChildren(...[
     el('span.pk-doc-name', { text: doc.name }),
     el('span.pk-doc-meta', { text: `${doc.width} × ${doc.height}` }),
-    doc.dirty ? el('span.pk-doc-dirty', { text: '●', title: 'Unsaved changes' }) : null,
+    doc.dirty ? el('span.pk-doc-dirty', { text: '●', title: translateText("Unsaved changes") }) : null,
   ].filter(Boolean));
 }
 
@@ -348,9 +349,9 @@ function filterItems() {
     if (!list.length) return;
     seen.add(name);
     out.push({
-      label: name,
+      label: translateText(name),
       children: list.map((f) => ({
-        label: f.name,
+        label: translateText(f.name),
         enabled: hasDoc,
         run: () => applyFilterCommand(f.id),
       })),
@@ -377,7 +378,7 @@ function adjustmentItems() {
   for (const [, list] of groupedAdjustments()) {
     if (out.length) out.push({ type: 'sep' });
     for (const a of list) {
-      out.push({ label: a.name, enabled: hasDoc, run: () => applyAdjustmentCommand(a.id) });
+      out.push({ label: translateText(a.name), enabled: hasDoc, run: () => applyAdjustmentCommand(a.id) });
     }
   }
   return collapseSeparators(out);
@@ -392,7 +393,7 @@ function adjustmentLayerItems() {
     if (out.length) out.push({ type: 'sep' });
     for (const a of layerable) {
       out.push({
-        label: a.name.replace(/\.\.\.$/, ''),
+        label: translateText(a.name).replace(/(\.\.\.|…)$/, ''),
         enabled: hasDoc,
         run: () => {
           if (app.activeDoc) addAdjustmentLayer(app.activeDoc, a.id);
@@ -417,7 +418,7 @@ function toolItems() {
     if (out.length) out.push({ type: 'sep' });
     for (const t of group.tools) {
       out.push({
-        label: t.name,
+        label: translateText(t.name),
         accel: t.shortcut || '',
         checked: app.tool === t,
         run: () => app.setTool(t.id),

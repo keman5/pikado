@@ -1,3 +1,4 @@
+import { t as translateText } from '../../i18n/index.js';
 import './dialogs.css';
 import './generative-fill.css';
 import { el } from '../../core/util.js';
@@ -47,13 +48,13 @@ export async function showGenerativeFillDialog(doc = app.activeDoc) {
   }
   let providerId = lastProviderId || (getProvider('openai') ? 'openai' : providers[0].id);
 
-  const dialog = new Dialog({ title: 'Generative Fill', width: 480, className: 'pk-genfill' });
+  const dialog = new Dialog({ title: translateText("Generative Fill"), width: 480, className: 'pk-genfill' });
   let controller = null;
   let busy = false;
 
   const prompt = el('textarea.pk-input', {
     rows: 3,
-    placeholder: 'Describe what should be there — for example, a stone path leading into trees',
+    placeholder: translateText("Describe what should be there — for example, a stone path leading into trees"),
     spellcheck: 'true',
   });
   prompt.value = lastPrompt;
@@ -70,7 +71,7 @@ export async function showGenerativeFillDialog(doc = app.activeDoc) {
    * value, so they cannot disagree.
    */
   const effortSel = el('select.pk-input');
-  const effortRow = el('div.pk-field', {}, el('label', { text: 'Effort' }), effortSel);
+  const effortRow = el('div.pk-field', {}, el('label', { text: translateText("Effort") }), effortSel);
   effortSel.addEventListener('change', () => {
     const p = getProvider(providerSel.value);
     setEffort(providerSel.value, getModel(p), effortSel.value);
@@ -184,21 +185,21 @@ export async function showGenerativeFillDialog(doc = app.activeDoc) {
   };
 
   const idleButtons = [
-    { label: 'Cancel', value: false, subtle: true },
-    { label: 'Generate', primary: true, onClick: () => { generate(); return false; } },
+    { label: translateText("Cancel"), value: false, subtle: true },
+    { label: translateText("Generate"), primary: true, onClick: () => { generate(); return false; } },
   ];
   const busyButtons = [
-    { label: 'Cancel', primary: true, onClick: () => { if (controller) controller.abort(new DOMException('cancelled', 'AbortError')); return false; } },
+    { label: translateText("Cancel"), primary: true, onClick: () => { if (controller) controller.abort(new DOMException('cancelled', 'AbortError')); return false; } },
   ];
   const keyButtons = [
-    { label: 'Cancel', value: false, subtle: true },
-    { label: 'Change key…', onClick: async () => { await showAiKeyDialog(providerSel.value); syncNote(); return false; } },
-    { label: 'Try again', primary: true, onClick: () => { generate(); return false; } },
+    { label: translateText("Cancel"), value: false, subtle: true },
+    { label: translateText("Change key…"), onClick: async () => { await showAiKeyDialog(providerSel.value); syncNote(); return false; } },
+    { label: translateText("Try again"), primary: true, onClick: () => { generate(); return false; } },
   ];
 
   dialog.setBody(
-    el('div.pk-field', {}, el('label', { text: 'Describe the fill' }), prompt),
-    el('div.pk-field', {}, el('label', { text: 'Provider' }), providerSel),
+    el('div.pk-field', {}, el('label', { text: translateText("Describe the fill") }), prompt),
+    el('div.pk-field', {}, el('label', { text: translateText("Provider") }), providerSel),
     effortRow,
     note,
     bar,

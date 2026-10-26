@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 /**
  * Filter > Pixelate — Color Halftone, Crystallize, Facet, Fragment,
  * Mezzotint, Mosaic and Pointillize.
@@ -19,7 +20,7 @@ registerFilter({
   name: 'Mosaic...',
   menu: 'Pixelate',
   params: [
-    { key: 'cellSize', label: 'Cell Size', type: 'slider', min: 2, max: 200, step: 1, default: 10, unit: 'square' },
+    { key: 'cellSize', label: translateText("Cell Size"), type: 'slider', min: 2, max: 200, step: 1, default: 10, unit: 'square' },
   ],
   apply(imageData, p) {
     const w = imageData.width, h = imageData.height, d = imageData.data;
@@ -77,7 +78,7 @@ registerFilter({
   name: 'Crystallize...',
   menu: 'Pixelate',
   params: [
-    { key: 'cellSize', label: 'Cell Size', type: 'slider', min: 3, max: 300, step: 1, default: 10 },
+    { key: 'cellSize', label: translateText("Cell Size"), type: 'slider', min: 3, max: 300, step: 1, default: 10 },
   ],
   apply(imageData, p) {
     const w = imageData.width, h = imageData.height, d = imageData.data;
@@ -144,7 +145,7 @@ registerFilter({
   name: 'Pointillize...',
   menu: 'Pixelate',
   params: [
-    { key: 'cellSize', label: 'Cell Size', type: 'slider', min: 3, max: 300, step: 1, default: 5 },
+    { key: 'cellSize', label: translateText("Cell Size"), type: 'slider', min: 3, max: 300, step: 1, default: 5 },
   ],
   apply(imageData, p) {
     const w = imageData.width, h = imageData.height, d = imageData.data;
@@ -374,17 +375,17 @@ registerFilter({
   name: 'Mezzotint...',
   menu: 'Pixelate',
   params: [
-    { key: 'type', label: 'Type', type: 'select', default: 'medium-dots', options: [
-      { value: 'fine-dots', label: 'Fine dots' },
-      { value: 'medium-dots', label: 'Medium dots' },
-      { value: 'grainy-dots', label: 'Grainy dots' },
-      { value: 'coarse-dots', label: 'Coarse dots' },
-      { value: 'short-lines', label: 'Short lines' },
-      { value: 'medium-lines', label: 'Medium lines' },
-      { value: 'long-lines', label: 'Long lines' },
-      { value: 'short-strokes', label: 'Short strokes' },
-      { value: 'medium-strokes', label: 'Medium strokes' },
-      { value: 'long-strokes', label: 'Long strokes' },
+    { key: 'type', label: translateText("Type"), type: 'select', default: 'medium-dots', options: [
+      { value: 'fine-dots', label: translateText("Fine dots") },
+      { value: 'medium-dots', label: translateText("Medium dots") },
+      { value: 'grainy-dots', label: translateText("Grainy dots") },
+      { value: 'coarse-dots', label: translateText("Coarse dots") },
+      { value: 'short-lines', label: translateText("Short lines") },
+      { value: 'medium-lines', label: translateText("Medium lines") },
+      { value: 'long-lines', label: translateText("Long lines") },
+      { value: 'short-strokes', label: translateText("Short strokes") },
+      { value: 'medium-strokes', label: translateText("Medium strokes") },
+      { value: 'long-strokes', label: translateText("Long strokes") },
     ] },
   ],
   apply(imageData, p) {
@@ -508,7 +509,7 @@ registerFilter({
   menu: 'Pixelate',
   dialogWidth: 400,
   params: [
-    { key: 'maxRadius', label: 'Max. Radius', type: 'slider', min: 4, max: 127, step: 1, default: 8, unit: 'px' },
+    { key: 'maxRadius', label: translateText("Max. Radius"), type: 'slider', min: 4, max: 127, step: 1, default: 8, unit: 'px' },
     { key: 'angle1', label: 'Channel 1 (Cyan)', type: 'number', min: 0, max: 360, step: 1, default: 108, unit: '°' },
     { key: 'angle2', label: 'Channel 2 (Magenta)', type: 'number', min: 0, max: 360, step: 1, default: 162, unit: '°' },
     { key: 'angle3', label: 'Channel 3 (Yellow)', type: 'number', min: 0, max: 360, step: 1, default: 90, unit: '°' },

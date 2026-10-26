@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { Tool, registerTool } from './base.js';
 import { app } from '../core/app.js';
 import { Selection } from '../core/selection.js';
@@ -187,21 +188,21 @@ class CropTool extends Tool {
       group: 'crop', groupOrder: 4,
       options: [
         {
-          key: 'ratio', label: 'Ratio', type: 'select', default: 'free',
+          key: 'ratio', label: translateText("Ratio"), type: 'select', default: 'free',
           options: [
-            { value: 'free', label: 'Unconstrained' },
-            { value: 'original', label: 'Original Ratio' },
+            { value: 'free', label: translateText("Unconstrained") },
+            { value: 'original', label: translateText("Original Ratio") },
             { value: '1:1', label: '1:1' },
             { value: '4:3', label: '4:3' },
             { value: '16:9', label: '16:9' },
-            { value: 'custom', label: 'Custom' },
+            { value: 'custom', label: translateText("Custom") },
           ],
         },
         { key: 'customW', label: 'W', type: 'number', min: 1, step: 1, default: 4, when: (s) => s.ratio === 'custom' },
         { key: 'customH', label: 'H', type: 'number', min: 1, step: 1, default: 5, when: (s) => s.ratio === 'custom' },
-        { key: 'resolution', label: 'Resolution', type: 'number', min: 1, max: 2400, step: 1, default: 72, unit: 'ppi' },
-        { key: 'straighten', label: 'Straighten', type: 'slider', min: -MAX_STRAIGHTEN, max: MAX_STRAIGHTEN, step: 0.1, default: 0, unit: '°' },
-        { key: 'deleteCropped', label: 'Delete Cropped Pixels', type: 'checkbox', default: true },
+        { key: 'resolution', label: translateText("Resolution"), type: 'number', min: 1, max: 2400, step: 1, default: 72, unit: 'ppi' },
+        { key: 'straighten', label: translateText("Straighten"), type: 'slider', min: -MAX_STRAIGHTEN, max: MAX_STRAIGHTEN, step: 0.1, default: 0, unit: '°' },
+        { key: 'deleteCropped', label: translateText("Delete Cropped Pixels"), type: 'checkbox', default: true },
       ],
     });
     this.app = app;
@@ -586,13 +587,13 @@ class CropTool extends Tool {
       })),
       sep(),
       {
-        label: 'Delete Cropped Pixels',
+        label: translateText("Delete Cropped Pixels"),
         checked: deleteCropped,
         run: () => this.setOption('deleteCropped', !deleteCropped),
       },
       sep(),
-      { label: 'Crop', accel: 'Enter', disabled: !pending, run: () => this.applyCrop() },
-      { label: 'Cancel', accel: 'Esc', disabled: !pending, run: () => this.cancel() },
+      { label: translateText("Crop"), accel: 'Enter', disabled: !pending, run: () => this.applyCrop() },
+      { label: translateText("Cancel"), accel: 'Esc', disabled: !pending, run: () => this.cancel() },
     ];
   }
 
@@ -651,8 +652,8 @@ class PerspectiveCropTool extends Tool {
       id: 'crop-perspective', name: 'Perspective Crop Tool', icon: 'crop-perspective', shortcut: 'C',
       cursor: 'crosshair', group: 'crop', groupOrder: 4,
       options: [
-        { key: 'resolution', label: 'Resolution', type: 'number', min: 1, max: 2400, step: 1, default: 72, unit: 'ppi' },
-        { key: 'showGrid', label: 'Show Grid', type: 'checkbox', default: true },
+        { key: 'resolution', label: translateText("Resolution"), type: 'number', min: 1, max: 2400, step: 1, default: 72, unit: 'ppi' },
+        { key: 'showGrid', label: translateText("Show Grid"), type: 'checkbox', default: true },
       ],
     });
     this.app = app;
@@ -851,10 +852,10 @@ class PerspectiveCropTool extends Tool {
   contextMenu() {
     const grid = this.state.showGrid !== false;
     return [
-      { label: 'Perspective Crop', accel: 'Enter', disabled: !this.quad, run: () => this.apply() },
-      { label: 'Cancel', accel: 'Esc', disabled: !this.quad, run: () => this.cancel() },
+      { label: translateText("Perspective Crop"), accel: 'Enter', disabled: !this.quad, run: () => this.apply() },
+      { label: translateText("Cancel"), accel: 'Esc', disabled: !this.quad, run: () => this.cancel() },
       sep(),
-      { label: 'Show Grid', checked: grid, run: () => this.setOption('showGrid', !grid) },
+      { label: translateText("Show Grid"), checked: grid, run: () => this.setOption('showGrid', !grid) },
     ];
   }
 
@@ -884,9 +885,9 @@ class SliceTool extends Tool {
       id: 'slice', name: 'Slice Tool', icon: 'slice', cursor: 'crosshair', shortcut: 'C',
       group: 'crop', groupOrder: 4,
       options: [
-        { key: 'namePrefix', label: 'Name', type: 'text', default: 'Slice' },
+        { key: 'namePrefix', label: translateText("Name"), type: 'text', default: 'Slice' },
         {
-          type: 'button', label: 'Clear All',
+          type: 'button', label: translateText("Clear All"),
           onClick: () => {
             const doc = app.activeDoc;
             if (!doc) return;
@@ -1013,7 +1014,7 @@ class SliceTool extends Tool {
       });
     }
     items.push({
-      label: 'Delete All Slices',
+      label: translateText("Delete All Slices"),
       disabled: !count,
       run: () => {
         doc.slices = [];

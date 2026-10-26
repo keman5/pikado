@@ -1,3 +1,4 @@
+import { t as translateText } from '../../i18n/index.js';
 import './dialogs.css';
 import { app } from '../../core/app.js';
 import { el, createCanvas, formatBytes, download, debounce } from '../../core/util.js';
@@ -151,7 +152,7 @@ export async function showExportDialog(doc = app.activeDoc) {
     filename: baseName(doc),
   };
 
-  const dlg = new Dialog({ title: 'Export As', width: 620, className: 'pkd-export' });
+  const dlg = new Dialog({ title: translateText("Export As"), width: 620, className: 'pkd-export' });
 
   const source = compositeDocument(doc);
 
@@ -170,11 +171,11 @@ export async function showExportDialog(doc = app.activeDoc) {
   });
   const qualityRange = el('input.pk-range', { type: 'range', min: 1, max: 100, step: 1, value: state.quality });
   const qualityNum = el('input.pk-num', { type: 'number', min: 1, max: 100, step: 1, value: state.quality });
-  const qualityRow = el('div.pk-field', {}, el('label', { text: 'Quality' }), el('div.pk-slider-row', {}, qualityRange, qualityNum));
+  const qualityRow = el('div.pk-field', {}, el('label', { text: translateText("Quality") }), el('div.pk-slider-row', {}, qualityRange, qualityNum));
   const scaleBtns = el('div.pkd-size-btns');
   const customScale = el('input.pk-input', { type: 'number', min: 0.05, max: 8, step: 0.05, value: 1, style: { width: '74px' } });
   const transparentInput = el('input', { type: 'checkbox', checked: true });
-  const transparentRow = el('label.pk-check', {}, transparentInput, el('span', { text: 'Transparency' }));
+  const transparentRow = el('label.pk-check', {}, transparentInput, el('span', { text: translateText("Transparency") }));
   const allLayersInput = el('input', { type: 'checkbox' });
   const nameInput = el('input.pk-input', { type: 'text', value: state.filename });
 
@@ -288,9 +289,9 @@ export async function showExportDialog(doc = app.activeDoc) {
     estimate();
   }
 
-  const field = (label, ...nodes) => el('div.pk-field', {}, el('label', { text: label }), ...nodes);
+  const field = (label, ...nodes) => el('div.pk-field', {}, el('label', { text: translateText(label) }), ...nodes);
   const sizeRow = field('Size', el('div.pkd-row', {}, scaleBtns, customScale, el('span.pk-unit', { text: '×' })));
-  const allLayersRow = el('label.pk-check', {}, allLayersInput, el('span', { text: 'Export all layers as separate files' }));
+  const allLayersRow = el('label.pk-check', {}, allLayersInput, el('span', { text: translateText("Export all layers as separate files") }));
 
   dlg.setBody(
     el('div.pkd-cols', {},
@@ -302,22 +303,22 @@ export async function showExportDialog(doc = app.activeDoc) {
         sizeRow,
         transparentRow,
         allLayersRow,
-        el('div.pkd-note', { text: 'GIF is written with a 256-colour median-cut palette. SVG embeds the rendered raster.' }),
+        el('div.pkd-note', { text: translateText("GIF is written with a 256-colour median-cut palette. SVG embeds the rendered raster.") }),
         heicNote
       )
     )
   );
 
   dlg.setButtons([
-    { label: 'Cancel', value: null, subtle: true },
-    { label: 'Export', primary: true, onClick: (d) => { d.close({ ...state }); return false; } },
+    { label: translateText("Cancel"), value: null, subtle: true },
+    { label: translateText("Export"), primary: true, onClick: (d) => { d.close({ ...state }); return false; } },
   ]);
 
   sync();
   const result = await dlg.open();
   if (!result) return null;
 
-  await app.busy('Exporting', async () => {
+  await app.busy(translateText("Exporting"), async () => {
     const opts = {
       format: result.format,
       quality: result.quality,
@@ -326,7 +327,7 @@ export async function showExportDialog(doc = app.activeDoc) {
       filename: result.filename || baseName(doc),
     };
     const ok = result.allLayers ? await runExportLayers(doc, opts) : await runExport(doc, opts);
-    app.toast(ok ? 'Export finished.' : 'Nothing was exported.', ok ? 'ok' : 'warn');
+    app.toast(ok ? translateText("Export finished.") : translateText("Nothing was exported."), ok ? 'ok' : 'warn');
   });
   return result;
 }

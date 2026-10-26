@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import '../ui/dialogs/dialogs.css';
 import { app } from '../core/app.js';
 import { createCanvas, cloneCanvas, el, clamp, clamp255, deg2rad, uid } from '../core/util.js';
@@ -96,20 +97,20 @@ const BAYER8 = [
 /** Image > Mode > Bitmap — flattens to a single 1-bit layer. */
 export async function convertToBitmap(doc) {
   const opts = await paramDialog({
-    title: 'Bitmap',
+    title: translateText("Bitmap"),
     width: 380,
     preview: false,
     state: { method: 'threshold', threshold: 128 },
     params: [
       {
-        key: 'method', label: 'Method', type: 'select',
+        key: 'method', label: translateText("Method"), type: 'select',
         options: [
           { value: 'threshold', label: '50% Threshold' },
-          { value: 'pattern', label: 'Pattern Dither' },
-          { value: 'diffusion', label: 'Diffusion Dither' },
+          { value: 'pattern', label: translateText("Pattern Dither") },
+          { value: 'diffusion', label: translateText("Diffusion Dither") },
         ],
       },
-      { key: 'threshold', label: 'Threshold', type: 'slider', min: 1, max: 254, step: 1, when: (s) => s.method === 'threshold' },
+      { key: 'threshold', label: translateText("Threshold"), type: 'slider', min: 1, max: 254, step: 1, when: (s) => s.method === 'threshold' },
       { type: 'label', label: 'Bitmap mode flattens the document to a single black-and-white layer.' },
     ],
   });
@@ -456,8 +457,8 @@ export async function showFadeDialog(doc) {
     width: 380,
     state: { opacity: 100, blendMode: 'normal' },
     params: [
-      { key: 'opacity', label: 'Opacity', type: 'slider', min: 0, max: 100, step: 1, unit: '%' },
-      { key: 'blendMode', label: 'Mode', type: 'select', options: BLEND_OPTIONS },
+      { key: 'opacity', label: translateText("Opacity"), type: 'slider', min: 0, max: 100, step: 1, unit: '%' },
+      { key: 'blendMode', label: translateText("Mode"), type: 'select', options: BLEND_OPTIONS },
     ],
     onPreview: (s) => {
       setLayerPreview(layer.id, s ? build(s) : null);
@@ -480,16 +481,16 @@ export async function showFadeDialog(doc) {
 
 const CHANNELS = [
   { value: 'rgb', label: 'RGB' },
-  { value: 'red', label: 'Red' },
-  { value: 'green', label: 'Green' },
-  { value: 'blue', label: 'Blue' },
-  { value: 'gray', label: 'Gray' },
-  { value: 'alpha', label: 'Transparency' },
+  { value: 'red', label: translateText("Red") },
+  { value: 'green', label: translateText("Green") },
+  { value: 'blue', label: translateText("Blue") },
+  { value: 'gray', label: translateText("Gray") },
+  { value: 'alpha', label: translateText("Transparency") },
 ];
 
 function layerOptions(doc, extra = []) {
   return [
-    { value: '__merged__', label: 'Merged' },
+    { value: '__merged__', label: translateText("Merged") },
     ...extra,
     ...doc.flatLayers().filter((l) => l.canvas || l.type === LayerType.GROUP).map((l) => ({ value: l.id, label: l.name })),
   ];
@@ -550,7 +551,7 @@ export async function showApplyImageDialog(doc) {
   };
 
   const result = await paramDialog({
-    title: 'Apply Image',
+    title: translateText("Apply Image"),
     width: 420,
     state: {
       source: '__merged__', channel: 'rgb', invert: false,
@@ -558,14 +559,14 @@ export async function showApplyImageDialog(doc) {
       preserveTransparency: true, useSelection: doc.selection.active,
     },
     params: [
-      { key: 'source', label: 'Source Layer', type: 'select', options: layerOptions(doc) },
-      { key: 'channel', label: 'Channel', type: 'select', options: CHANNELS },
-      { key: 'invert', label: 'Invert', type: 'checkbox' },
+      { key: 'source', label: translateText("Source Layer"), type: 'select', options: layerOptions(doc) },
+      { key: 'channel', label: translateText("Channel"), type: 'select', options: CHANNELS },
+      { key: 'invert', label: translateText("Invert"), type: 'checkbox' },
       { type: 'separator' },
-      { key: 'blendMode', label: 'Blending', type: 'select', options: BLEND_OPTIONS },
-      { key: 'opacity', label: 'Opacity', type: 'slider', min: 0, max: 100, step: 1, unit: '%' },
-      { key: 'preserveTransparency', label: 'Preserve Transparency', type: 'checkbox' },
-      { key: 'useSelection', label: 'Limit to Selection', type: 'checkbox' },
+      { key: 'blendMode', label: translateText("Blending"), type: 'select', options: BLEND_OPTIONS },
+      { key: 'opacity', label: translateText("Opacity"), type: 'slider', min: 0, max: 100, step: 1, unit: '%' },
+      { key: 'preserveTransparency', label: translateText("Preserve Transparency"), type: 'checkbox' },
+      { key: 'useSelection', label: translateText("Limit to Selection"), type: 'checkbox' },
     ],
     onPreview: (s) => {
       setLayerPreview(target.id, s ? build(s) : null);
@@ -606,7 +607,7 @@ export async function showCalculationsDialog(doc) {
   };
 
   const result = await paramDialog({
-    title: 'Calculations',
+    title: translateText("Calculations"),
     width: 430,
     preview: false,
     state: {
@@ -615,24 +616,24 @@ export async function showCalculationsDialog(doc) {
       blendMode: 'multiply', opacity: 100, output: 'channel',
     },
     params: [
-      { type: 'label', label: 'Source 1' },
-      { key: 'source1', label: 'Layer', type: 'select', options: layerOptions(doc) },
-      { key: 'channel1', label: 'Channel', type: 'select', options: CHANNELS },
-      { key: 'invert1', label: 'Invert', type: 'checkbox' },
+      { type: 'label', label: translateText("Source 1") },
+      { key: 'source1', label: translateText("Layer"), type: 'select', options: layerOptions(doc) },
+      { key: 'channel1', label: translateText("Channel"), type: 'select', options: CHANNELS },
+      { key: 'invert1', label: translateText("Invert"), type: 'checkbox' },
       { type: 'separator' },
-      { type: 'label', label: 'Source 2' },
-      { key: 'source2', label: 'Layer', type: 'select', options: layerOptions(doc) },
-      { key: 'channel2', label: 'Channel', type: 'select', options: CHANNELS },
-      { key: 'invert2', label: 'Invert', type: 'checkbox' },
+      { type: 'label', label: translateText("Source 2") },
+      { key: 'source2', label: translateText("Layer"), type: 'select', options: layerOptions(doc) },
+      { key: 'channel2', label: translateText("Channel"), type: 'select', options: CHANNELS },
+      { key: 'invert2', label: translateText("Invert"), type: 'checkbox' },
       { type: 'separator' },
-      { key: 'blendMode', label: 'Blending', type: 'select', options: BLEND_OPTIONS },
-      { key: 'opacity', label: 'Opacity', type: 'slider', min: 0, max: 100, step: 1, unit: '%' },
+      { key: 'blendMode', label: translateText("Blending"), type: 'select', options: BLEND_OPTIONS },
+      { key: 'opacity', label: translateText("Opacity"), type: 'slider', min: 0, max: 100, step: 1, unit: '%' },
       {
-        key: 'output', label: 'Result', type: 'select',
+        key: 'output', label: translateText("Result"), type: 'select',
         options: [
-          { value: 'channel', label: 'New Channel' },
-          { value: 'selection', label: 'Selection' },
-          { value: 'document', label: 'New Document' },
+          { value: 'channel', label: translateText("New Channel") },
+          { value: 'selection', label: translateText("Selection") },
+          { value: 'document', label: translateText("New Document") },
         ],
       },
     ],
@@ -674,16 +675,16 @@ export async function showCalculationsDialog(doc) {
 /* ------------------------------------------------------------------ */
 
 const RANGE_KINDS = [
-  { value: 'sampled', label: 'Sampled Colors' },
-  { value: 'reds', label: 'Reds' },
-  { value: 'yellows', label: 'Yellows' },
-  { value: 'greens', label: 'Greens' },
-  { value: 'cyans', label: 'Cyans' },
-  { value: 'blues', label: 'Blues' },
-  { value: 'magentas', label: 'Magentas' },
-  { value: 'highlights', label: 'Highlights' },
-  { value: 'midtones', label: 'Midtones' },
-  { value: 'shadows', label: 'Shadows' },
+  { value: 'sampled', label: translateText("Sampled Colors") },
+  { value: 'reds', label: translateText("Reds") },
+  { value: 'yellows', label: translateText("Yellows") },
+  { value: 'greens', label: translateText("Greens") },
+  { value: 'cyans', label: translateText("Cyans") },
+  { value: 'blues', label: translateText("Blues") },
+  { value: 'magentas', label: translateText("Magentas") },
+  { value: 'highlights', label: translateText("Highlights") },
+  { value: 'midtones', label: translateText("Midtones") },
+  { value: 'shadows', label: translateText("Shadows") },
 ];
 
 const HUE_CENTRES = { reds: 0, yellows: 60, greens: 120, cyans: 180, blues: 240, magentas: 300 };
@@ -769,7 +770,7 @@ export async function showColorRangeDialog(doc) {
     samples: [{ r: 128, g: 128, b: 128, x: null, y: null }],
   };
 
-  const dlg = new Dialog({ title: 'Color Range', width: 520, className: 'pkd-colorrange' });
+  const dlg = new Dialog({ title: translateText("Color Range"), width: 520, className: 'pkd-colorrange' });
 
   const kindSelect = el('select.pk-select', {}, ...RANGE_KINDS.map((k) => el('option', { value: k.value, text: k.label })));
   const fuzzRange = el('input.pk-range', { type: 'range', min: 0, max: 200, step: 1, value: state.fuzziness });
@@ -777,11 +778,11 @@ export async function showColorRangeDialog(doc) {
   const localizedInput = el('input', { type: 'checkbox' });
   const rangeRow = el('div.pk-field');
   const rangeInput = el('input.pk-range', { type: 'range', min: 1, max: 100, step: 1, value: state.range });
-  rangeRow.append(el('label', { text: 'Range' }), rangeInput);
+  rangeRow.append(el('label', { text: translateText("Range") }), rangeInput);
   const invertInput = el('input', { type: 'checkbox' });
   const showSelect = el('select.pk-select', {},
-    el('option', { value: 'selection', text: 'Selection' }),
-    el('option', { value: 'image', text: 'Image' }));
+    el('option', { value: 'selection', text: translateText("Selection") }),
+    el('option', { value: 'image', text: translateText("Image") }));
   const swatchRow = el('div.pkd-row');
   const previewBox = el('div.pkd-preview', { style: { height: `${Math.min(260, ph)}px`, cursor: 'crosshair' } });
   const previewCanvas = el('canvas', { width: pw, height: ph });
@@ -889,12 +890,12 @@ export async function showColorRangeDialog(doc) {
   dlg.setBody(
     el('div.pkd-cols', {},
       el('div.pkd-col.grow', {},
-        el('div.pk-field', {}, el('label', { text: 'Select' }), kindSelect),
-        el('div.pk-field', {}, el('label', { text: 'Fuzziness' }), el('div.pk-slider-row', {}, fuzzRange, fuzzNum)),
-        el('label.pk-check', {}, localizedInput, el('span', { text: 'Localized Color Clusters' })),
+        el('div.pk-field', {}, el('label', { text: translateText("Select") }), kindSelect),
+        el('div.pk-field', {}, el('label', { text: translateText("Fuzziness") }), el('div.pk-slider-row', {}, fuzzRange, fuzzNum)),
+        el('label.pk-check', {}, localizedInput, el('span', { text: translateText("Localized Color Clusters") })),
         rangeRow,
-        el('label.pk-check', {}, invertInput, el('span', { text: 'Invert' })),
-        el('div.pk-field', {}, el('label', { text: 'Selection Preview' }), showSelect),
+        el('label.pk-check', {}, invertInput, el('span', { text: translateText("Invert") })),
+        el('div.pk-field', {}, el('label', { text: translateText("Selection Preview") }), showSelect),
         swatchRow,
         hint
       ),
@@ -903,15 +904,15 @@ export async function showColorRangeDialog(doc) {
   );
 
   dlg.setButtons([
-    { label: 'Cancel', value: null, subtle: true },
-    { label: 'OK', primary: true, onClick: (d) => { d.close({ ...currentOpts(), samples: [...state.samples] }); return false; } },
+    { label: translateText("Cancel"), value: null, subtle: true },
+    { label: translateText("OK"), primary: true, onClick: (d) => { d.close({ ...currentOpts(), samples: [...state.samples] }); return false; } },
   ]);
 
   refresh();
   const result = await dlg.open();
   if (!result) return;
 
-  await app.busy('Color Range', async () => {
+  await app.busy(translateText("Color Range"), async () => {
     const mask = colorRangeMask(full, result);
     let any = false;
     for (let i = 0; i < mask.length; i++) if (mask[i] !== 0) { any = true; break; }
@@ -985,17 +986,17 @@ export function printDocument(doc) {
 /** Image > Trim… — asks which edges/colour to trim, then crops. */
 export async function showTrimDialog(doc, trimFn) {
   const result = await paramDialog({
-    title: 'Trim',
+    title: translateText("Trim"),
     width: 340,
     preview: false,
     state: { mode: 'transparent' },
     params: [
       {
-        key: 'mode', label: 'Based On', type: 'radio',
+        key: 'mode', label: translateText("Based On"), type: 'radio',
         options: [
-          { value: 'transparent', label: 'Transparent Pixels' },
-          { value: 'top-left', label: 'Top Left Pixel Color' },
-          { value: 'bottom-right', label: 'Bottom Right Pixel Color' },
+          { value: 'transparent', label: translateText("Transparent Pixels") },
+          { value: 'top-left', label: translateText("Top Left Pixel Color") },
+          { value: 'bottom-right', label: translateText("Bottom Right Pixel Color") },
         ],
       },
     ],
@@ -1007,24 +1008,24 @@ export async function showTrimDialog(doc, trimFn) {
 /** Image > Image Rotation > Arbitrary… */
 export async function showArbitraryRotationDialog(doc) {
   const result = await paramDialog({
-    title: 'Rotate Canvas',
+    title: translateText("Rotate Canvas"),
     width: 340,
     preview: false,
     state: { angle: 15, direction: 'cw' },
     params: [
-      { key: 'angle', label: 'Angle', type: 'slider', min: 0, max: 359.9, step: 0.1, unit: '°' },
+      { key: 'angle', label: translateText("Angle"), type: 'slider', min: 0, max: 359.9, step: 0.1, unit: '°' },
       {
-        key: 'direction', label: 'Direction', type: 'radio',
+        key: 'direction', label: translateText("Direction"), type: 'radio',
         options: [{ value: 'cw', label: '°CW' }, { value: 'ccw', label: '°CCW' }],
       },
     ],
   });
   if (!result || !result.angle) return;
   const deg = result.direction === 'ccw' ? -result.angle : result.angle;
-  await app.busy('Rotate Canvas', async () => rotateDocumentArbitrary(doc, deg));
+  await app.busy(translateText("Rotate Canvas"), async () => rotateDocumentArbitrary(doc, deg));
 }
 
 /** Confirmation used before destructive mode changes. */
 export function confirmFlatten(message) {
-  return confirmDialog(message, 'Change Mode', 'Flatten');
+  return confirmDialog(message, 'Change Mode', translateText("Flatten"));
 }

@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 /**
  * The type tools: horizontal type, vertical type and the type mask.
  *
@@ -31,25 +32,25 @@ import {
 import './type.css';
 
 const ANTIALIAS_OPTIONS = [
-  { value: 'none', label: 'None' },
-  { value: 'sharp', label: 'Sharp' },
-  { value: 'crisp', label: 'Crisp' },
-  { value: 'strong', label: 'Strong' },
-  { value: 'smooth', label: 'Smooth' },
+  { value: 'none', label: translateText("None") },
+  { value: 'sharp', label: translateText("Sharp") },
+  { value: 'crisp', label: translateText("Crisp") },
+  { value: 'strong', label: translateText("Strong") },
+  { value: 'smooth', label: translateText("Smooth") },
 ];
 
 const ALIGN_OPTIONS = [
-  { value: 'left', label: 'Left' },
-  { value: 'center', label: 'Center' },
-  { value: 'right', label: 'Right' },
-  { value: 'justify', label: 'Justify' },
+  { value: 'left', label: translateText("Left") },
+  { value: 'center', label: translateText("Center") },
+  { value: 'right', label: translateText("Right") },
+  { value: 'justify', label: translateText("Justify") },
 ];
 
 const SELECTION_MODES = [
-  { value: 'replace', label: 'New' },
-  { value: 'add', label: 'Add' },
-  { value: 'subtract', label: 'Subtract' },
-  { value: 'intersect', label: 'Intersect' },
+  { value: 'replace', label: translateText("New") },
+  { value: 'add', label: translateText("Add") },
+  { value: 'subtract', label: translateText("Subtract") },
+  { value: 'intersect', label: translateText("Intersect") },
 ];
 
 function cssColor(c) {
@@ -381,14 +382,14 @@ async function openWarpDialog() {
 
   const notNone = (s) => s.style !== 'none';
   const result = await paramDialog({
-    title: 'Warp Text',
+    title: translateText("Warp Text"),
     width: 360,
     state,
     params: [
-      { key: 'style', label: 'Style', type: 'select', options: WARP_STYLES },
-      { key: 'bend', label: 'Bend', type: 'slider', min: -100, max: 100, step: 1, unit: '%', when: notNone },
-      { key: 'h', label: 'Horizontal Distortion', type: 'slider', min: -100, max: 100, step: 1, unit: '%', when: notNone },
-      { key: 'v', label: 'Vertical Distortion', type: 'slider', min: -100, max: 100, step: 1, unit: '%', when: notNone },
+      { key: 'style', label: translateText("Style"), type: 'select', options: WARP_STYLES },
+      { key: 'bend', label: translateText("Bend"), type: 'slider', min: -100, max: 100, step: 1, unit: '%', when: notNone },
+      { key: 'h', label: translateText("Horizontal Distortion"), type: 'slider', min: -100, max: 100, step: 1, unit: '%', when: notNone },
+      { key: 'v', label: translateText("Vertical Distortion"), type: 'slider', min: -100, max: 100, step: 1, unit: '%', when: notNone },
     ],
     onPreview: (s) => apply(s),
   });
@@ -468,18 +469,18 @@ class TypeToolBase extends Tool {
       groupOrder: 15,
       ...opts,
       options: [
-        { key: 'font', label: 'Font', type: 'select', options: () => fontOptions(app.tool && app.tool.state ? app.tool.state.font : ''), default: 'system' },
-        { key: 'size', label: 'Size', type: 'number', min: 1, max: 1600, step: 1, default: 48, unit: 'px' },
-        { key: 'weight', label: 'Weight', type: 'select', options: FONT_WEIGHTS, default: 400 },
-        { key: 'italic', label: 'Italic', type: 'checkbox', default: false },
-        { key: 'color', label: 'Color', type: 'color', default: '#000000' },
-        { key: 'align', label: 'Align', type: 'radio', options: ALIGN_OPTIONS, default: 'left' },
-        { key: 'lineHeight', label: 'Leading', type: 'number', min: 0, max: 20, step: 0.05, default: 1.2, hint: 'Multiple of the type size (0 = automatic)' },
-        { key: 'letterSpacing', label: 'Tracking', type: 'number', min: -200, max: 400, step: 0.5, default: 0, unit: 'px' },
-        { key: 'underline', label: 'Underline', type: 'checkbox', default: false },
-        { key: 'antialias', label: 'Anti-alias', type: 'select', options: ANTIALIAS_OPTIONS, default: 'smooth' },
+        { key: 'font', label: translateText("Font"), type: 'select', options: () => fontOptions(app.tool && app.tool.state ? app.tool.state.font : ''), default: 'system' },
+        { key: 'size', label: translateText("Size"), type: 'number', min: 1, max: 1600, step: 1, default: 48, unit: 'px' },
+        { key: 'weight', label: translateText("Weight"), type: 'select', options: FONT_WEIGHTS, default: 400 },
+        { key: 'italic', label: translateText("Italic"), type: 'checkbox', default: false },
+        { key: 'color', label: translateText("Color"), type: 'color', default: '#000000' },
+        { key: 'align', label: translateText("Align"), type: 'radio', options: ALIGN_OPTIONS, default: 'left' },
+        { key: 'lineHeight', label: translateText("Leading"), type: 'number', min: 0, max: 20, step: 0.05, default: 1.2, hint: 'Multiple of the type size (0 = automatic)' },
+        { key: 'letterSpacing', label: translateText("Tracking"), type: 'number', min: -200, max: 400, step: 0.5, default: 0, unit: 'px' },
+        { key: 'underline', label: translateText("Underline"), type: 'checkbox', default: false },
+        { key: 'antialias', label: translateText("Anti-alias"), type: 'select', options: ANTIALIAS_OPTIONS, default: 'smooth' },
         ...extra,
-        { key: '_warp', label: 'Warp…', type: 'button', onClick: () => openWarpDialog() },
+        { key: '_warp', label: translateText("Warp…"), type: 'button', onClick: () => openWarpDialog() },
       ],
     });
     this.app = app;
@@ -690,7 +691,7 @@ class TypeToolBase extends Tool {
     // than showing rows that would silently act on a different layer.
     const hit = this.mask ? null : hitTextLayer(doc, e.x, e.y, this.tol());
     if (hit && hit !== currentTextLayer(doc)) {
-      items.push({ label: 'Edit Type Layer', run: () => editTextLayer(doc, hit) });
+      items.push({ label: translateText("Edit Type Layer"), run: () => editTextLayer(doc, hit) });
       items.push(sep());
     }
 
@@ -711,12 +712,12 @@ class TypeToolBase extends Tool {
     if (node) {
       items.push(sep());
       items.push({
-        label: 'Select All',
+        label: translateText("Select All"),
         accel: formatAccel('Ctrl+A'),
         run: () => { node.focus({ preventScroll: true }); node.select(); },
       });
       items.push({
-        label: 'Paste',
+        label: translateText("Paste"),
         accel: formatAccel('Ctrl+V'),
         run: () => { pasteIntoEditor(node); },
       });
@@ -803,7 +804,7 @@ class TypeMaskTool extends TypeToolBase {
       icon: 'type-mask',
       mask: true,
       extraOptions: [
-        { key: 'mode', label: 'Selection', type: 'radio', options: SELECTION_MODES, default: 'replace' },
+        { key: 'mode', label: translateText("Selection"), type: 'radio', options: SELECTION_MODES, default: 'replace' },
       ],
     });
   }

@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 /**
  * Vector shape tools: rectangle, rounded rectangle, ellipse, polygon/star,
  * line and custom shape.
@@ -329,11 +330,11 @@ class ShapeToolBase extends VectorTool {
     const row = (id, over) => layerRow(doc, layer, id, over);
     return [
       doc.activeLayer() === layer ? null : { header: layer.name },
-      row('layer.rasterize.shape', { label: 'Rasterize Layer' }),
+      row('layer.rasterize.shape', { label: translateText("Rasterize Layer") }),
       row('layer.style.options'),
       sep(),
       row('layer.duplicate'),
-      row('layer.delete', { label: 'Delete Layer' }),
+      row('layer.delete', { label: translateText("Delete Layer") }),
       sep(),
       row('layer.arrange.front'),
       row('layer.arrange.back'),
@@ -353,7 +354,7 @@ class ShapeToolBase extends VectorTool {
 class RectangleTool extends ShapeToolBase {
   constructor() {
     super({
-      id: 'rectangle', name: 'Rectangle Tool', label: 'Rectangle', icon: 'rectangle',
+      id: 'rectangle', name: 'Rectangle Tool', label: translateText("Rectangle"), icon: 'rectangle',
       options: [modeOption('shape'), ...vectorStyleOptions()],
     });
   }
@@ -368,16 +369,16 @@ class RectangleTool extends ShapeToolBase {
 class RoundedRectTool extends ShapeToolBase {
   constructor() {
     super({
-      id: 'rounded-rect', name: 'Rounded Rectangle Tool', label: 'Rounded Rectangle', icon: 'rounded-rect',
+      id: 'rounded-rect', name: 'Rounded Rectangle Tool', label: translateText("Rounded Rectangle"), icon: 'rounded-rect',
       options: [
         modeOption('shape'),
         ...vectorStyleOptions(),
-        { key: 'radius', label: 'Radius', type: 'number', min: 0, max: 2000, step: 1, default: 12, unit: 'px' },
-        { key: 'independentCorners', label: 'Independent corners', type: 'checkbox', default: false },
-        { key: 'radiusTL', label: 'Top left', type: 'number', min: 0, max: 2000, default: 12, unit: 'px', when: (s) => s.independentCorners },
-        { key: 'radiusTR', label: 'Top right', type: 'number', min: 0, max: 2000, default: 12, unit: 'px', when: (s) => s.independentCorners },
-        { key: 'radiusBR', label: 'Bottom right', type: 'number', min: 0, max: 2000, default: 12, unit: 'px', when: (s) => s.independentCorners },
-        { key: 'radiusBL', label: 'Bottom left', type: 'number', min: 0, max: 2000, default: 12, unit: 'px', when: (s) => s.independentCorners },
+        { key: 'radius', label: translateText("Radius"), type: 'number', min: 0, max: 2000, step: 1, default: 12, unit: 'px' },
+        { key: 'independentCorners', label: translateText("Independent corners"), type: 'checkbox', default: false },
+        { key: 'radiusTL', label: translateText("Top left"), type: 'number', min: 0, max: 2000, default: 12, unit: 'px', when: (s) => s.independentCorners },
+        { key: 'radiusTR', label: translateText("Top right"), type: 'number', min: 0, max: 2000, default: 12, unit: 'px', when: (s) => s.independentCorners },
+        { key: 'radiusBR', label: translateText("Bottom right"), type: 'number', min: 0, max: 2000, default: 12, unit: 'px', when: (s) => s.independentCorners },
+        { key: 'radiusBL', label: translateText("Bottom left"), type: 'number', min: 0, max: 2000, default: 12, unit: 'px', when: (s) => s.independentCorners },
       ],
     });
   }
@@ -405,7 +406,7 @@ class RoundedRectTool extends ShapeToolBase {
 class EllipseTool extends ShapeToolBase {
   constructor() {
     super({
-      id: 'ellipse', name: 'Ellipse Tool', label: 'Ellipse', icon: 'ellipse',
+      id: 'ellipse', name: 'Ellipse Tool', label: translateText("Ellipse"), icon: 'ellipse',
       options: [modeOption('shape'), ...vectorStyleOptions()],
     });
   }
@@ -420,14 +421,14 @@ class EllipseTool extends ShapeToolBase {
 class PolygonTool extends ShapeToolBase {
   constructor() {
     super({
-      id: 'polygon', name: 'Polygon Tool', label: 'Polygon', icon: 'polygon',
+      id: 'polygon', name: 'Polygon Tool', label: translateText("Polygon"), icon: 'polygon',
       options: [
         modeOption('shape'),
         ...vectorStyleOptions(),
-        { key: 'sides', label: 'Sides', type: 'number', min: 3, max: 100, step: 1, default: 5 },
-        { key: 'star', label: 'Star', type: 'checkbox', default: false },
-        { key: 'indent', label: 'Indent sides by', type: 'slider', min: 1, max: 99, step: 1, default: 50, unit: '%', when: (s) => s.star },
-        { key: 'smoothCorners', label: 'Smooth corners', type: 'checkbox', default: false },
+        { key: 'sides', label: translateText("Sides"), type: 'number', min: 3, max: 100, step: 1, default: 5 },
+        { key: 'star', label: translateText("Star"), type: 'checkbox', default: false },
+        { key: 'indent', label: translateText("Indent sides by"), type: 'slider', min: 1, max: 99, step: 1, default: 50, unit: '%', when: (s) => s.star },
+        { key: 'smoothCorners', label: translateText("Smooth corners"), type: 'checkbox', default: false },
       ],
     });
   }
@@ -464,16 +465,16 @@ class PolygonTool extends ShapeToolBase {
 class LineTool extends ShapeToolBase {
   constructor() {
     super({
-      id: 'line', name: 'Line Tool', label: 'Line', icon: 'line',
+      id: 'line', name: 'Line Tool', label: translateText("Line"), icon: 'line',
       options: [
         modeOption('shape'),
         ...vectorStyleOptions(),
-        { key: 'weight', label: 'Weight', type: 'number', min: 0.25, max: 400, step: 0.25, default: 3, unit: 'px' },
-        { key: 'arrowStart', label: 'Arrow at start', type: 'checkbox', default: false },
-        { key: 'arrowEnd', label: 'Arrow at end', type: 'checkbox', default: false },
-        { key: 'arrowWidth', label: 'Arrow width', type: 'slider', min: 10, max: 1000, step: 10, default: 500, unit: '%', when: (s) => s.arrowStart || s.arrowEnd },
-        { key: 'arrowLength', label: 'Arrow length', type: 'slider', min: 10, max: 5000, step: 10, default: 1000, unit: '%', when: (s) => s.arrowStart || s.arrowEnd },
-        { key: 'concavity', label: 'Concavity', type: 'slider', min: -50, max: 50, step: 1, default: 0, unit: '%', when: (s) => s.arrowStart || s.arrowEnd },
+        { key: 'weight', label: translateText("Weight"), type: 'number', min: 0.25, max: 400, step: 0.25, default: 3, unit: 'px' },
+        { key: 'arrowStart', label: translateText("Arrow at start"), type: 'checkbox', default: false },
+        { key: 'arrowEnd', label: translateText("Arrow at end"), type: 'checkbox', default: false },
+        { key: 'arrowWidth', label: translateText("Arrow width"), type: 'slider', min: 10, max: 1000, step: 10, default: 500, unit: '%', when: (s) => s.arrowStart || s.arrowEnd },
+        { key: 'arrowLength', label: translateText("Arrow length"), type: 'slider', min: 10, max: 5000, step: 10, default: 1000, unit: '%', when: (s) => s.arrowStart || s.arrowEnd },
+        { key: 'concavity', label: translateText("Concavity"), type: 'slider', min: -50, max: 50, step: 1, default: 0, unit: '%', when: (s) => s.arrowStart || s.arrowEnd },
       ],
     });
   }
@@ -515,12 +516,12 @@ class LineTool extends ShapeToolBase {
 class CustomShapeTool extends ShapeToolBase {
   constructor() {
     super({
-      id: 'custom-shape', name: 'Custom Shape Tool', label: 'Shape', icon: 'custom-shape',
+      id: 'custom-shape', name: 'Custom Shape Tool', label: translateText("Shape"), icon: 'custom-shape',
       options: [
         modeOption('shape'),
         ...vectorStyleOptions(),
-        { key: 'shape', label: 'Shape', type: 'select', options: CUSTOM_SHAPE_OPTIONS, default: CUSTOM_SHAPES[0].id },
-        { key: 'preserveProportions', label: 'Preserve proportions', type: 'checkbox', default: false },
+        { key: 'shape', label: translateText("Shape"), type: 'select', options: CUSTOM_SHAPE_OPTIONS, default: CUSTOM_SHAPES[0].id },
+        { key: 'preserveProportions', label: translateText("Preserve proportions"), type: 'checkbox', default: false },
       ],
     });
   }

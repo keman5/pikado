@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { registerTool } from './base.js';
 import { app } from '../core/app.js';
 import { PaintStroke, brushOptionDescriptors, brushFromOptions } from '../paint/brush-engine.js';
@@ -127,16 +128,16 @@ class ArtHistoryTool extends BrushToolBase {
       strokeLabel: 'Art History Brush',
       options: [
         ...tweakDefaults(brushOptionDescriptors({ smoothing: false, airbrush: false }), { size: 12, hardness: 70, opacity: 100, flow: 80 }),
-        { key: 'style', label: 'Style', type: 'select', default: 'tight-short',
+        { key: 'style', label: translateText("Style"), type: 'select', default: 'tight-short',
           options: [
-            { value: 'tight-short', label: 'Tight Short' },
-            { value: 'loose-medium', label: 'Loose Medium' },
-            { value: 'dab', label: 'Dab' },
-            { value: 'tight-curl', label: 'Tight Curl' },
-            { value: 'loose-curl', label: 'Loose Curl' },
+            { value: 'tight-short', label: translateText("Tight Short") },
+            { value: 'loose-medium', label: translateText("Loose Medium") },
+            { value: 'dab', label: translateText("Dab") },
+            { value: 'tight-curl', label: translateText("Tight Curl") },
+            { value: 'loose-curl', label: translateText("Loose Curl") },
           ] },
-        { key: 'area', label: 'Area', type: 'slider', min: 1, max: 500, step: 1, default: 50, unit: 'px' },
-        { key: 'tolerance', label: 'Tolerance', type: 'slider', min: 0, max: 100, step: 1, default: 0, unit: '%' },
+        { key: 'area', label: translateText("Area"), type: 'slider', min: 1, max: 500, step: 1, default: 50, unit: 'px' },
+        { key: 'tolerance', label: translateText("Tolerance"), type: 'slider', min: 0, max: 100, step: 1, default: 0, unit: '%' },
       ],
     });
     this._last = null;

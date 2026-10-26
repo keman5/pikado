@@ -1,3 +1,4 @@
+import { t as translateText } from '../../i18n/index.js';
 import './dialogs.css';
 import { el } from '../../core/util.js';
 import { Dialog } from '../dialog.js';
@@ -26,7 +27,7 @@ export async function showAiConsentDialog(provider) {
   const dontAsk = el('input', { type: 'checkbox' });
 
   dialog.setBody(
-    el('div.pk-hint', { text: 'Pikado has never sent your work anywhere. This feature does.' }),
+    el('div.pk-hint', { text: translateText("Pikado has never sent your work anywhere. This feature does.") }),
     el('div.pk-field', {},
       el('label', { text: `Leaving this computer, to ${host}` }),
       el('ul.pk-list', {},
@@ -34,7 +35,7 @@ export async function showAiConsentDialog(provider) {
         el('li', { text: 'the prompt you type' }),
         el('li', { text: 'your API key, in a request header' }))),
     el('div.pk-field', {},
-      el('label', { text: 'Not leaving' }),
+      el('label', { text: translateText("Not leaving") }),
       el('ul.pk-list', {},
         el('li', { text: 'your other open documents, your layer names and your file names' }),
         el('li', { text: 'your edit history, and anything else stored in this browser' }))),
@@ -46,9 +47,9 @@ export async function showAiConsentDialog(provider) {
   );
 
   dialog.setButtons([
-    { label: 'Cancel', value: false, subtle: true },
+    { label: translateText("Cancel"), value: false, subtle: true },
     {
-      label: 'Send',
+      label: translateText("Send"),
       primary: true,
       onClick: (dlg) => {
         grantConsent(host, { remember: dontAsk.checked });

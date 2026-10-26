@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import './curve-editor.css';
 import { el, clamp } from '../core/util.js';
 import { sampleLUT } from '../adjustments/registry.js';
@@ -17,9 +18,9 @@ import { drawHistogram, setupHiDPI, currentHistogram, emptyHistogram } from './h
 
 export const CURVE_CHANNELS = [
   { id: 'rgb', label: 'RGB', color: 'accent' },
-  { id: 'r', label: 'Red', color: '#ff5d5d' },
-  { id: 'g', label: 'Green', color: '#54d954' },
-  { id: 'b', label: 'Blue', color: '#6ea8ff' },
+  { id: 'r', label: translateText("Red"), color: '#ff5d5d' },
+  { id: 'g', label: translateText("Green"), color: '#54d954' },
+  { id: 'b', label: translateText("Blue"), color: '#6ea8ff' },
 ];
 
 /**
@@ -313,8 +314,8 @@ function buildCurveEditor(container, cfg) {
   });
 
   const resetBtn = el('button.pk-btn.subtle.pk-curve-reset', {
-    type: 'button', text: 'Reset',
-    title: 'Reset the current channel to a straight line',
+    type: 'button', text: translateText("Reset"),
+    title: translateText("Reset the current channel to a straight line"),
     onclick: () => {
       const next = cloneValue(value);
       next[next.channel] = clonePoints(IDENTITY);
@@ -325,11 +326,11 @@ function buildCurveEditor(container, cfg) {
 
   const canvas = el('canvas.pk-curve-canvas', { width: W, height: W });
   const ctx = setupHiDPI(canvas, W, W);
-  const readout = el('div.pk-curve-readout', { text: 'Input: —   Output: —' });
+  const readout = el('div.pk-curve-readout', { text: translateText("Input: —   Output: —") });
 
   const head = el('div.pk-curve-head', {},
-    el('span.pk-curve-lbl', { text: 'Channel' }), chanSelect,
-    showPresets ? el('span.pk-curve-lbl', { text: 'Preset' }) : null,
+    el('span.pk-curve-lbl', { text: translateText("Channel") }), chanSelect,
+    showPresets ? el('span.pk-curve-lbl', { text: translateText("Preset") }) : null,
     showPresets ? presetSelect : null
   );
   const foot = el('div.pk-curve-foot', {}, readout, el('div.pk-spacer'), resetBtn);

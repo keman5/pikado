@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 /**
  * The pen group: pen, freeform pen, curvature pen and the three
  * add/delete/convert point tools.
@@ -28,25 +29,25 @@ import {
 /* ------------------------------------------------------------------ */
 
 export const DASH_OPTIONS = [
-  { value: 'solid', label: 'Solid' },
-  { value: 'dash', label: 'Dashed' },
-  { value: 'dash-tight', label: 'Dashed (tight)' },
+  { value: 'solid', label: translateText("Solid") },
+  { value: 'dash', label: translateText("Dashed") },
+  { value: 'dash-tight', label: translateText("Dashed (tight)") },
   { value: 'dot', label: 'Dotted' },
-  { value: 'dash-dot', label: 'Dash-dot' },
-  { value: 'long-dash', label: 'Long dash' },
+  { value: 'dash-dot', label: translateText("Dash-dot") },
+  { value: 'long-dash', label: translateText("Long dash") },
 ];
 
 /** The Path / Shape / Pixels selector shared by the pen and shape tools. */
 export function modeOption(def = 'shape') {
   return {
     key: 'mode',
-    label: 'Mode',
+    label: translateText("Mode"),
     type: 'select',
     default: def,
     options: [
-      { value: 'shape', label: 'Shape' },
-      { value: 'path', label: 'Path' },
-      { value: 'pixels', label: 'Pixels' },
+      { value: 'shape', label: translateText("Shape") },
+      { value: 'path', label: translateText("Path") },
+      { value: 'pixels', label: translateText("Pixels") },
     ],
   };
 }
@@ -55,17 +56,17 @@ export function modeOption(def = 'shape') {
 export function vectorStyleOptions() {
   const paints = (s) => s.mode !== 'path';
   return [
-    { key: 'fill', label: 'Fill', type: 'color', default: '#4a90d9', when: paints },
-    { key: 'noFill', label: 'No fill', type: 'checkbox', default: false, when: paints },
-    { key: 'strokeColor', label: 'Stroke', type: 'color', default: '#000000', when: paints },
-    { key: 'strokeWidth', label: 'Stroke width', type: 'number', min: 0, max: 400, step: 0.5, default: 0, unit: 'px', when: paints },
+    { key: 'fill', label: translateText("Fill"), type: 'color', default: '#4a90d9', when: paints },
+    { key: 'noFill', label: translateText("No fill"), type: 'checkbox', default: false, when: paints },
+    { key: 'strokeColor', label: translateText("Stroke"), type: 'color', default: '#000000', when: paints },
+    { key: 'strokeWidth', label: translateText("Stroke width"), type: 'number', min: 0, max: 400, step: 0.5, default: 0, unit: 'px', when: paints },
     {
-      key: 'strokeAlign', label: 'Align', type: 'select', default: 'center',
-      options: [{ value: 'inside', label: 'Inside' }, { value: 'center', label: 'Center' }, { value: 'outside', label: 'Outside' }],
+      key: 'strokeAlign', label: translateText("Align"), type: 'select', default: 'center',
+      options: [{ value: 'inside', label: translateText("Inside") }, { value: 'center', label: translateText("Center") }, { value: 'outside', label: translateText("Outside") }],
       when: (s) => paints(s) && (s.strokeWidth || 0) > 0,
     },
     {
-      key: 'strokeDash', label: 'Dash', type: 'select', default: 'solid', options: DASH_OPTIONS,
+      key: 'strokeDash', label: translateText("Dash"), type: 'select', default: 'solid', options: DASH_OPTIONS,
       when: (s) => paints(s) && (s.strokeWidth || 0) > 0,
     },
   ];
@@ -301,13 +302,13 @@ export function pathActionItems(doc, target) {
   const subpaths = target.subpaths;
   const paintable = !!paintablePathLayer(doc);
   const items = [
-    { label: 'Make Selection', run: () => makeSelectionFromPath(doc, subpaths) },
-    { label: 'Fill Path', run: () => fillPathWithForeground(doc, subpaths), disabled: !paintable },
-    { label: 'Stroke Path', run: () => strokePathWithBrush(doc, subpaths), disabled: !paintable },
+    { label: translateText("Make Selection"), run: () => makeSelectionFromPath(doc, subpaths) },
+    { label: translateText("Fill Path"), run: () => fillPathWithForeground(doc, subpaths), disabled: !paintable },
+    { label: translateText("Stroke Path"), run: () => strokePathWithBrush(doc, subpaths), disabled: !paintable },
   ];
   if (target.kind === 'path' && target.path) {
     items.push(sep());
-    items.push({ label: 'Delete Path', run: () => deletePathRecord(doc, target.path) });
+    items.push({ label: translateText("Delete Path"), run: () => deletePathRecord(doc, target.path) });
   }
   return items;
 }
@@ -357,7 +358,7 @@ export function anchorEditItems(doc, e, tol, live = null) {
     const smooth = !!(p.in || p.out);
     return [
       {
-        label: 'Delete Anchor Point',
+        label: translateText("Delete Anchor Point"),
         run: () => {
           begin();
           removePoint(site.subpaths, site.hit.subpathIndex, site.hit.pointIndex);
@@ -376,7 +377,7 @@ export function anchorEditItems(doc, e, tol, live = null) {
   }
 
   return [{
-    label: 'Add Anchor Point',
+    label: translateText("Add Anchor Point"),
     run: () => {
       begin();
       insertPointAt(site.subpaths, site.hit.subpathIndex, site.hit.segmentIndex, site.hit.t);
@@ -468,8 +469,8 @@ class PenTool extends VectorTool {
       options: [
         modeOption('shape'),
         ...vectorStyleOptions(),
-        { key: 'autoAddDelete', label: 'Auto Add/Delete', type: 'checkbox', default: true },
-        { key: 'rubberBand', label: 'Rubber Band', type: 'checkbox', default: true },
+        { key: 'autoAddDelete', label: translateText("Auto Add/Delete"), type: 'checkbox', default: true },
+        { key: 'rubberBand', label: translateText("Rubber Band"), type: 'checkbox', default: true },
       ],
     });
     /** @type {{closed:boolean, points:object[]}|null} */
@@ -622,7 +623,7 @@ class PenTool extends VectorTool {
     return penMenu(this, e, {
       live: this.liveSubpath(),
       extra: open ? [{
-        label: 'Close Path',
+        label: translateText("Close Path"),
         run: () => {
           if (!this.sp || this.sp.points.length < 2) return;
           this.sp.closed = true;
@@ -658,10 +659,10 @@ class FreeformPenTool extends VectorTool {
       options: [
         modeOption('shape'),
         ...vectorStyleOptions(),
-        { key: 'fit', label: 'Curve Fit', type: 'slider', min: 0.5, max: 10, step: 0.5, default: 2, unit: 'px' },
-        { key: 'magnetic', label: 'Magnetic', type: 'checkbox', default: false },
-        { key: 'magneticWidth', label: 'Width', type: 'slider', min: 1, max: 40, step: 1, default: 10, unit: 'px', when: (s) => s.magnetic },
-        { key: 'magneticContrast', label: 'Contrast', type: 'slider', min: 1, max: 100, step: 1, default: 10, unit: '%', when: (s) => s.magnetic },
+        { key: 'fit', label: translateText("Curve Fit"), type: 'slider', min: 0.5, max: 10, step: 0.5, default: 2, unit: 'px' },
+        { key: 'magnetic', label: translateText("Magnetic"), type: 'checkbox', default: false },
+        { key: 'magneticWidth', label: translateText("Width"), type: 'slider', min: 1, max: 40, step: 1, default: 10, unit: 'px', when: (s) => s.magnetic },
+        { key: 'magneticContrast', label: translateText("Contrast"), type: 'slider', min: 1, max: 100, step: 1, default: 10, unit: '%', when: (s) => s.magnetic },
       ],
     });
     this.pts = null;
@@ -910,7 +911,7 @@ class CurvaturePenTool extends VectorTool {
           }
         : null,
       extra: open ? [{
-        label: 'Close Path',
+        label: translateText("Close Path"),
         run: () => {
           if (!this.sp || this.sp.points.length < 2) return;
           this.sp.closed = true;

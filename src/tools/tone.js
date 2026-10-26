@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { registerTool } from './base.js';
 import { EffectStroke, brushOptionDescriptors, brushFromOptions } from '../paint/brush-engine.js';
 import { clamp255 } from '../core/util.js';
@@ -11,9 +12,9 @@ import { BrushToolBase, tweakDefaults } from './brush.js';
 const TONE_OPTIONS = () => brushOptionDescriptors({ opacity: false, flow: false });
 
 const RANGE_OPTIONS = [
-  { value: 'shadows', label: 'Shadows' },
-  { value: 'midtones', label: 'Midtones' },
-  { value: 'highlights', label: 'Highlights' },
+  { value: 'shadows', label: translateText("Shadows") },
+  { value: 'midtones', label: translateText("Midtones") },
+  { value: 'highlights', label: translateText("Highlights") },
 ];
 
 /** How strongly a pixel of luminance `l` (0..1) belongs to a tonal range. */
@@ -39,9 +40,9 @@ class ToneTool extends BrushToolBase {
       cursor: 'crosshair', shortcut: 'O', group: 'tone', groupOrder: 13,
       options: [
         ...tweakDefaults(TONE_OPTIONS(), { size: 60, hardness: 0 }),
-        { key: 'range', label: 'Range', type: 'select', options: RANGE_OPTIONS, default: 'midtones' },
-        { key: 'exposure', label: 'Exposure', type: 'slider', min: 0, max: 100, step: 1, default: 50, unit: '%' },
-        { key: 'protectTones', label: 'Protect Tones', type: 'checkbox', default: true },
+        { key: 'range', label: translateText("Range"), type: 'select', options: RANGE_OPTIONS, default: 'midtones' },
+        { key: 'exposure', label: translateText("Exposure"), type: 'slider', min: 0, max: 100, step: 1, default: 50, unit: '%' },
+        { key: 'protectTones', label: translateText("Protect Tones"), type: 'checkbox', default: true },
       ],
     });
     this.kind = kind;
@@ -112,13 +113,13 @@ class SpongeTool extends BrushToolBase {
       strokeLabel: 'Sponge',
       options: [
         ...tweakDefaults(TONE_OPTIONS(), { size: 60, hardness: 0 }),
-        { key: 'mode', label: 'Mode', type: 'select', default: 'desaturate',
+        { key: 'mode', label: translateText("Mode"), type: 'select', default: 'desaturate',
           options: [
-            { value: 'saturate', label: 'Saturate' },
-            { value: 'desaturate', label: 'Desaturate' },
+            { value: 'saturate', label: translateText("Saturate") },
+            { value: 'desaturate', label: translateText("Desaturate") },
           ] },
-        { key: 'flow', label: 'Flow', type: 'slider', min: 1, max: 100, step: 1, default: 50, unit: '%' },
-        { key: 'vibrance', label: 'Vibrance', type: 'checkbox', default: true },
+        { key: 'flow', label: translateText("Flow"), type: 'slider', min: 1, max: 100, step: 1, default: 50, unit: '%' },
+        { key: 'vibrance', label: translateText("Vibrance"), type: 'checkbox', default: true },
       ],
     });
   }

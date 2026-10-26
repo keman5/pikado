@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import './advanced.css';
 import { registerAdjustment, buildLUT, applyLUT } from './registry.js';
 import { el, clamp, clamp255, createCanvas, ctx2dRead } from '../core/util.js';
@@ -95,7 +96,7 @@ registerAdjustment({
   name: 'Posterize...',
   group: 'map',
   dialogWidth: 320,
-  params: [{ key: 'levels', label: 'Levels', type: 'slider', min: 2, max: 255, step: 1, default: 4 }],
+  params: [{ key: 'levels', label: translateText("Levels"), type: 'slider', min: 2, max: 255, step: 1, default: 4 }],
   apply(imageData, p) {
     const n = clamp(Math.round(p.levels), 2, 255);
     if (n >= 255) return;
@@ -170,7 +171,7 @@ registerAdjustment({
   dialogWidth: 320,
   params: [
     thresholdHistogramParam(),
-    { key: 'level', label: 'Threshold Level', type: 'slider', min: 1, max: 255, step: 1, default: 128 },
+    { key: 'level', label: translateText("Threshold Level"), type: 'slider', min: 1, max: 255, step: 1, default: 128 },
   ],
   apply(imageData, p) {
     const level = clamp(Math.round(p.level), 1, 255);
@@ -206,9 +207,9 @@ registerAdjustment({
   group: 'map',
   dialogWidth: 380,
   params: [
-    gradientParam({ key: 'gradient', label: 'Gradient Used for Grayscale Mapping' }),
-    { key: 'reverse', label: 'Reverse', type: 'checkbox', default: false },
-    { key: 'dither', label: 'Dither', type: 'checkbox', default: false },
+    gradientParam({ key: 'gradient', label: translateText("Gradient Used for Grayscale Mapping") }),
+    { key: 'reverse', label: translateText("Reverse"), type: 'checkbox', default: false },
+    { key: 'dither', label: translateText("Dither"), type: 'checkbox', default: false },
   ],
   defaults: { gradient: defaultGradient(), reverse: false, dither: false },
   apply(imageData, p) {
@@ -243,25 +244,25 @@ registerAdjustment({
 /* ================================================================== */
 
 const SC_GROUPS = [
-  { id: 'reds', label: 'Reds' },
-  { id: 'yellows', label: 'Yellows' },
-  { id: 'greens', label: 'Greens' },
-  { id: 'cyans', label: 'Cyans' },
-  { id: 'blues', label: 'Blues' },
-  { id: 'magentas', label: 'Magentas' },
-  { id: 'whites', label: 'Whites' },
-  { id: 'neutrals', label: 'Neutrals' },
-  { id: 'blacks', label: 'Blacks' },
+  { id: 'reds', label: translateText("Reds") },
+  { id: 'yellows', label: translateText("Yellows") },
+  { id: 'greens', label: translateText("Greens") },
+  { id: 'cyans', label: translateText("Cyans") },
+  { id: 'blues', label: translateText("Blues") },
+  { id: 'magentas', label: translateText("Magentas") },
+  { id: 'whites', label: translateText("Whites") },
+  { id: 'neutrals', label: translateText("Neutrals") },
+  { id: 'blacks', label: translateText("Blacks") },
 ];
 const SC_INKS = [
-  { suffix: 'C', label: 'Cyan' },
-  { suffix: 'M', label: 'Magenta' },
-  { suffix: 'Y', label: 'Yellow' },
-  { suffix: 'K', label: 'Black' },
+  { suffix: 'C', label: translateText("Cyan") },
+  { suffix: 'M', label: translateText("Magenta") },
+  { suffix: 'Y', label: translateText("Yellow") },
+  { suffix: 'K', label: translateText("Black") },
 ];
 
 const scParams = [
-  { key: 'color', label: 'Colors', type: 'select', default: 'reds', options: SC_GROUPS.map((g) => ({ value: g.id, label: g.label })) },
+  { key: 'color', label: translateText("Colors"), type: 'select', default: 'reds', options: SC_GROUPS.map((g) => ({ value: g.id, label: g.label })) },
 ];
 for (const g of SC_GROUPS) {
   for (const ink of SC_INKS) {
@@ -274,8 +275,8 @@ for (const g of SC_GROUPS) {
 }
 scParams.push({ type: 'separator' });
 scParams.push({
-  key: 'method', label: 'Method', type: 'radio', default: 'relative',
-  options: [{ value: 'relative', label: 'Relative' }, { value: 'absolute', label: 'Absolute' }],
+  key: 'method', label: translateText("Method"), type: 'radio', default: 'relative',
+  options: [{ value: 'relative', label: translateText("Relative") }, { value: 'absolute', label: translateText("Absolute") }],
 });
 
 registerAdjustment({
@@ -383,19 +384,19 @@ registerAdjustment({
   group: 'tone',
   dialogWidth: 420,
   params: [
-    { type: 'label', label: 'Shadows' },
-    { key: 'shadowsAmount', label: 'Amount', type: 'slider', min: 0, max: 100, step: 1, default: 35, unit: '%' },
-    { key: 'shadowsTone', label: 'Tone', type: 'slider', min: 1, max: 100, step: 1, default: 50, unit: '%' },
-    { key: 'shadowsRadius', label: 'Radius', type: 'slider', min: 0, max: 500, step: 1, default: 30, unit: 'px' },
-    { type: 'label', label: 'Highlights' },
-    { key: 'highlightsAmount', label: 'Amount', type: 'slider', min: 0, max: 100, step: 1, default: 0, unit: '%' },
-    { key: 'highlightsTone', label: 'Tone', type: 'slider', min: 1, max: 100, step: 1, default: 50, unit: '%' },
-    { key: 'highlightsRadius', label: 'Radius', type: 'slider', min: 0, max: 500, step: 1, default: 30, unit: 'px' },
-    { type: 'label', label: 'Adjustments' },
-    { key: 'colorCorrection', label: 'Color Correction', type: 'slider', min: -100, max: 100, step: 1, default: 20 },
-    { key: 'midtoneContrast', label: 'Midtone Contrast', type: 'slider', min: -100, max: 100, step: 1, default: 0 },
-    { key: 'blackClip', label: 'Black Clip', type: 'number', min: 0, max: 10, step: 0.01, default: 0.01, unit: '%' },
-    { key: 'whiteClip', label: 'White Clip', type: 'number', min: 0, max: 10, step: 0.01, default: 0.01, unit: '%' },
+    { type: 'label', label: translateText("Shadows") },
+    { key: 'shadowsAmount', label: translateText("Amount"), type: 'slider', min: 0, max: 100, step: 1, default: 35, unit: '%' },
+    { key: 'shadowsTone', label: translateText("Tone"), type: 'slider', min: 1, max: 100, step: 1, default: 50, unit: '%' },
+    { key: 'shadowsRadius', label: translateText("Radius"), type: 'slider', min: 0, max: 500, step: 1, default: 30, unit: 'px' },
+    { type: 'label', label: translateText("Highlights") },
+    { key: 'highlightsAmount', label: translateText("Amount"), type: 'slider', min: 0, max: 100, step: 1, default: 0, unit: '%' },
+    { key: 'highlightsTone', label: translateText("Tone"), type: 'slider', min: 1, max: 100, step: 1, default: 50, unit: '%' },
+    { key: 'highlightsRadius', label: translateText("Radius"), type: 'slider', min: 0, max: 500, step: 1, default: 30, unit: 'px' },
+    { type: 'label', label: translateText("Adjustments") },
+    { key: 'colorCorrection', label: translateText("Color Correction"), type: 'slider', min: -100, max: 100, step: 1, default: 20 },
+    { key: 'midtoneContrast', label: translateText("Midtone Contrast"), type: 'slider', min: -100, max: 100, step: 1, default: 0 },
+    { key: 'blackClip', label: translateText("Black Clip"), type: 'number', min: 0, max: 10, step: 0.01, default: 0.01, unit: '%' },
+    { key: 'whiteClip', label: translateText("White Clip"), type: 'number', min: 0, max: 10, step: 0.01, default: 0.01, unit: '%' },
   ],
   apply(imageData, p) {
     const sAmt = clamp(p.shadowsAmount, 0, 100) / 100;
@@ -547,12 +548,12 @@ function replaceWeight(r, g, b, tr, tg, tb, fuzz) {
 function replaceMaskParam() {
   return {
     key: '_replaceMask',
-    label: 'Selection Preview',
+    label: translateText("Selection Preview"),
     type: 'custom',
     default: 0,
     render(container, state, onChange) {
       const W = 200, H = 120;
-      const canvas = el('canvas.pk-rc-thumb', { width: W, height: H, title: 'Click to sample a colour' });
+      const canvas = el('canvas.pk-rc-thumb', { width: W, height: H, title: translateText("Click to sample a colour") });
       const ctx = setupHiDPI(canvas, W, H);
       container.appendChild(canvas);
 
@@ -624,13 +625,13 @@ registerAdjustment({
   group: 'color',
   dialogWidth: 380,
   params: [
-    { key: 'targetColor', label: 'Target Color', type: 'color', default: '#ff0000' },
-    { key: 'fuzziness', label: 'Fuzziness', type: 'slider', min: 0, max: 200, step: 1, default: 40 },
+    { key: 'targetColor', label: translateText("Target Color"), type: 'color', default: '#ff0000' },
+    { key: 'fuzziness', label: translateText("Fuzziness"), type: 'slider', min: 0, max: 200, step: 1, default: 40 },
     replaceMaskParam(),
     { type: 'separator' },
-    { key: 'hue', label: 'Hue', type: 'slider', min: -180, max: 180, step: 1, default: 0 },
-    { key: 'saturation', label: 'Saturation', type: 'slider', min: -100, max: 100, step: 1, default: 0 },
-    { key: 'lightness', label: 'Lightness', type: 'slider', min: -100, max: 100, step: 1, default: 0 },
+    { key: 'hue', label: translateText("Hue"), type: 'slider', min: -180, max: 180, step: 1, default: 0 },
+    { key: 'saturation', label: translateText("Saturation"), type: 'slider', min: -100, max: 100, step: 1, default: 0 },
+    { key: 'lightness', label: translateText("Lightness"), type: 'slider', min: -100, max: 100, step: 1, default: 0 },
   ],
   apply(imageData, p) {
     const hueShift = clamp(p.hue, -180, 180);
@@ -663,10 +664,10 @@ registerAdjustment({
 /* ================================================================== */
 
 const HDR_METHODS = [
-  { value: 'local', label: 'Local Adaptation' },
-  { value: 'highlight', label: 'Highlight Compression' },
-  { value: 'equalize', label: 'Equalize Histogram' },
-  { value: 'exposure', label: 'Exposure and Gamma' },
+  { value: 'local', label: translateText("Local Adaptation") },
+  { value: 'highlight', label: translateText("Highlight Compression") },
+  { value: 'equalize', label: translateText("Equalize Histogram") },
+  { value: 'exposure', label: translateText("Exposure and Gamma") },
 ];
 
 registerAdjustment({
@@ -675,17 +676,17 @@ registerAdjustment({
   group: 'tone',
   dialogWidth: 400,
   params: [
-    { key: 'method', label: 'Method', type: 'select', default: 'local', options: HDR_METHODS },
-    { key: 'radius', label: 'Radius', type: 'slider', min: 1, max: 500, step: 1, default: 40, unit: 'px', when: (s) => s.method === 'local' },
-    { key: 'strength', label: 'Strength', type: 'slider', min: 0, max: 4, step: 0.01, default: 1, when: (s) => s.method === 'local' },
-    { key: 'detail', label: 'Detail', type: 'slider', min: -300, max: 300, step: 1, default: 30, unit: '%', when: (s) => s.method === 'local' },
-    { key: 'shadow', label: 'Shadow', type: 'slider', min: -100, max: 100, step: 1, default: 0, unit: '%', when: (s) => s.method === 'local' || s.method === 'highlight' },
-    { key: 'highlight', label: 'Highlight', type: 'slider', min: -100, max: 100, step: 1, default: 0, unit: '%', when: (s) => s.method === 'local' || s.method === 'highlight' },
-    { key: 'exposure', label: 'Exposure', type: 'slider', min: -5, max: 5, step: 0.01, default: 0, when: (s) => s.method === 'exposure' },
-    { key: 'gamma', label: 'Gamma', type: 'slider', min: 0.1, max: 3, step: 0.01, default: 1, when: (s) => s.method === 'exposure' },
+    { key: 'method', label: translateText("Method"), type: 'select', default: 'local', options: HDR_METHODS },
+    { key: 'radius', label: translateText("Radius"), type: 'slider', min: 1, max: 500, step: 1, default: 40, unit: 'px', when: (s) => s.method === 'local' },
+    { key: 'strength', label: translateText("Strength"), type: 'slider', min: 0, max: 4, step: 0.01, default: 1, when: (s) => s.method === 'local' },
+    { key: 'detail', label: translateText("Detail"), type: 'slider', min: -300, max: 300, step: 1, default: 30, unit: '%', when: (s) => s.method === 'local' },
+    { key: 'shadow', label: translateText("Shadow"), type: 'slider', min: -100, max: 100, step: 1, default: 0, unit: '%', when: (s) => s.method === 'local' || s.method === 'highlight' },
+    { key: 'highlight', label: translateText("Highlight"), type: 'slider', min: -100, max: 100, step: 1, default: 0, unit: '%', when: (s) => s.method === 'local' || s.method === 'highlight' },
+    { key: 'exposure', label: translateText("Exposure"), type: 'slider', min: -5, max: 5, step: 0.01, default: 0, when: (s) => s.method === 'exposure' },
+    { key: 'gamma', label: translateText("Gamma"), type: 'slider', min: 0.1, max: 3, step: 0.01, default: 1, when: (s) => s.method === 'exposure' },
     { type: 'separator' },
-    { key: 'vibrance', label: 'Vibrance', type: 'slider', min: -100, max: 100, step: 1, default: 20 },
-    { key: 'saturation', label: 'Saturation', type: 'slider', min: 0, max: 300, step: 1, default: 100, unit: '%' },
+    { key: 'vibrance', label: translateText("Vibrance"), type: 'slider', min: -100, max: 100, step: 1, default: 20 },
+    { key: 'saturation', label: translateText("Saturation"), type: 'slider', min: 0, max: 300, step: 1, default: 100, unit: '%' },
   ],
   apply(imageData, p) {
     const d = imageData.data;

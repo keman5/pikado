@@ -1,4 +1,5 @@
 import './styles.css';
+import { applyPageLocale } from './i18n/index.js';
 
 import { app } from './core/app.js';
 import { CanvasView } from './ui/canvas-view.js';
@@ -106,6 +107,7 @@ function initTools() {
 }
 
 function boot() {
+  applyPageLocale();
   const canvasEl = document.getElementById('view');
   const areaEl = document.getElementById('canvas-area');
 

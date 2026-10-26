@@ -1,3 +1,4 @@
+import { t as translateText } from '../../i18n/index.js';
 import { registerProvider } from './index.js';
 import { authorizeRequest } from '../credentials.js';
 import { mapHttpError, mapThrown, GenerationError, GEN_ERRORS } from '../errors.js';
@@ -35,9 +36,9 @@ const ENDPOINT = 'https://api.openai.com/v1/images/edits';
  * dialog offers and what it is called.
  */
 const QUALITY = [
-  { value: 'auto', label: 'Auto' },
+  { value: 'auto', label: translateText("Auto") },
   { value: 'low', label: 'Low — fastest, cheapest' },
-  { value: 'medium', label: 'Medium' },
+  { value: 'medium', label: translateText("Medium") },
   { value: 'high', label: 'High — slowest, dearest' },
 ];
 

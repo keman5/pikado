@@ -29,7 +29,7 @@
 /* Bump this to invalidate every cached response. Activation deletes any cache
    whose name is not exactly the current one, so this single edit is the whole
    cache-busting mechanism. */
-const VERSION = 'v1';
+const VERSION = 'zh-v1';
 
 const CACHE = `pikado-${VERSION}`;
 

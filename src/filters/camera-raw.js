@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { registerFilter, makeRandom } from './registry.js';
 import { gaussianBlurBuffer } from './blur.js';
 import { curveParam, curveToLUT, isIdentityCurve, defaultCurves } from '../ui/curve-editor.js';
@@ -456,14 +457,14 @@ function localContrast(lin, w, h, sigma, amount, weight, detail = 0) {
  * and the eight weights sum to roughly one everywhere.
  */
 const BANDS = [
-  { key: 'red', label: 'Reds', hue: 0 },
-  { key: 'orange', label: 'Oranges', hue: 30 },
-  { key: 'yellow', label: 'Yellows', hue: 60 },
-  { key: 'green', label: 'Greens', hue: 120 },
-  { key: 'aqua', label: 'Aquas', hue: 180 },
-  { key: 'blue', label: 'Blues', hue: 240 },
-  { key: 'purple', label: 'Purples', hue: 280 },
-  { key: 'magenta', label: 'Magentas', hue: 320 },
+  { key: 'red', label: translateText("Reds"), hue: 0 },
+  { key: 'orange', label: translateText("Oranges"), hue: 30 },
+  { key: 'yellow', label: translateText("Yellows"), hue: 60 },
+  { key: 'green', label: translateText("Greens"), hue: 120 },
+  { key: 'aqua', label: translateText("Aquas"), hue: 180 },
+  { key: 'blue', label: translateText("Blues"), hue: 240 },
+  { key: 'purple', label: translateText("Purples"), hue: 280 },
+  { key: 'magenta', label: translateText("Magentas"), hue: 320 },
 ];
 
 /**
@@ -1093,14 +1094,14 @@ registerFilter({
   needsDialog: true,
   dialogWidth: 460,
   params: [
-    { key: 'treatment', label: 'Treatment', type: 'radio', default: 'color',
-      options: [{ value: 'color', label: 'Color' }, { value: 'bw', label: 'Black & White' }] },
+    { key: 'treatment', label: translateText("Treatment"), type: 'radio', default: 'color',
+      options: [{ value: 'color', label: translateText("Color") }, { value: 'bw', label: translateText("Black & White") }] },
 
-    { type: 'label', label: 'White Balance' },
+    { type: 'label', label: translateText("White Balance") },
     slider('temperature', 'Temperature', -100, 100, 0),
     slider('tint', 'Tint', -100, 100, 0),
 
-    { type: 'label', label: 'Tone' },
+    { type: 'label', label: translateText("Tone") },
     slider('exposure', 'Exposure', -5, 5, 0, 'EV', 0.05),
     slider('contrast', 'Contrast', -100, 100, 0),
     slider('highlights', 'Highlights', -100, 100, 0),
@@ -1108,34 +1109,34 @@ registerFilter({
     slider('whites', 'Whites', -100, 100, 0),
     slider('blacks', 'Blacks', -100, 100, 0),
 
-    { type: 'label', label: 'Presence' },
+    { type: 'label', label: translateText("Presence") },
     slider('texture', 'Texture', -100, 100, 0),
     slider('clarity', 'Clarity', -100, 100, 0),
     slider('dehaze', 'Dehaze', -100, 100, 0),
     slider('vibrance', 'Vibrance', -100, 100, 0),
     slider('saturation', 'Saturation', -100, 100, 0),
 
-    { type: 'label', label: 'Tone Curve' },
+    { type: 'label', label: translateText("Tone Curve") },
     curveParam({ key: 'curves' }),
 
-    { type: 'label', label: 'Color Mixer' },
+    { type: 'label', label: translateText("Color Mixer") },
     ...hslRows,
 
-    { type: 'label', label: 'Color Grading' },
+    { type: 'label', label: translateText("Color Grading") },
     slider('shadowHue', 'Shadow Hue', 0, 360, 220, '°'),
     slider('shadowSat', 'Shadow Saturation', 0, 100, 0),
     slider('highlightHue', 'Highlight Hue', 0, 360, 45, '°'),
     slider('highlightSat', 'Highlight Saturation', 0, 100, 0),
     slider('splitBalance', 'Balance', -100, 100, 0),
 
-    { type: 'label', label: 'Detail' },
+    { type: 'label', label: translateText("Detail") },
     slider('sharpenAmount', 'Sharpening', 0, 150, 0),
     slider('sharpenRadius', 'Radius', 0.5, 3, 1, 'px', 0.1),
     slider('sharpenDetail', 'Detail', 0, 100, 25),
     slider('noiseLuminance', 'Luminance Noise Reduction', 0, 100, 0),
     slider('noiseColor', 'Color Noise Reduction', 0, 100, 0),
 
-    { type: 'label', label: 'Effects' },
+    { type: 'label', label: translateText("Effects") },
     slider('grain', 'Grain', 0, 100, 0),
     slider('grainSize', 'Grain Size', 5, 100, 25),
     slider('vignette', 'Vignette', -100, 100, 0),

@@ -1,3 +1,4 @@
+import { t as translateText } from '/src/i18n/index.js';
 import { suite } from '../harness.js';
 import {
   planFrame, cropToRequest, requestMask, patchFromResult, maskToGreyCanvas, fillCoverage,
@@ -517,6 +518,6 @@ suite('ai / the test double is not offered to real users', async (t) => {
   t.notOk(mockProviderRequested('?ai=openai'), 'nor does another value');
   t.notOk(mockProviderRequested('?mock=1'), 'nor a differently named parameter');
 
-  const help = defs.default.find((m) => m.label === 'Help');
+  const help = defs.default.find((m) => m.label === translateText('Help'));
   t.ok(help && help.items.includes('help.ai-guide'), 'the Generative Fill guide is in the Help menu');
 });

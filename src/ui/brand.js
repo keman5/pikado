@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 /**
  * Pikado brand.
  *
@@ -17,7 +18,7 @@
 
 export const BRAND = {
   name: 'Pikado',
-  tagline: 'Image studio',
+  tagline: translateText("Image studio"),
   violet: '#7C6AF6',
   violetDeep: '#4B3BD6',
   violetLift: '#9B7CFF',

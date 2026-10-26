@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { registerTool } from './base.js';
 import { SelectionTool, strokeDashedPoly, toScreenPoints } from './marquee.js';
 import { getComposite } from '../render/compositor.js';
@@ -51,8 +52,8 @@ function drawCloseMarker(ctx, pt) {
  */
 function inProgressMenu(tool, count) {
   return [
-    { label: 'Close Path', accel: 'Enter', disabled: count < 3, run: () => tool.close() },
-    { label: 'Cancel', accel: 'Esc', run: () => tool.cancel() },
+    { label: translateText("Close Path"), accel: 'Enter', disabled: count < 3, run: () => tool.close() },
+    { label: translateText("Cancel"), accel: 'Esc', run: () => tool.cancel() },
   ];
 }
 
@@ -277,9 +278,9 @@ class MagneticLassoTool extends SelectionTool {
       id: 'lasso-magnetic', name: 'Magnetic Lasso Tool', icon: 'lasso-magnetic', shortcut: 'L',
       group: 'lasso', groupOrder: 2,
       options: [
-        { key: 'width', label: 'Width', type: 'slider', min: 1, max: 256, step: 1, default: 10, unit: 'px' },
-        { key: 'contrast', label: 'Contrast', type: 'slider', min: 1, max: 100, step: 1, default: 10, unit: '%' },
-        { key: 'frequency', label: 'Frequency', type: 'slider', min: 0, max: 100, step: 1, default: 57 },
+        { key: 'width', label: translateText("Width"), type: 'slider', min: 1, max: 256, step: 1, default: 10, unit: 'px' },
+        { key: 'contrast', label: translateText("Contrast"), type: 'slider', min: 1, max: 100, step: 1, default: 10, unit: '%' },
+        { key: 'frequency', label: translateText("Frequency"), type: 'slider', min: 0, max: 100, step: 1, default: 57 },
       ],
     });
     this.anchors = [];

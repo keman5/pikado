@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { Tool, registerTool } from './base.js';
 import { app } from '../core/app.js';
 import { createCanvas, cloneCanvas, clamp, ctx2dRead, el } from '../core/util.js';
@@ -68,7 +69,7 @@ function paintInk(doc, layer, target, base, ink, mode, opacity, extraClip) {
 /* ------------------------------------------------------------------ */
 
 function showGradientPicker(current) {
-  const d = new Dialog({ title: 'Gradient Picker', width: 470, className: 'pk-grad-dialog' });
+  const d = new Dialog({ title: translateText("Gradient Picker"), width: 470, className: 'pk-grad-dialog' });
   const grid = el('div.pk-grad-grid');
   for (const g of GRADIENT_PRESETS) {
     const cell = el('button.pk-grad-cell' + (g.id === current ? '.selected' : ''), {
@@ -79,7 +80,7 @@ function showGradientPicker(current) {
     grid.appendChild(cell);
   }
   d.setBody(grid);
-  d.setButtons([{ label: 'Cancel', value: null, subtle: true }]);
+  d.setButtons([{ label: translateText("Cancel"), value: null, subtle: true }]);
   return d.open();
 }
 
@@ -147,22 +148,22 @@ class GradientTool extends Tool {
       group: 'gradient',
       groupOrder: 11,
       options: [
-        { key: 'preset', type: 'custom', label: 'Gradient', default: 'foreground-to-background', render: renderGradientSwatch },
+        { key: 'preset', type: 'custom', label: translateText("Gradient"), default: 'foreground-to-background', render: renderGradientSwatch },
         {
           key: 'type', type: 'radio', label: '', default: 'linear',
           options: [
-            { value: 'linear', label: 'Linear' },
-            { value: 'radial', label: 'Radial' },
-            { value: 'angle', label: 'Angle' },
-            { value: 'reflected', label: 'Reflected' },
-            { value: 'diamond', label: 'Diamond' },
+            { value: 'linear', label: translateText("Linear") },
+            { value: 'radial', label: translateText("Radial") },
+            { value: 'angle', label: translateText("Angle") },
+            { value: 'reflected', label: translateText("Reflected") },
+            { value: 'diamond', label: translateText("Diamond") },
           ],
         },
-        { key: 'mode', type: 'select', label: 'Mode', default: 'normal', options: BLEND_OPTIONS },
-        { key: 'opacity', type: 'slider', label: 'Opacity', min: 0, max: 100, step: 1, default: 100, unit: '%' },
-        { key: 'reverse', type: 'checkbox', label: 'Reverse', default: false },
-        { key: 'dither', type: 'checkbox', label: 'Dither', default: true },
-        { key: 'transparency', type: 'checkbox', label: 'Transparency', default: true },
+        { key: 'mode', type: 'select', label: translateText("Mode"), default: 'normal', options: BLEND_OPTIONS },
+        { key: 'opacity', type: 'slider', label: translateText("Opacity"), min: 0, max: 100, step: 1, default: 100, unit: '%' },
+        { key: 'reverse', type: 'checkbox', label: translateText("Reverse"), default: false },
+        { key: 'dither', type: 'checkbox', label: translateText("Dither"), default: true },
+        { key: 'transparency', type: 'checkbox', label: translateText("Transparency"), default: true },
       ],
     });
     this.drag = null;
@@ -404,7 +405,7 @@ function renderPatternSelect(container, state, onChange, p) {
     }
     sel.value = state[p.key];
   };
-  fill([{ value: state[p.key] || '', label: 'Loading…' }]);
+  fill([{ value: state[p.key] || '', label: translateText("Loading…") }]);
   // Dynamic so an unexpected export shape degrades to an empty list instead of
   // breaking the bundle.
   import('../paint/patterns.js')
@@ -430,19 +431,19 @@ class BucketTool extends Tool {
       groupOrder: 11,
       options: [
         {
-          key: 'fill', type: 'select', label: 'Fill', default: 'foreground',
-          options: [{ value: 'foreground', label: 'Foreground' }, { value: 'pattern', label: 'Pattern' }],
+          key: 'fill', type: 'select', label: translateText("Fill"), default: 'foreground',
+          options: [{ value: 'foreground', label: translateText("Foreground") }, { value: 'pattern', label: translateText("Pattern") }],
         },
         {
-          key: 'pattern', type: 'custom', label: 'Pattern', default: '',
+          key: 'pattern', type: 'custom', label: translateText("Pattern"), default: '',
           render: renderPatternSelect, when: (s) => s.fill === 'pattern',
         },
-        { key: 'mode', type: 'select', label: 'Mode', default: 'normal', options: BLEND_OPTIONS },
-        { key: 'opacity', type: 'slider', label: 'Opacity', min: 0, max: 100, step: 1, default: 100, unit: '%' },
-        { key: 'tolerance', type: 'slider', label: 'Tolerance', min: 0, max: 255, step: 1, default: 32 },
-        { key: 'antialias', type: 'checkbox', label: 'Anti-alias', default: true },
-        { key: 'contiguous', type: 'checkbox', label: 'Contiguous', default: true },
-        { key: 'allLayers', type: 'checkbox', label: 'All Layers', default: false },
+        { key: 'mode', type: 'select', label: translateText("Mode"), default: 'normal', options: BLEND_OPTIONS },
+        { key: 'opacity', type: 'slider', label: translateText("Opacity"), min: 0, max: 100, step: 1, default: 100, unit: '%' },
+        { key: 'tolerance', type: 'slider', label: translateText("Tolerance"), min: 0, max: 255, step: 1, default: 32 },
+        { key: 'antialias', type: 'checkbox', label: translateText("Anti-alias"), default: true },
+        { key: 'contiguous', type: 'checkbox', label: translateText("Contiguous"), default: true },
+        { key: 'allLayers', type: 'checkbox', label: translateText("All Layers"), default: false },
       ],
     });
   }

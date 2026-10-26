@@ -1,3 +1,4 @@
+import { t as translateText, getLocale, saveLocale, LOCALES } from '../../i18n/index.js';
 import './dialogs.css';
 import { app } from '../../core/app.js';
 import { el, clamp255 } from '../../core/util.js';
@@ -71,25 +72,25 @@ export const PREF_DEFAULTS = {
 const CATEGORIES = [
   {
     id: 'general',
-    label: 'General',
+    label: translateText("General"),
     params: [
       {
-        key: 'units', label: 'Default Units', type: 'select',
+        key: 'units', label: translateText("Default Units"), type: 'select',
         options: [
-          { value: 'px', label: 'Pixels' }, { value: 'in', label: 'Inches' },
-          { value: 'cm', label: 'Centimeters' }, { value: 'mm', label: 'Millimeters' },
-          { value: 'pt', label: 'Points' }, { value: 'pica', label: 'Picas' },
+          { value: 'px', label: translateText("Pixels") }, { value: 'in', label: translateText("Inches") },
+          { value: 'cm', label: translateText("Centimeters") }, { value: 'mm', label: translateText("Millimeters") },
+          { value: 'pt', label: translateText("Points") }, { value: 'pica', label: translateText("Picas") },
         ],
         hint: 'Used by the rulers, the Info panel and the size dialogs.',
       },
-      { key: 'recentLimit', label: 'Recent Documents', type: 'slider', min: 0, max: 20, step: 1 },
-      { key: 'confirmBeforeClosing', label: 'Ask before closing a document with unsaved changes', type: 'checkbox' },
-      { key: 'resetColorsOnLaunch', label: 'Reset foreground / background colours on launch', type: 'checkbox' },
+      { key: 'recentLimit', label: translateText("Recent Documents"), type: 'slider', min: 0, max: 20, step: 1 },
+      { key: 'confirmBeforeClosing', label: translateText("Ask before closing a document with unsaved changes"), type: 'checkbox' },
+      { key: 'resetColorsOnLaunch', label: translateText("Reset foreground / background colours on launch"), type: 'checkbox' },
       {
-        key: 'webfonts', label: 'Web Fonts', type: 'select',
+        key: 'webfonts', label: translateText("Web Fonts"), type: 'select',
         options: [
-          { value: 'auto', label: 'Download when needed' },
-          { value: 'off', label: 'Never download' },
+          { value: 'auto', label: translateText("Download when needed") },
+          { value: 'off', label: translateText("Never download") },
         ],
         hint: 'Fonts come from Google Fonts. Nothing of yours is sent — this is a '
           + 'download — and a family is kept once fetched, so it works offline afterwards. '
@@ -99,66 +100,66 @@ const CATEGORIES = [
   },
   {
     id: 'interface',
-    label: 'Interface',
+    label: translateText("Interface"),
     params: [
-      { key: 'accent', label: 'Accent Colour', type: 'color' },
-      { key: 'canvasBg', label: 'Canvas Surround', type: 'color' },
-      { key: 'panelWidth', label: 'Panel Dock Width', type: 'slider', min: 240, max: 460, step: 10, unit: 'px' },
-      { key: 'toolbarWidth', label: 'Toolbar Width', type: 'slider', min: 40, max: 76, step: 2, unit: 'px' },
-      { key: 'rowHeight', label: 'Control Height', type: 'slider', min: 20, max: 34, step: 1, unit: 'px' },
-      { key: 'cornerRadius', label: 'Corner Radius', type: 'slider', min: 0, max: 10, step: 1, unit: 'px' },
+      { key: 'accent', label: translateText("Accent Colour"), type: 'color' },
+      { key: 'canvasBg', label: translateText("Canvas Surround"), type: 'color' },
+      { key: 'panelWidth', label: translateText("Panel Dock Width"), type: 'slider', min: 240, max: 460, step: 10, unit: 'px' },
+      { key: 'toolbarWidth', label: translateText("Toolbar Width"), type: 'slider', min: 40, max: 76, step: 2, unit: 'px' },
+      { key: 'rowHeight', label: translateText("Control Height"), type: 'slider', min: 20, max: 34, step: 1, unit: 'px' },
+      { key: 'cornerRadius', label: translateText("Corner Radius"), type: 'slider', min: 0, max: 10, step: 1, unit: 'px' },
     ],
   },
   {
     id: 'tools',
-    label: 'Tools',
+    label: translateText("Tools"),
     params: [
       {
-        key: 'brushCursor', label: 'Painting Cursor', type: 'radio',
+        key: 'brushCursor', label: translateText("Painting Cursor"), type: 'radio',
         options: [
-          { value: 'normal', label: 'Normal Brush Tip' },
-          { value: 'full', label: 'Full Size Brush Tip' },
-          { value: 'precise', label: 'Precise' },
+          { value: 'normal', label: translateText("Normal Brush Tip") },
+          { value: 'full', label: translateText("Full Size Brush Tip") },
+          { value: 'precise', label: translateText("Precise") },
         ],
       },
-      { key: 'showToolTips', label: 'Show tool tips', type: 'checkbox' },
-      { key: 'scrollZoom', label: 'Zoom with scroll wheel', type: 'checkbox' },
-      { key: 'showTransformValues', label: 'Show transform values while dragging', type: 'checkbox' },
+      { key: 'showToolTips', label: translateText("Show tool tips"), type: 'checkbox' },
+      { key: 'scrollZoom', label: translateText("Zoom with scroll wheel"), type: 'checkbox' },
+      { key: 'showTransformValues', label: translateText("Show transform values while dragging"), type: 'checkbox' },
     ],
   },
   {
     id: 'history',
-    label: 'History',
+    label: translateText("History"),
     params: [
-      { key: 'historyStates', label: 'History States', type: 'slider', min: 5, max: 200, step: 1 },
+      { key: 'historyStates', label: translateText("History States"), type: 'slider', min: 5, max: 200, step: 1 },
       {
-        key: 'autoPurgeHistory', label: 'Purge the oldest states when memory runs high', type: 'checkbox',
+        key: 'autoPurgeHistory', label: translateText("Purge the oldest states when memory runs high"), type: 'checkbox',
         hint: 'Uses the memory limit set under Performance.',
       },
     ],
   },
   {
     id: 'performance',
-    label: 'Performance',
+    label: translateText("Performance"),
     params: [
-      { key: 'memoryLimitMB', label: 'Memory Budget', type: 'slider', min: 64, max: 4096, step: 64, unit: 'MB' },
-      { key: 'maxDocPixels', label: 'Warn above', type: 'slider', min: 10, max: 500, step: 10, unit: 'MP' },
+      { key: 'memoryLimitMB', label: translateText("Memory Budget"), type: 'slider', min: 64, max: 4096, step: 64, unit: 'MB' },
+      { key: 'maxDocPixels', label: translateText("Warn above"), type: 'slider', min: 10, max: 500, step: 10, unit: 'MP' },
       {
-        key: 'previewQuality', label: 'Dialog Preview Quality', type: 'select',
-        options: [{ value: 'accurate', label: 'Accurate' }, { value: 'fast', label: 'Fast (downsampled)' }],
+        key: 'previewQuality', label: translateText("Dialog Preview Quality"), type: 'select',
+        options: [{ value: 'accurate', label: translateText("Accurate") }, { value: 'fast', label: translateText("Fast (downsampled)") }],
       },
     ],
   },
   {
     id: 'guides',
-    label: 'Guides & Grid',
+    label: translateText("Guides & Grid"),
     params: [
-      { key: 'showGuides', label: 'Show guides', type: 'checkbox' },
-      { key: 'showRulers', label: 'Show rulers', type: 'checkbox' },
-      { key: 'showGrid', label: 'Show grid', type: 'checkbox' },
-      { key: 'snap', label: 'Snap to guides and grid', type: 'checkbox' },
-      { key: 'gridSize', label: 'Gridline Every', type: 'slider', min: 4, max: 200, step: 1, unit: 'px' },
-      { key: 'gridSubdivisions', label: 'Subdivisions', type: 'slider', min: 1, max: 20, step: 1 },
+      { key: 'showGuides', label: translateText("Show guides"), type: 'checkbox' },
+      { key: 'showRulers', label: translateText("Show rulers"), type: 'checkbox' },
+      { key: 'showGrid', label: translateText("Show grid"), type: 'checkbox' },
+      { key: 'snap', label: translateText("Snap to guides and grid"), type: 'checkbox' },
+      { key: 'gridSize', label: translateText("Gridline Every"), type: 'slider', min: 4, max: 200, step: 1, unit: 'px' },
+      { key: 'gridSubdivisions', label: translateText("Subdivisions"), type: 'slider', min: 1, max: 20, step: 1 },
     ],
   },
 ];
@@ -354,9 +355,10 @@ app.on('docs-change', () => {
  */
 export async function showPreferencesDialog(categoryId = 'general') {
   const working = allPrefs();
+  let language = getLocale();
   // Kept pristine so the commit can tell what this dialog actually changed.
   const opened = JSON.parse(JSON.stringify(working));
-  const dlg = new Dialog({ title: 'Preferences', width: 620, className: 'pkd-prefs-dialog' });
+  const dlg = new Dialog({ title: translateText("Preferences"), width: 620, className: 'pkd-prefs-dialog' });
 
   const nav = el('div.pkd-prefs-nav');
   const body = el('div.pkd-prefs-body');
@@ -383,24 +385,39 @@ export async function showPreferencesDialog(categoryId = 'general') {
 
   renderNav();
   renderBody();
-  dlg.setBody(el('div.pkd-prefs', {}, nav, body));
+  const languageSelect = el('select.pk-select', { onchange: (event) => { language = event.target.value; } },
+    ...Object.entries(LOCALES).map(([value, text]) => el('option', { value, text })));
+  languageSelect.value = language;
+  dlg.setBody(
+    el('label.pk-field', {}, el('span', { text: translateText('Language') }), languageSelect),
+    el('p.pkd-note', { text: translateText('Language applies after reloading. Save your work before reloading.') }),
+    el('div.pkd-prefs', {}, nav, body));
   dlg.setButtons([
     {
-      label: 'Reset Defaults', subtle: true,
+      label: translateText("Reset Defaults"), subtle: true,
       onClick: () => {
         Object.assign(working, PREF_DEFAULTS);
         renderBody();
         return false;
       },
     },
-    { label: 'Cancel', value: null, subtle: true },
-    { label: 'OK', primary: true, onClick: (d) => { d.close({ ...working }); return false; } },
+    { label: translateText("Cancel"), value: null, subtle: true },
+    { label: translateText("OK"), primary: true, onClick: (d) => { d.close({ ...working }); return false; } },
   ]);
 
   const result = await dlg.open();
   if (!result) return null;
   commitPrefs(result, opened);
-  app.toast('Preferences saved.', 'ok');
+  if (language !== getLocale()) {
+    try {
+      saveLocale(language);
+      app.toast(translateText('Language saved. Save your work, then reload to apply it.'), 'ok', 8000);
+    } catch (err) {
+      app.toast(err.message, 'error');
+    }
+  } else {
+    app.toast(translateText('Preferences saved.'), 'ok');
+  }
   return result;
 }
 

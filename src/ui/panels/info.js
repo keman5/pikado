@@ -1,3 +1,4 @@
+import { t as translateText } from '../../i18n/index.js';
 import { registerPanel } from '../panel-host.js';
 import { app } from '../../core/app.js';
 import { el, rafThrottle } from '../../core/util.js';
@@ -55,7 +56,7 @@ function samplePixel(doc, x, y) {
 
 registerPanel({
   id: 'info',
-  title: 'Info',
+  title: translateText("Info"),
   icon: 'info',
   group: 'bottom',
   order: 3,
@@ -92,10 +93,10 @@ registerPanel({
 
     const sizeBlock = el('div.pki-block');
     const dimW = val('W :'); const dimH = val('H :');
-    const dimLabel = el('div.pki-sub', { text: 'Selection' });
+    const dimLabel = el('div.pki-sub', { text: translateText("Selection") });
     sizeBlock.append(dimLabel, dimW.row, dimH.row);
 
-    const docLine = el('div.pki-doc', { text: 'No document' });
+    const docLine = el('div.pki-doc', { text: translateText("No document") });
     const samplerHost = el('div.pki-samplers');
     const hintLine = el('div.pki-hint');
 
@@ -117,7 +118,7 @@ registerPanel({
         hexRow.v.textContent = '—';
         posX.v.textContent = posY.v.textContent = '—';
         dimW.v.textContent = dimH.v.textContent = '—';
-        docLine.textContent = 'No document';
+        docLine.textContent = translateText("No document");
         samplerHost.replaceChildren();
         hintLine.textContent = hintFor(app.tool);
         return;
@@ -153,11 +154,11 @@ registerPanel({
         dimH.v.textContent = String(Math.round(Math.abs(cursor.y - dragFrom.y)));
       } else if (doc.selection.active) {
         const b = doc.selection.bounds();
-        dimLabel.textContent = 'Selection';
+        dimLabel.textContent = translateText("Selection");
         dimW.v.textContent = b ? String(b.width) : '0';
         dimH.v.textContent = b ? String(b.height) : '0';
       } else {
-        dimLabel.textContent = 'Selection';
+        dimLabel.textContent = translateText("Selection");
         dimW.v.textContent = '—';
         dimH.v.textContent = '—';
       }

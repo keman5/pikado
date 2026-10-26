@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { Tool, registerTool } from './base.js';
 import { app } from '../core/app.js';
 import { LayerType, translateLayerGeometry } from '../core/layer.js';
@@ -267,17 +268,17 @@ const ALIGN_BUTTONS = [
 function renderAlignBar(container) {
   const bar = el('div.pk-align-bar');
   for (const [ico, how, title] of ALIGN_BUTTONS) {
-    const b = el('button.pk-icon-btn', { type: 'button', title, onclick: () => alignLayers(app.activeDoc, how) });
+    const b = el('button.pk-icon-btn', { type: 'button', title: translateText(title), onclick: () => alignLayers(app.activeDoc, how) });
     b.appendChild(iconEl(ico));
     bar.appendChild(b);
   }
   bar.appendChild(el('span.pk-vsep'));
   bar.appendChild(el('button.pk-btn.subtle.pk-align-dist', {
-    type: 'button', text: 'Dist H', title: 'Distribute horizontal centres',
+    type: 'button', text: translateText("Dist H"), title: translateText("Distribute horizontal centres"),
     onclick: () => distributeLayers(app.activeDoc, 'h'),
   }));
   bar.appendChild(el('button.pk-btn.subtle.pk-align-dist', {
-    type: 'button', text: 'Dist V', title: 'Distribute vertical centres',
+    type: 'button', text: translateText("Dist V"), title: translateText("Distribute vertical centres"),
     onclick: () => distributeLayers(app.activeDoc, 'v'),
   }));
   container.appendChild(bar);
@@ -303,15 +304,15 @@ class MoveTool extends Tool {
       group: 'move',
       groupOrder: 0,
       options: [
-        { key: 'autoSelect', type: 'checkbox', label: 'Auto-Select', default: false },
+        { key: 'autoSelect', type: 'checkbox', label: translateText("Auto-Select"), default: true },
         {
           key: 'autoSelectKind', type: 'select', label: '', default: 'layer',
-          options: [{ value: 'layer', label: 'Layer' }, { value: 'group', label: 'Group' }],
+          options: [{ value: 'layer', label: translateText("Layer") }, { value: 'group', label: translateText("Group") }],
           when: (s) => s.autoSelect,
         },
-        { key: 'showTransform', type: 'checkbox', label: 'Show Transform Controls', default: false },
+        { key: 'showTransform', type: 'checkbox', label: translateText("Show Transform Controls"), default: false },
         { type: 'separator' },
-        { key: 'align', type: 'custom', label: 'Align', render: renderAlignBar },
+        { key: 'align', type: 'custom', label: translateText("Align"), render: renderAlignBar },
       ],
     });
     this.drag = null;
@@ -598,7 +599,7 @@ class MoveTool extends Tool {
     const items = [{ header: 'Select Layer' }];
     const hits = layersUnderPoint(doc, e.x, e.y);
     if (!hits.length) {
-      items.push({ label: 'No layer under cursor', disabled: true });
+      items.push({ label: translateText("No layer under cursor"), disabled: true });
     } else {
       for (const l of hits) {
         items.push({
@@ -612,15 +613,15 @@ class MoveTool extends Tool {
       ...items,
       sep(),
       cmd('layer.duplicate'),
-      cmd('layer.delete', { label: 'Delete Layer' }),
-      cmd('layer.group-from-layers', { label: 'Group Layers' }),
+      cmd('layer.delete', { label: translateText("Delete Layer") }),
+      cmd('layer.group-from-layers', { label: translateText("Group Layers") }),
       sep(),
       cmd('layer.merge-down'),
       cmd('layer.merge-visible'),
       cmd('layer.flatten'),
       sep(),
       cmd('layer.style.options'),
-      cmd('layer.rasterize.layer', { label: 'Rasterize Layer', hideWhenDisabled: true }),
+      cmd('layer.rasterize.layer', { label: translateText("Rasterize Layer"), hideWhenDisabled: true }),
     ];
   }
 
@@ -716,14 +717,14 @@ function translateMask(mask, w, h, dx, dy) {
 /* ------------------------------------------------------------------ */
 
 const ARTBOARD_PRESETS = [
-  { value: 'custom', label: 'Custom', w: 0, h: 0 },
-  { value: 'web-1366', label: 'Web 1366 × 768', w: 1366, h: 768 },
-  { value: 'web-1920', label: 'Web 1920 × 1080', w: 1920, h: 1080 },
-  { value: 'mbp', label: 'Laptop 1440 × 900', w: 1440, h: 900 },
-  { value: 'phone', label: 'Phone 390 × 844', w: 390, h: 844 },
-  { value: 'tablet', label: 'Tablet 820 × 1180', w: 820, h: 1180 },
-  { value: 'a4', label: 'A4 595 × 842', w: 595, h: 842 },
-  { value: 'square', label: 'Square 1080', w: 1080, h: 1080 },
+  { value: 'custom', label: translateText("Custom"), w: 0, h: 0 },
+  { value: 'web-1366', label: translateText("Web 1366 × 768"), w: 1366, h: 768 },
+  { value: 'web-1920', label: translateText("Web 1920 × 1080"), w: 1920, h: 1080 },
+  { value: 'mbp', label: translateText("Laptop 1440 × 900"), w: 1440, h: 900 },
+  { value: 'phone', label: translateText("Phone 390 × 844"), w: 390, h: 844 },
+  { value: 'tablet', label: translateText("Tablet 820 × 1180"), w: 820, h: 1180 },
+  { value: 'a4', label: "A4 595 × 842", w: 595, h: 842 },
+  { value: 'square', label: translateText("Square 1080"), w: 1080, h: 1080 },
 ];
 
 function artboardsOf(doc) {
@@ -771,13 +772,13 @@ class ArtboardTool extends Tool {
       groupOrder: 0,
       options: [
         {
-          key: 'preset', type: 'select', label: 'Size', default: 'custom',
+          key: 'preset', type: 'select', label: translateText("Size"), default: 'custom',
           options: ARTBOARD_PRESETS.map((p) => ({ value: p.value, label: p.label })),
         },
         { key: 'width', type: 'number', label: 'W', min: 1, step: 1, default: 1366, unit: 'px' },
         { key: 'height', type: 'number', label: 'H', min: 1, step: 1, default: 768, unit: 'px' },
         {
-          type: 'button', label: 'Add Artboard',
+          type: 'button', label: translateText("Add Artboard"),
           onClick: (state) => {
             const doc = app.activeDoc;
             if (!doc) return;
@@ -790,7 +791,7 @@ class ArtboardTool extends Tool {
           },
         },
         {
-          type: 'button', label: 'Delete Artboard',
+          type: 'button', label: translateText("Delete Artboard"),
           onClick: () => artboardTool.deleteSelected(),
         },
       ],

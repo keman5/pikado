@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { Tool, registerTool } from './base.js';
 import { app } from '../core/app.js';
 import { createCanvas, clamp, uid, rad2deg } from '../core/util.js';
@@ -77,13 +78,13 @@ function copyToClipboard(text, what) {
 /* ------------------------------------------------------------------ */
 
 const SAMPLE_SIZES = [
-  { value: 1, label: 'Point Sample' },
-  { value: 3, label: '3 by 3 Average' },
-  { value: 5, label: '5 by 5 Average' },
-  { value: 11, label: '11 by 11 Average' },
-  { value: 31, label: '31 by 31 Average' },
-  { value: 51, label: '51 by 51 Average' },
-  { value: 101, label: '101 by 101 Average' },
+  { value: 1, label: translateText("Point Sample") },
+  { value: 3, label: translateText("3 by 3 Average") },
+  { value: 5, label: translateText("5 by 5 Average") },
+  { value: 11, label: translateText("11 by 11 Average") },
+  { value: 31, label: translateText("31 by 31 Average") },
+  { value: 51, label: translateText("51 by 51 Average") },
+  { value: 101, label: translateText("101 by 101 Average") },
 ];
 
 class EyedropperTool extends Tool {
@@ -97,12 +98,12 @@ class EyedropperTool extends Tool {
       group: 'eyedropper',
       groupOrder: 5,
       options: [
-        { key: 'sampleSize', type: 'select', label: 'Sample Size', default: 1, options: SAMPLE_SIZES },
+        { key: 'sampleSize', type: 'select', label: translateText("Sample Size"), default: 1, options: SAMPLE_SIZES },
         {
-          key: 'sample', type: 'select', label: 'Sample', default: 'all',
-          options: [{ value: 'all', label: 'All Layers' }, { value: 'layer', label: 'Current Layer' }],
+          key: 'sample', type: 'select', label: translateText("Sample"), default: 'all',
+          options: [{ value: 'all', label: translateText("All Layers") }, { value: 'layer', label: translateText("Current Layer") }],
         },
-        { key: 'showRing', type: 'checkbox', label: 'Show Sampling Ring', default: true },
+        { key: 'showRing', type: 'checkbox', label: translateText("Show Sampling Ring"), default: true },
       ],
     });
     this.hover = null;
@@ -150,11 +151,11 @@ class EyedropperTool extends Tool {
     const items = [];
     if (c) {
       const hex = toHex(rgb(c.r, c.g, c.b, 1)).toUpperCase();
-      items.push({ label: 'Copy Color as HTML', run: () => copyToClipboard(`color="${hex}"`, 'the colour') });
-      items.push({ label: 'Copy Color as Hex', run: () => copyToClipboard(hex, 'the colour') });
+      items.push({ label: translateText("Copy Color as HTML"), run: () => copyToClipboard(`color="${hex}"`, 'the colour') });
+      items.push({ label: translateText("Copy Color as Hex"), run: () => copyToClipboard(hex, 'the colour') });
       items.push(sep());
     }
-    items.push(cmd('layer.new', { label: 'New Layer' }));
+    items.push(cmd('layer.new', { label: translateText("New Layer") }));
     return items;
   }
 
@@ -235,13 +236,13 @@ class ColorSamplerTool extends Tool {
       group: 'eyedropper',
       groupOrder: 5,
       options: [
-        { key: 'sampleSize', type: 'select', label: 'Sample Size', default: 1, options: SAMPLE_SIZES },
+        { key: 'sampleSize', type: 'select', label: translateText("Sample Size"), default: 1, options: SAMPLE_SIZES },
         {
-          key: 'sample', type: 'select', label: 'Sample', default: 'all',
-          options: [{ value: 'all', label: 'All Layers' }, { value: 'layer', label: 'Current Layer' }],
+          key: 'sample', type: 'select', label: translateText("Sample"), default: 'all',
+          options: [{ value: 'all', label: translateText("All Layers") }, { value: 'layer', label: translateText("Current Layer") }],
         },
         {
-          type: 'button', label: 'Clear All',
+          type: 'button', label: translateText("Clear All"),
           onClick: () => {
             const doc = app.activeDoc;
             if (!doc) return;
@@ -315,7 +316,7 @@ class ColorSamplerTool extends Tool {
       });
     }
     items.push({
-      label: 'Clear All Samplers',
+      label: translateText("Clear All Samplers"),
       run: () => { doc.colorSamplers = []; doc.touch('samplers'); },
     });
     return items;
@@ -445,9 +446,9 @@ class RulerTool extends Tool {
       group: 'eyedropper',
       groupOrder: 5,
       options: [
-        { type: 'button', label: 'Straighten Layer', onClick: () => straightenFromRuler(app.activeDoc) },
+        { type: 'button', label: translateText("Straighten Layer"), onClick: () => straightenFromRuler(app.activeDoc) },
         {
-          type: 'button', label: 'Clear',
+          type: 'button', label: translateText("Clear"),
           onClick: () => {
             const doc = app.activeDoc;
             if (!doc) return;
@@ -512,8 +513,8 @@ class RulerTool extends Tool {
     const doc = this.doc;
     if (!doc || !doc.measurement) return [];
     return [
-      { label: 'Straighten Layer', run: () => straightenFromRuler(doc) },
-      { label: 'Clear Measurement', run: () => { doc.measurement = null; doc.touch('measure'); } },
+      { label: translateText("Straighten Layer"), run: () => straightenFromRuler(doc) },
+      { label: translateText("Clear Measurement"), run: () => { doc.measurement = null; doc.touch('measure'); } },
     ];
   }
 
@@ -581,10 +582,10 @@ class NoteTool extends Tool {
       group: 'eyedropper',
       groupOrder: 5,
       options: [
-        { key: 'author', type: 'text', label: 'Author', default: 'Me' },
+        { key: 'author', type: 'text', label: translateText("Author"), default: 'Me' },
         { type: 'label', label: 'Click to place a note, double-click to edit it.' },
         {
-          type: 'button', label: 'Delete All Notes',
+          type: 'button', label: translateText("Delete All Notes"),
           onClick: () => {
             const doc = app.activeDoc;
             if (!doc) return;
@@ -693,11 +694,11 @@ class NoteTool extends Tool {
     const items = [];
     if (hit) {
       items.push({
-        label: 'Edit Note…',
+        label: translateText("Edit Note…"),
         run: () => { this.selectedId = hit.id; this.edit(doc, hit); },
       });
       items.push({
-        label: 'Delete Note',
+        label: translateText("Delete Note"),
         run: () => {
           const i = list.indexOf(hit);
           if (i >= 0) list.splice(i, 1);
@@ -708,7 +709,7 @@ class NoteTool extends Tool {
       items.push(sep());
     }
     items.push({
-      label: 'Delete All Notes',
+      label: translateText("Delete All Notes"),
       run: () => { doc.notes = []; this.selectedId = null; doc.touch('notes'); },
     });
     return items;

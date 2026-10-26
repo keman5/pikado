@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { registerFilter } from './registry.js';
 import { el, clamp } from '../core/util.js';
 import { rgb2hsv, hsv2rgb, rgb2hsl, hsl2rgb } from '../core/color.js';
@@ -181,9 +182,9 @@ registerFilter({
   menu: 'Other',
   dialogWidth: 360,
   params: [
-    { key: 'matrix', label: 'Kernel', type: 'custom', default: IDENTITY_MATRIX, render: renderMatrix },
-    { key: 'scale', label: 'Scale', type: 'number', min: -9999, max: 9999, step: 1, default: 1 },
-    { key: 'offset', label: 'Offset', type: 'number', min: -255, max: 255, step: 1, default: 0 },
+    { key: 'matrix', label: translateText("Kernel"), type: 'custom', default: IDENTITY_MATRIX, render: renderMatrix },
+    { key: 'scale', label: translateText("Scale"), type: 'number', min: -9999, max: 9999, step: 1, default: 1 },
+    { key: 'offset', label: translateText("Offset"), type: 'number', min: -255, max: 255, step: 1, default: 0 },
   ],
   apply(imageData, p) {
     const { width: w, height: h, data } = imageData;
@@ -241,7 +242,7 @@ registerFilter({
   name: 'High Pass...',
   menu: 'Other',
   params: [
-    { key: 'radius', label: 'Radius', type: 'slider', min: 0.1, max: 1000, step: 0.1, default: 10, unit: 'px' },
+    { key: 'radius', label: translateText("Radius"), type: 'slider', min: 0.1, max: 1000, step: 0.1, default: 10, unit: 'px' },
   ],
   apply(imageData, p) {
     const { width: w, height: h, data } = imageData;
@@ -299,8 +300,8 @@ function morphFilter(imageData, p, isMax) {
 }
 
 const PRESERVE_PARAM = {
-  key: 'preserve', label: 'Preserve', type: 'select', default: 'squareness',
-  options: [{ value: 'squareness', label: 'Squareness' }, { value: 'roundness', label: 'Roundness' }],
+  key: 'preserve', label: translateText("Preserve"), type: 'select', default: 'squareness',
+  options: [{ value: 'squareness', label: translateText("Squareness") }, { value: 'roundness', label: translateText("Roundness") }],
 };
 
 registerFilter({
@@ -308,7 +309,7 @@ registerFilter({
   name: 'Maximum...',
   menu: 'Other',
   params: [
-    { key: 'radius', label: 'Radius', type: 'slider', min: 0, max: 100, step: 1, default: 3, unit: 'px' },
+    { key: 'radius', label: translateText("Radius"), type: 'slider', min: 0, max: 100, step: 1, default: 3, unit: 'px' },
     { ...PRESERVE_PARAM },
   ],
   apply(imageData, p) {
@@ -321,7 +322,7 @@ registerFilter({
   name: 'Minimum...',
   menu: 'Other',
   params: [
-    { key: 'radius', label: 'Radius', type: 'slider', min: 0, max: 100, step: 1, default: 3, unit: 'px' },
+    { key: 'radius', label: translateText("Radius"), type: 'slider', min: 0, max: 100, step: 1, default: 3, unit: 'px' },
     { ...PRESERVE_PARAM },
   ],
   apply(imageData, p) {
@@ -338,14 +339,14 @@ registerFilter({
   name: 'Offset...',
   menu: 'Other',
   params: [
-    { key: 'horizontal', label: 'Horizontal', type: 'number', min: -30000, max: 30000, step: 1, default: 0, unit: 'px right' },
-    { key: 'vertical', label: 'Vertical', type: 'number', min: -30000, max: 30000, step: 1, default: 0, unit: 'px down' },
+    { key: 'horizontal', label: translateText("Horizontal"), type: 'number', min: -30000, max: 30000, step: 1, default: 0, unit: 'px right' },
+    { key: 'vertical', label: translateText("Vertical"), type: 'number', min: -30000, max: 30000, step: 1, default: 0, unit: 'px down' },
     {
-      key: 'undefinedAreas', label: 'Undefined Areas', type: 'radio', default: 'wrap',
+      key: 'undefinedAreas', label: translateText("Undefined Areas"), type: 'radio', default: 'wrap',
       options: [
-        { value: 'transparent', label: 'Set to Transparent' },
-        { value: 'repeat', label: 'Repeat Edge Pixels' },
-        { value: 'wrap', label: 'Wrap Around' },
+        { value: 'transparent', label: translateText("Set to Transparent") },
+        { value: 'repeat', label: translateText("Repeat Edge Pixels") },
+        { value: 'wrap', label: translateText("Wrap Around") },
       ],
     },
   ],
@@ -388,7 +389,7 @@ registerFilter({
   dialogWidth: 340,
   params: [
     {
-      key: 'mode', label: 'Conversion', type: 'select', default: 'rgb2hsb',
+      key: 'mode', label: translateText("Conversion"), type: 'select', default: 'rgb2hsb',
       options: [
         { value: 'rgb2hsb', label: 'RGB → HSB' },
         { value: 'rgb2hsl', label: 'RGB → HSL' },

@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { createCanvas, cloneCanvas, clamp, deg2rad, ctx2dRead } from '../core/util.js';
 import { isNativeBlend, gcoFor, blendCPU } from '../core/blend.js';
 import { toCss } from '../core/color.js';
@@ -587,13 +588,13 @@ function mulberry(seed) {
 /** Shared option descriptors so every paint tool's options bar matches. */
 export function brushOptionDescriptors({ opacity = true, flow = true, smoothing = true, airbrush = true } = {}) {
   const list = [
-    { key: 'size', label: 'Size', type: 'slider', min: 1, max: 2500, step: 1, default: 30, unit: 'px' },
-    { key: 'hardness', label: 'Hardness', type: 'slider', min: 0, max: 100, step: 1, default: 85, unit: '%' },
+    { key: 'size', label: translateText("Size"), type: 'slider', min: 1, max: 2500, step: 1, default: 30, unit: 'px' },
+    { key: 'hardness', label: translateText("Hardness"), type: 'slider', min: 0, max: 100, step: 1, default: 85, unit: '%' },
   ];
-  if (opacity) list.push({ key: 'opacity', label: 'Opacity', type: 'slider', min: 0, max: 100, step: 1, default: 100, unit: '%' });
-  if (flow) list.push({ key: 'flow', label: 'Flow', type: 'slider', min: 1, max: 100, step: 1, default: 100, unit: '%' });
-  if (smoothing) list.push({ key: 'smoothing', label: 'Smoothing', type: 'slider', min: 0, max: 100, step: 1, default: 20, unit: '%' });
-  if (airbrush) list.push({ key: 'airbrush', label: 'Airbrush', type: 'checkbox', default: false });
+  if (opacity) list.push({ key: 'opacity', label: translateText("Opacity"), type: 'slider', min: 0, max: 100, step: 1, default: 100, unit: '%' });
+  if (flow) list.push({ key: 'flow', label: translateText("Flow"), type: 'slider', min: 1, max: 100, step: 1, default: 100, unit: '%' });
+  if (smoothing) list.push({ key: 'smoothing', label: translateText("Smoothing"), type: 'slider', min: 0, max: 100, step: 1, default: 20, unit: '%' });
+  if (airbrush) list.push({ key: 'airbrush', label: translateText("Airbrush"), type: 'checkbox', default: false });
   return list;
 }
 

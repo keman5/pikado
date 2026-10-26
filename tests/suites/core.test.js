@@ -824,9 +824,13 @@ suite('core / aligning against other layers does not expand them', async (t) => 
   t.eq(others().filter((l) => l.tile).length, 7, 'the other layers start compact');
 
   const wasSnapping = app.snap;
+  const { tools } = await import('/src/tools/base.js');
+  const move = tools.get('move');
+  const wasAutoSelect = move.state.autoSelect;
   try {
     app.snap = true;
     app.setTool('move');
+    move.state.autoSelect = false;
     const base = { shiftKey: false, ctrlKey: false, metaKey: false, button: 0 };
     app.tool.onPointerDown({ ...base, x: 140, y: 240 });
     app.tool.onPointerMove({ ...base, x: 200, y: 240 });
@@ -836,6 +840,7 @@ suite('core / aligning against other layers does not expand them', async (t) => 
       'and are still compact after a drag that measured every one of them');
   } finally {
     app.snap = wasSnapping;
+    move.state.autoSelect = wasAutoSelect;
   }
 });
 

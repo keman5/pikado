@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 /**
  * Text layout, rasterisation and warping.
  *
@@ -27,14 +28,14 @@ import { createCanvas, ctx2d, clamp } from '../core/util.js';
 import { fontCssString, fontMetrics, measureRun, measureChars, normalizeFontId } from './fonts.js';
 
 export const WARP_STYLES = [
-  { value: 'none', label: 'None' },
-  { value: 'arc', label: 'Arc' },
-  { value: 'arch', label: 'Arch' },
-  { value: 'bulge', label: 'Bulge' },
-  { value: 'flag', label: 'Flag' },
-  { value: 'wave', label: 'Wave' },
-  { value: 'fish', label: 'Fish' },
-  { value: 'rise', label: 'Rise' },
+  { value: 'none', label: translateText("None") },
+  { value: 'arc', label: translateText("Arc") },
+  { value: 'arch', label: translateText("Arch") },
+  { value: 'bulge', label: translateText("Bulge") },
+  { value: 'flag', label: translateText("Flag") },
+  { value: 'wave', label: translateText("Wave") },
+  { value: 'fish', label: translateText("Fish") },
+  { value: 'rise', label: translateText("Rise") },
 ];
 
 /** Defaults for a brand new text layer. */

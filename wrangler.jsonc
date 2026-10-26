@@ -1,0 +1,8 @@
+{
+  "name": "pikado-zh",
+  "account_id": "1b141aa7926dded899acf369e71e8aa8",
+  "compatibility_date": "2026-10-26",
+  "workers_dev": true,
+  "assets": { "directory": "./dist" },
+  "routes": [{ "pattern": "ps.macseek.cc", "custom_domain": true }]
+}

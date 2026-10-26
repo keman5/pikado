@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 /**
  * Filter > Noise — Add Noise, Despeckle, Dust & Scratches, Median and
  * Reduce Noise.
@@ -204,13 +205,13 @@ registerFilter({
   name: 'Add Noise...',
   menu: 'Noise',
   params: [
-    { key: 'amount', label: 'Amount', type: 'slider', min: 0.1, max: 400, step: 0.1, default: 12.5, unit: '%' },
-    { key: 'distribution', label: 'Distribution', type: 'radio', default: 'uniform', options: [
-      { value: 'uniform', label: 'Uniform' },
-      { value: 'gaussian', label: 'Gaussian' },
+    { key: 'amount', label: translateText("Amount"), type: 'slider', min: 0.1, max: 400, step: 0.1, default: 12.5, unit: '%' },
+    { key: 'distribution', label: translateText("Distribution"), type: 'radio', default: 'uniform', options: [
+      { value: 'uniform', label: translateText("Uniform") },
+      { value: 'gaussian', label: translateText("Gaussian") },
     ] },
-    { key: 'monochromatic', label: 'Monochromatic', type: 'checkbox', default: false },
-    { key: 'seed', label: 'Seed', type: 'number', min: 0, max: 99999, step: 1, default: 1 },
+    { key: 'monochromatic', label: translateText("Monochromatic"), type: 'checkbox', default: false },
+    { key: 'seed', label: translateText("Seed"), type: 'number', min: 0, max: 99999, step: 1, default: 1 },
   ],
   apply(imageData, p) {
     const d = imageData.data;
@@ -276,8 +277,8 @@ registerFilter({
   name: 'Dust & Scratches...',
   menu: 'Noise',
   params: [
-    { key: 'radius', label: 'Radius', type: 'slider', min: 1, max: 100, step: 1, default: 2, unit: 'px' },
-    { key: 'threshold', label: 'Threshold', type: 'slider', min: 0, max: 255, step: 1, default: 12, unit: 'levels' },
+    { key: 'radius', label: translateText("Radius"), type: 'slider', min: 1, max: 100, step: 1, default: 2, unit: 'px' },
+    { key: 'threshold', label: translateText("Threshold"), type: 'slider', min: 0, max: 255, step: 1, default: 12, unit: 'levels' },
   ],
   apply(imageData, p) {
     const orig = new Uint8ClampedArray(imageData.data);
@@ -304,7 +305,7 @@ registerFilter({
   name: 'Median...',
   menu: 'Noise',
   params: [
-    { key: 'radius', label: 'Radius', type: 'slider', min: 1, max: 100, step: 1, default: 3, unit: 'px' },
+    { key: 'radius', label: translateText("Radius"), type: 'slider', min: 1, max: 100, step: 1, default: 3, unit: 'px' },
   ],
   apply(imageData, p) {
     medianFilterImage(imageData, p.radius);
@@ -317,10 +318,10 @@ registerFilter({
   menu: 'Noise',
   dialogWidth: 420,
   params: [
-    { key: 'strength', label: 'Strength', type: 'slider', min: 0, max: 10, step: 1, default: 5 },
-    { key: 'preserveDetails', label: 'Preserve Details', type: 'slider', min: 0, max: 100, step: 1, default: 60, unit: '%' },
-    { key: 'reduceColorNoise', label: 'Reduce Color Noise', type: 'slider', min: 0, max: 100, step: 1, default: 45, unit: '%' },
-    { key: 'sharpenDetails', label: 'Sharpen Details', type: 'slider', min: 0, max: 100, step: 1, default: 25, unit: '%' },
+    { key: 'strength', label: translateText("Strength"), type: 'slider', min: 0, max: 10, step: 1, default: 5 },
+    { key: 'preserveDetails', label: translateText("Preserve Details"), type: 'slider', min: 0, max: 100, step: 1, default: 60, unit: '%' },
+    { key: 'reduceColorNoise', label: translateText("Reduce Color Noise"), type: 'slider', min: 0, max: 100, step: 1, default: 45, unit: '%' },
+    { key: 'sharpenDetails', label: translateText("Sharpen Details"), type: 'slider', min: 0, max: 100, step: 1, default: 25, unit: '%' },
   ],
   apply(imageData, p) {
     const w = imageData.width, h = imageData.height, d = imageData.data;

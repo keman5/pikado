@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { registerTool } from './base.js';
 import { app } from '../core/app.js';
 import { EffectStroke, brushOptionDescriptors, brushFromOptions } from '../paint/brush-engine.js';
@@ -26,7 +27,7 @@ class BlurTool extends BrushToolBase {
       strokeLabel: 'Blur',
       options: [
         ...tweakDefaults(FOCUS_OPTIONS(), { size: 40, hardness: 0 }),
-        { key: 'strength', label: 'Strength', type: 'slider', min: 0, max: 100, step: 1, default: 50, unit: '%' },
+        { key: 'strength', label: translateText("Strength"), type: 'slider', min: 0, max: 100, step: 1, default: 50, unit: '%' },
       ],
     });
   }
@@ -63,8 +64,8 @@ class SharpenTool extends BrushToolBase {
       strokeLabel: 'Sharpen',
       options: [
         ...tweakDefaults(FOCUS_OPTIONS(), { size: 40, hardness: 0 }),
-        { key: 'strength', label: 'Strength', type: 'slider', min: 0, max: 100, step: 1, default: 50, unit: '%' },
-        { key: 'protectDetail', label: 'Protect Detail', type: 'checkbox', default: true,
+        { key: 'strength', label: translateText("Strength"), type: 'slider', min: 0, max: 100, step: 1, default: 50, unit: '%' },
+        { key: 'protectDetail', label: translateText("Protect Detail"), type: 'checkbox', default: true,
           hint: 'Softer radius that resists halos and noise' },
       ],
     });
@@ -111,8 +112,8 @@ class SmudgeTool extends BrushToolBase {
       strokeLabel: 'Smudge',
       options: [
         ...tweakDefaults(FOCUS_OPTIONS(), { size: 40, hardness: 0, smoothing: 30 }),
-        { key: 'strength', label: 'Strength', type: 'slider', min: 0, max: 100, step: 1, default: 50, unit: '%' },
-        { key: 'fingerPainting', label: 'Finger Painting', type: 'checkbox', default: false,
+        { key: 'strength', label: translateText("Strength"), type: 'slider', min: 0, max: 100, step: 1, default: 50, unit: '%' },
+        { key: 'fingerPainting', label: translateText("Finger Painting"), type: 'checkbox', default: false,
           hint: 'Start the smear with the foreground colour' },
       ],
     });

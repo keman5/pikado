@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { app } from '../core/app.js';
 import {
   isSmartLayer, getSmartTransform, getSmartPerspective, getSmartWarp, setSmartTransform,
@@ -369,8 +370,8 @@ export function transformContextMenu() {
     cmd('edit.transform.flip-h'),
     cmd('edit.transform.flip-v'),
     sep(),
-    { label: 'Apply', accel: 'Enter', run: () => commitTransform() },
-    { label: 'Cancel', accel: 'Esc', run: () => cancelTransform() },
+    { label: translateText("Apply"), accel: 'Enter', run: () => commitTransform() },
+    { label: translateText("Cancel"), accel: 'Esc', run: () => cancelTransform() },
   ];
 }
 

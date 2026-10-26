@@ -1,3 +1,4 @@
+import { t as translateText } from '../../i18n/index.js';
 import './dialogs.css';
 import { app } from '../../core/app.js';
 import { el, formatBytes, clamp255 } from '../../core/util.js';
@@ -12,13 +13,13 @@ import { getPref } from './preferences.js';
  */
 
 const RESAMPLE_METHODS = [
-  { value: 'automatic', label: 'Automatic' },
-  { value: 'preserve-details', label: 'Preserve Details (enlargement)' },
-  { value: 'bicubic-smoother', label: 'Bicubic Smoother (enlargement)' },
-  { value: 'bicubic-sharper', label: 'Bicubic Sharper (reduction)' },
-  { value: 'bicubic', label: 'Bicubic (smooth gradients)' },
-  { value: 'nearest', label: 'Nearest Neighbor (hard edges)' },
-  { value: 'bilinear', label: 'Bilinear' },
+  { value: 'automatic', label: translateText("Automatic") },
+  { value: 'preserve-details', label: translateText("Preserve Details (enlargement)") },
+  { value: 'bicubic-smoother', label: translateText("Bicubic Smoother (enlargement)") },
+  { value: 'bicubic-sharper', label: translateText("Bicubic Sharper (reduction)") },
+  { value: 'bicubic', label: translateText("Bicubic (smooth gradients)") },
+  { value: 'nearest', label: translateText("Nearest Neighbor (hard edges)") },
+  { value: 'bilinear', label: translateText("Bilinear") },
 ];
 
 /** How each method maps onto canvas smoothing + an optional sharpening pass. */
@@ -84,15 +85,15 @@ export async function showImageSizeDialog(doc = app.activeDoc) {
     method: 'automatic',
   };
 
-  const dlg = new Dialog({ title: 'Image Size', width: 520, className: 'pkd-imagesize' });
+  const dlg = new Dialog({ title: translateText("Image Size"), width: 520, className: 'pkd-imagesize' });
 
-  const units = [...UNIT_OPTIONS, { value: 'percent', label: 'Percent' }];
+  const units = [...UNIT_OPTIONS, { value: 'percent', label: translateText("Percent") }];
   const widthInput = el('input.pk-input', { type: 'number', min: 0.001, step: 1 });
   const heightInput = el('input.pk-input', { type: 'number', min: 0.001, step: 1 });
   const unitSelect = el('select.pk-select', {}, ...units.map((u) => el('option', { value: u.value, text: u.label })));
   const resInput = el('input.pk-input', { type: 'number', min: 1, step: 1 });
   const resSelect = el('select.pk-select', {}, ...RES_UNITS.map((u) => el('option', { value: u.value, text: u.label })));
-  const chain = el('button.pkd-chain.on', { type: 'button', title: 'Constrain proportions' });
+  const chain = el('button.pkd-chain.on', { type: 'button', title: translateText("Constrain proportions") });
   const resampleInput = el('input', { type: 'checkbox', checked: true });
   const methodSelect = el('select.pk-select', {}, ...RESAMPLE_METHODS.map((m) => el('option', { value: m.value, text: m.label })));
 
@@ -218,7 +219,7 @@ export async function showImageSizeDialog(doc = app.activeDoc) {
     );
   }
 
-  const field = (label, ...nodes) => el('div.pk-field', {}, el('label', { text: label }), ...nodes);
+  const field = (label, ...nodes) => el('div.pk-field', {}, el('label', { text: translateText(label) }), ...nodes);
 
   dlg.setBody(
     el('div.pkd-cols', {},
@@ -230,13 +231,13 @@ export async function showImageSizeDialog(doc = app.activeDoc) {
             field('Height', heightInput)
           ),
           chain,
-          el('div.pk-field.fixed', {}, el('label', { text: 'Units' }), unitSelect)
+          el('div.pk-field.fixed', {}, el('label', { text: translateText("Units") }), unitSelect)
         ),
         el('div.pkd-row', {},
           field('Resolution', resInput),
           el('div.pk-field', {}, el('label', { text: ' ' }), resSelect)
         ),
-        el('div.pk-field.inline', {}, el('label.pk-check', {}, resampleInput, el('span', { text: 'Resample' }))),
+        el('div.pk-field.inline', {}, el('label.pk-check', {}, resampleInput, el('span', { text: translateText("Resample") }))),
         field('Method', methodSelect),
         el('div.pkd-note', { text: 'With Resample off the pixels are untouched — only the print size and resolution change.' })
       )
@@ -244,8 +245,8 @@ export async function showImageSizeDialog(doc = app.activeDoc) {
   );
 
   dlg.setButtons([
-    { label: 'Cancel', value: null, subtle: true },
-    { label: 'OK', primary: true, onClick: (d) => { d.close({ ...state }); return false; } },
+    { label: translateText("Cancel"), value: null, subtle: true },
+    { label: translateText("OK"), primary: true, onClick: (d) => { d.close({ ...state }); return false; } },
   ]);
 
   sync();
@@ -265,7 +266,7 @@ export async function showImageSizeDialog(doc = app.activeDoc) {
   const changedRes = Math.abs(result.res - origRes) > 1e-6;
   if (!changedPixels && !changedRes) return null;
 
-  await app.busy('Image Size', async () => {
+  await app.busy(translateText("Image Size"), async () => {
     if (changedPixels) {
       const { smoothing, sharpen } = methodSettings(result.method);
       doc.resample(result.w, result.h, smoothing);

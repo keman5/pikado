@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { app } from '../core/app.js';
 import { getComposite, flattenLayers } from '../render/compositor.js';
 import { createCanvas, ctx2d, ctx2dRead, download } from '../core/util.js';
@@ -12,7 +13,7 @@ import { writeICNS } from './icns.js';
 /**
  * Saving and exporting.
  *
- * Saving writes the lossless `.pkd` project; exporting renders the composite
+ * Save As defaults to layered PSD and also supports lossless PKD; exporting renders the composite
  * (or one file per top-level layer) to PNG/JPEG/WebP/HEIC/ICNS, or hands off to
  * the PSD and SVG writers.
  */
@@ -68,6 +69,17 @@ function pickerSupported() {
   return typeof window !== 'undefined' && typeof window.showSaveFilePicker === 'function';
 }
 
+function projectFormat(name) {
+  const ext = /\.(psd|pkd)$/i.exec(name || '');
+  return ext ? ext[1].toLowerCase() : null;
+}
+
+function encodeProject(doc, format) {
+  if (format === 'psd') return writePSD(doc);
+  if (format === 'pkd') return savePKD(doc);
+  throw new Error(translateText('Choose a .psd or .pkd filename.'));
+}
+
 async function writeToHandle(handle, blob) {
   const writable = await handle.createWritable();
   await writable.write(blob);
@@ -82,11 +94,13 @@ async function writeToHandle(handle, blob) {
 export async function saveDocument(doc) {
   if (!doc) return false;
   if (!doc.fileHandle || typeof doc.fileHandle.createWritable !== 'function') return saveDocumentAs(doc);
-  return app.busy('Saving…', async () => {
-    const blob = await savePKD(doc);
+  const format = projectFormat(doc.fileHandle.name || doc.filePath);
+  if (!format) return saveDocumentAs(doc);
+  return app.busy(translateText('Saving…'), async () => {
+    const blob = await encodeProject(doc, format);
     await writeToHandle(doc.fileHandle, blob);
     doc.dirty = false;
-    app.toast(`Saved ${doc.name}`, 'ok');
+    app.toast(translateText('Saved {0}', doc.name), 'ok');
     app.emit('doc-change', doc);
     return true;
   });
@@ -100,39 +114,43 @@ export async function saveDocument(doc) {
  */
 export async function saveDocumentAs(doc) {
   if (!doc) return false;
-  const suggested = `${baseName(doc.name)}.pkd`;
+  const suggested = `${baseName(doc.name)}.psd`;
 
   if (pickerSupported()) {
     let handle;
     try {
       handle = await window.showSaveFilePicker({
         suggestedName: suggested,
-        types: [{ description: 'Pikado project', accept: { 'application/x-pikado': ['.pkd'] } }],
+        types: [
+          { description: translateText('Photoshop document'), accept: { 'image/vnd.adobe.photoshop': ['.psd'] } },
+          { description: translateText('Pikado project'), accept: { 'application/x-pikado': ['.pkd'] } },
+        ],
+        excludeAcceptAllOption: true,
       });
     } catch (err) {
       if (err && err.name === 'AbortError') return false;
       handle = null;
     }
     if (handle) {
-      return app.busy('Saving…', async () => {
-        const blob = await savePKD(doc);
+      return app.busy(translateText('Saving…'), async () => {
+        const blob = await encodeProject(doc, projectFormat(handle.name || suggested));
         await writeToHandle(handle, blob);
         doc.fileHandle = handle;
         doc.filePath = handle.name || suggested;
         doc.name = baseName(handle.name || doc.name);
         doc.dirty = false;
-        app.toast(`Saved ${doc.name}`, 'ok');
+        app.toast(translateText('Saved {0}', doc.name), 'ok');
         app.emit('docs-change');
         return true;
       });
     }
   }
 
-  return app.busy('Saving…', async () => {
-    const blob = await savePKD(doc);
+  return app.busy(translateText('Saving…'), async () => {
+    const blob = await writePSD(doc);
     download(blob, suggested);
     doc.dirty = false;
-    app.toast(`Saved ${suggested}`, 'ok');
+    app.toast(translateText('Saved {0}', suggested), 'ok');
     return true;
   });
 }

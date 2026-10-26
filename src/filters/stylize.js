@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { registerFilter, makeRandom, separableConvolve, gaussianKernel } from './registry.js';
 import { app } from '../core/app.js';
 import { createCanvas, imageDataToCanvas, getImageData, clamp, clamp255, deg2rad, lerp } from '../core/util.js';
@@ -61,15 +62,15 @@ registerFilter({
   menu: 'Stylize',
   params: [
     {
-      key: 'mode', label: 'Mode', type: 'select', default: 'normal',
+      key: 'mode', label: translateText("Mode"), type: 'select', default: 'normal',
       options: [
-        { value: 'normal', label: 'Normal' },
-        { value: 'darken', label: 'Darken Only' },
-        { value: 'lighten', label: 'Lighten Only' },
-        { value: 'anisotropic', label: 'Anisotropic' },
+        { value: 'normal', label: translateText("Normal") },
+        { value: 'darken', label: translateText("Darken Only") },
+        { value: 'lighten', label: translateText("Lighten Only") },
+        { value: 'anisotropic', label: translateText("Anisotropic") },
       ],
     },
-    { key: 'amount', label: 'Amount', type: 'slider', min: 1, max: 100, step: 1, default: 25 },
+    { key: 'amount', label: translateText("Amount"), type: 'slider', min: 1, max: 100, step: 1, default: 25 },
   ],
   apply(imageData, p) {
     const { width: w, height: h, data } = imageData;
@@ -126,9 +127,9 @@ registerFilter({
   name: 'Emboss...',
   menu: 'Stylize',
   params: [
-    { key: 'angle', label: 'Angle', type: 'angle', default: 135 },
-    { key: 'height', label: 'Height', type: 'slider', min: 1, max: 100, step: 1, default: 3, unit: 'px' },
-    { key: 'amount', label: 'Amount', type: 'slider', min: 1, max: 500, step: 1, default: 100, unit: '%' },
+    { key: 'angle', label: translateText("Angle"), type: 'angle', default: 135 },
+    { key: 'height', label: translateText("Height"), type: 'slider', min: 1, max: 100, step: 1, default: 3, unit: 'px' },
+    { key: 'amount', label: translateText("Amount"), type: 'slider', min: 1, max: 500, step: 1, default: 100, unit: '%' },
   ],
   apply(imageData, p) {
     const { width: w, height: h, data } = imageData;
@@ -166,17 +167,17 @@ registerFilter({
   dialogWidth: 380,
   params: [
     {
-      key: 'shape', label: 'Type', type: 'radio', default: 'blocks',
-      options: [{ value: 'blocks', label: 'Blocks' }, { value: 'pyramids', label: 'Pyramids' }],
+      key: 'shape', label: translateText("Type"), type: 'radio', default: 'blocks',
+      options: [{ value: 'blocks', label: translateText("Blocks") }, { value: 'pyramids', label: translateText("Pyramids") }],
     },
-    { key: 'size', label: 'Size', type: 'slider', min: 2, max: 255, step: 1, default: 30, unit: 'px' },
-    { key: 'depth', label: 'Depth', type: 'slider', min: 1, max: 255, step: 1, default: 30 },
+    { key: 'size', label: translateText("Size"), type: 'slider', min: 2, max: 255, step: 1, default: 30, unit: 'px' },
+    { key: 'depth', label: translateText("Depth"), type: 'slider', min: 1, max: 255, step: 1, default: 30 },
     {
-      key: 'depthMode', label: 'Depth Mode', type: 'radio', default: 'random',
-      options: [{ value: 'random', label: 'Random' }, { value: 'level', label: 'Level-based' }],
+      key: 'depthMode', label: translateText("Depth Mode"), type: 'radio', default: 'random',
+      options: [{ value: 'random', label: translateText("Random") }, { value: 'level', label: translateText("Level-based") }],
     },
-    { key: 'solidFront', label: 'Solid Front Faces', type: 'checkbox', default: false, when: (s) => s.shape === 'blocks' },
-    { key: 'maskIncomplete', label: 'Mask Incomplete Blocks', type: 'checkbox', default: false },
+    { key: 'solidFront', label: translateText("Solid Front Faces"), type: 'checkbox', default: false, when: (s) => s.shape === 'blocks' },
+    { key: 'maskIncomplete', label: translateText("Mask Incomplete Blocks"), type: 'checkbox', default: false },
   ],
   apply(imageData, p) {
     const w = imageData.width, h = imageData.height;
@@ -324,9 +325,9 @@ registerFilter({
   name: 'Glowing Edges...',
   menu: 'Stylize',
   params: [
-    { key: 'edgeWidth', label: 'Edge Width', type: 'slider', min: 1, max: 14, step: 1, default: 2 },
-    { key: 'edgeBrightness', label: 'Edge Brightness', type: 'slider', min: 0, max: 20, step: 1, default: 6 },
-    { key: 'smoothness', label: 'Smoothness', type: 'slider', min: 1, max: 15, step: 1, default: 5 },
+    { key: 'edgeWidth', label: translateText("Edge Width"), type: 'slider', min: 1, max: 14, step: 1, default: 2 },
+    { key: 'edgeBrightness', label: translateText("Edge Brightness"), type: 'slider', min: 0, max: 20, step: 1, default: 6 },
+    { key: 'smoothness', label: translateText("Smoothness"), type: 'slider', min: 1, max: 15, step: 1, default: 5 },
   ],
   apply(imageData, p) {
     const { width: w, height: h, data } = imageData;
@@ -367,13 +368,13 @@ registerFilter({
   menu: 'Stylize',
   dialogWidth: 380,
   params: [
-    { key: 'stylization', label: 'Stylization', type: 'slider', min: 0.1, max: 10, step: 0.1, default: 5 },
-    { key: 'cleanliness', label: 'Cleanliness', type: 'slider', min: 0, max: 10, step: 0.1, default: 5 },
-    { key: 'scale', label: 'Scale', type: 'slider', min: 1, max: 8, step: 1, default: 3 },
-    { key: 'bristleDetail', label: 'Bristle Detail', type: 'slider', min: 0, max: 10, step: 0.1, default: 5 },
+    { key: 'stylization', label: translateText("Stylization"), type: 'slider', min: 0.1, max: 10, step: 0.1, default: 5 },
+    { key: 'cleanliness', label: translateText("Cleanliness"), type: 'slider', min: 0, max: 10, step: 0.1, default: 5 },
+    { key: 'scale', label: translateText("Scale"), type: 'slider', min: 1, max: 8, step: 1, default: 3 },
+    { key: 'bristleDetail', label: translateText("Bristle Detail"), type: 'slider', min: 0, max: 10, step: 0.1, default: 5 },
     { type: 'separator' },
-    { key: 'shine', label: 'Shine', type: 'slider', min: 0, max: 10, step: 0.1, default: 2 },
-    { key: 'angularDirection', label: 'Angular Direction', type: 'angle', default: 45 },
+    { key: 'shine', label: translateText("Shine"), type: 'slider', min: 0, max: 10, step: 0.1, default: 2 },
+    { key: 'angularDirection', label: translateText("Angular Direction"), type: 'angle', default: 45 },
   ],
   apply(imageData, p) {
     const { width: w, height: h, data } = imageData;
@@ -506,15 +507,15 @@ registerFilter({
   menu: 'Stylize',
   dialogWidth: 380,
   params: [
-    { key: 'tiles', label: 'Number Of Tiles', type: 'slider', min: 1, max: 99, step: 1, default: 10 },
-    { key: 'maxOffset', label: 'Maximum Offset', type: 'slider', min: 1, max: 99, step: 1, default: 10, unit: '%' },
+    { key: 'tiles', label: translateText("Number Of Tiles"), type: 'slider', min: 1, max: 99, step: 1, default: 10 },
+    { key: 'maxOffset', label: translateText("Maximum Offset"), type: 'slider', min: 1, max: 99, step: 1, default: 10, unit: '%' },
     {
-      key: 'fill', label: 'Fill Empty Area With', type: 'radio', default: 'background',
+      key: 'fill', label: translateText("Fill Empty Area With"), type: 'radio', default: 'background',
       options: [
-        { value: 'background', label: 'Background Color' },
-        { value: 'foreground', label: 'Foreground Color' },
-        { value: 'inverse', label: 'Inverse Image' },
-        { value: 'unaltered', label: 'Unaltered Image' },
+        { value: 'background', label: translateText("Background Color") },
+        { value: 'foreground', label: translateText("Foreground Color") },
+        { value: 'inverse', label: translateText("Inverse Image") },
+        { value: 'unaltered', label: translateText("Unaltered Image") },
       ],
     },
   ],
@@ -567,10 +568,10 @@ registerFilter({
   name: 'Trace Contour...',
   menu: 'Stylize',
   params: [
-    { key: 'level', label: 'Level', type: 'slider', min: 0, max: 255, step: 1, default: 128 },
+    { key: 'level', label: translateText("Level"), type: 'slider', min: 0, max: 255, step: 1, default: 128 },
     {
-      key: 'edge', label: 'Edge', type: 'radio', default: 'lower',
-      options: [{ value: 'lower', label: 'Lower' }, { value: 'upper', label: 'Upper' }],
+      key: 'edge', label: translateText("Edge"), type: 'radio', default: 'lower',
+      options: [{ value: 'lower', label: translateText("Lower") }, { value: 'upper', label: translateText("Upper") }],
     },
   ],
   apply(imageData, p) {
@@ -611,12 +612,12 @@ registerFilter({
   menu: 'Stylize',
   params: [
     {
-      key: 'method', label: 'Method', type: 'radio', default: 'wind',
-      options: [{ value: 'wind', label: 'Wind' }, { value: 'blast', label: 'Blast' }, { value: 'stagger', label: 'Stagger' }],
+      key: 'method', label: translateText("Method"), type: 'radio', default: 'wind',
+      options: [{ value: 'wind', label: translateText("Wind") }, { value: 'blast', label: translateText("Blast") }, { value: 'stagger', label: translateText("Stagger") }],
     },
     {
-      key: 'direction', label: 'Direction', type: 'radio', default: 'right',
-      options: [{ value: 'right', label: 'From The Right' }, { value: 'left', label: 'From The Left' }],
+      key: 'direction', label: translateText("Direction"), type: 'radio', default: 'right',
+      options: [{ value: 'right', label: translateText("From The Right") }, { value: 'left', label: translateText("From The Left") }],
     },
   ],
   apply(imageData, p) {

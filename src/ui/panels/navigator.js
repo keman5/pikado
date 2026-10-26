@@ -1,3 +1,4 @@
+import { t as translateText } from '../../i18n/index.js';
 import { registerPanel } from '../panel-host.js';
 import { app } from '../../core/app.js';
 import { el, clamp, createCanvas } from '../../core/util.js';
@@ -25,7 +26,7 @@ const scaleToSlider = (s) => clamp(((Math.log(clamp(s, MIN_SCALE, MAX_SCALE)) - 
 
 registerPanel({
   id: 'navigator',
-  title: 'Navigator',
+  title: translateText("Navigator"),
   icon: 'navigator',
   group: 'bottom',
   order: 2,
@@ -205,15 +206,15 @@ registerPanel({
     pct.addEventListener('keydown', (e) => { if (e.key === 'Enter') commitPct(); });
 
     const zoomOut = el('button.pk-icon-btn', {
-      type: 'button', title: 'Zoom out',
+      type: 'button', title: translateText("Zoom out"),
       onclick: () => { if (app.activeDoc) { app.viewport.zoomStep(-1); app.emit('view-change'); app.requestRender(); syncZoom(); paint(); } },
     }, iconEl('minus'));
     const zoomIn = el('button.pk-icon-btn', {
-      type: 'button', title: 'Zoom in',
+      type: 'button', title: translateText("Zoom in"),
       onclick: () => { if (app.activeDoc) { app.viewport.zoomStep(1); app.emit('view-change'); app.requestRender(); syncZoom(); paint(); } },
     }, iconEl('plus'));
     const fitBtn = el('button.pk-icon-btn', {
-      type: 'button', title: 'Fit on screen',
+      type: 'button', title: translateText("Fit on screen"),
       onclick: () => { if (app.activeDoc) { app.fitView(); syncZoom(); paint(); } },
     }, iconEl('navigator'));
 

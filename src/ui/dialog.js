@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { el } from '../core/util.js';
 import { toHex, parseColor } from '../core/color.js';
 import { OVERLAY } from './brand.js';
@@ -37,8 +38,8 @@ export class Dialog {
     this.overlay = el('div.pk-dialog-overlay');
     this.root = el('div.pk-dialog' + (className ? `.${className}` : ''), { style: { width: `${width}px` } });
     this.header = el('div.pk-dialog-header', {},
-      el('span.pk-dialog-title', { text: title }),
-      el('button.pk-dialog-close', { title: 'Close', onclick: () => this.close(null) }, '×')
+      el('span.pk-dialog-title', { text: translateText(title) }),
+      el('button.pk-dialog-close', { title: translateText("Close"), onclick: () => this.close(null) }, '×')
     );
     this.body = el('div.pk-dialog-body');
     this.footer = el('div.pk-dialog-footer');
@@ -152,7 +153,7 @@ export class Dialog {
 export function alertDialog(message, title = 'Pikado') {
   const d = new Dialog({ title, width: 340 });
   d.setBody(el('p.pk-msg', { text: message }));
-  d.setButtons([{ label: 'OK', value: true, primary: true }]);
+  d.setButtons([{ label: translateText("OK"), value: true, primary: true }]);
   return d.open();
 }
 
@@ -172,7 +173,7 @@ export function confirmDialog(message, title = 'Pikado', okLabel = 'OK', opts = 
   const d = new Dialog({ title, width: 360 });
   d.setBody(el('p.pk-msg', { text: message }));
   d.setButtons([
-    { label: 'Cancel', value: false, subtle: true },
+    { label: translateText("Cancel"), value: false, subtle: true },
     { label: okLabel, value: true, primary: !opts.danger, danger: !!opts.danger },
   ]);
   return d.open();
@@ -183,8 +184,8 @@ export function promptDialog(message, initial = '', title = 'Pikado') {
   const input = el('input.pk-input', { type: 'text', value: initial });
   d.setBody(el('div.pk-field', {}, el('label', { text: message }), input));
   d.setButtons([
-    { label: 'Cancel', value: null, subtle: true },
-    { label: 'OK', primary: true, onClick: (dlg) => { dlg.close(input.value); return false; } },
+    { label: translateText("Cancel"), value: null, subtle: true },
+    { label: translateText("OK"), primary: true, onClick: (dlg) => { dlg.close(input.value); return false; } },
   ]);
   const p = d.open();
   requestAnimationFrame(() => { input.focus(); input.select(); });
@@ -218,14 +219,14 @@ export function paramDialog({ title, params, state, width = 400, onPreview, onCo
         if (onPreview) onPreview(previewOn ? working : null);
       },
     }),
-    el('span', { text: 'Preview' })
+    el('span', { text: translateText("Preview") })
   );
 
   d.setBody(form.node);
   d.setButtons([
     ...(preview ? [] : []),
-    { label: 'Cancel', value: null, subtle: true },
-    { label: 'OK', primary: true, onClick: (dlg) => { dlg.close({ ...working }); return false; } },
+    { label: translateText("Cancel"), value: null, subtle: true },
+    { label: translateText("OK"), primary: true, onClick: (dlg) => { dlg.close({ ...working }); return false; } },
     ...extraButtons,
   ]);
   if (preview) d.footer.prepend(previewToggle);
@@ -279,10 +280,10 @@ function buildControl(p, state, onChange, controls) {
   const change = (v) => onChange(p.key, v);
 
   if (p.type === 'separator') return el('hr.pk-sep');
-  if (p.type === 'label') return el('div.pk-form-label', { text: p.label, class: p.className || '' });
+  if (p.type === 'label') return el('div.pk-form-label', { text: translateText(p.label), class: p.className || '' });
   if (p.type === 'custom') {
     const holder = el('div.pk-field.pk-custom');
-    if (p.label) holder.appendChild(el('label', { text: p.label }));
+    if (p.label) holder.appendChild(el('label', { text: translateText(p.label) }));
     const inner = el('div.pk-custom-body');
     holder.appendChild(inner);
     if (p.render) {
@@ -292,11 +293,11 @@ function buildControl(p, state, onChange, controls) {
     return holder;
   }
   if (p.type === 'button') {
-    return el('div.pk-field', {}, el('button.pk-btn.subtle', { text: p.label, onclick: () => p.onClick && p.onClick(state, onChange) }));
+    return el('div.pk-field', {}, el('button.pk-btn.subtle', { text: translateText(p.label), onclick: () => p.onClick && p.onClick(state, onChange) }));
   }
 
   const row = el('div.pk-field' + (p.type === 'checkbox' ? '.inline' : ''));
-  if (p.label && p.type !== 'checkbox') row.appendChild(el('label', { text: p.label, for: `pk_${p.key}` }));
+  if (p.label && p.type !== 'checkbox') row.appendChild(el('label', { text: translateText(p.label), for: `pk_${p.key}` }));
 
   switch (p.type) {
     case 'slider': {
@@ -361,7 +362,7 @@ function buildControl(p, state, onChange, controls) {
       const sel = el('select.pk-select', { id: `pk_${p.key}` });
       for (const o of p.options || []) {
         const val = typeof o === 'object' ? o.value : o;
-        const lab = typeof o === 'object' ? o.label : String(o);
+        const lab = translateText(typeof o === 'object' ? o.label : String(o));
         sel.appendChild(el('option', { value: val, text: lab }));
       }
       sel.value = state[p.key];
@@ -378,7 +379,7 @@ function buildControl(p, state, onChange, controls) {
       const group = el('div.pk-radio-group');
       for (const o of p.options || []) {
         const val = typeof o === 'object' ? o.value : o;
-        const lab = typeof o === 'object' ? o.label : String(o);
+        const lab = translateText(typeof o === 'object' ? o.label : String(o));
         const input = el('input', {
           type: 'radio', name: `pk_${p.key}`, value: val,
           checked: state[p.key] === val,
@@ -397,7 +398,7 @@ function buildControl(p, state, onChange, controls) {
     case 'checkbox': {
       const input = el('input', { type: 'checkbox', id: `pk_${p.key}`, checked: !!state[p.key] });
       input.addEventListener('change', () => change(input.checked));
-      row.appendChild(el('label.pk-check', {}, input, el('span', { text: p.label })));
+      row.appendChild(el('label.pk-check', {}, input, el('span', { text: translateText(p.label) })));
       controls.set(p.key, { sync: (v) => { input.checked = !!v; } });
       break;
     }

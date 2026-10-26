@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { PikaDocument } from './document.js';
 import { Layer, LayerType, createRasterLayer, setSmartSourceCloner } from './layer.js';
 import { app } from './app.js';
@@ -937,7 +938,7 @@ export function setSmartTransform(doc, layer, matrix, opts = {}) {
 /** Put the contents back at 1:1, unrotated, unwarped, at the document origin. */
 export function resetSmartTransform(doc, layer) {
   return setSmartTransform(doc, layer, IDENTITY_MATRIX.slice(), {
-    label: 'Reset Smart Transform',
+    label: translateText("Reset Smart Transform"),
     perspective: null,
     warp: null,
   });
@@ -953,7 +954,7 @@ export function clearSmartShape(doc, layer, what = { perspective: true, warp: tr
     app.toast('Select a Smart Object layer first.');
     return null;
   }
-  const opts = { label: 'Clear Smart Distortion' };
+  const opts = { label: translateText("Clear Smart Distortion") };
   if (what.perspective) opts.perspective = null;
   if (what.warp) opts.warp = null;
   return setSmartTransform(doc, layer, getSmartTransform(layer), opts);

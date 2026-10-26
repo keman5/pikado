@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { app } from '../core/app.js';
 import { el, uid, createCanvas, formatBytes, clamp } from '../core/util.js';
 import { registerCommand, registerCommands, getCommand } from './registry.js';
@@ -302,7 +303,7 @@ function pickFiles() {
 async function closeDoc(doc) {
   if (!doc) return false;
   if (doc.dirty && getPref('confirmBeforeClosing', true)) {
-    const ok = await confirmDialog(`"${doc.name}" has unsaved changes. Close it anyway?`, 'Close', 'Discard');
+    const ok = await confirmDialog(`"${doc.name}" has unsaved changes. Close it anyway?`, translateText("Close"), 'Discard');
     if (!ok) return false;
   }
   app.closeDocument(doc);
@@ -334,7 +335,7 @@ async function showFileInfo(doc) {
     el('span', { text: value })
   );
   const layers = doc.flatLayers();
-  const dlg = new Dialog({ title: 'File Info', width: 460 });
+  const dlg = new Dialog({ title: translateText("File Info"), width: 460 });
 
   const fields = {};
   const input = (key, label) => {
@@ -346,12 +347,12 @@ async function showFileInfo(doc) {
   desc.value = info.description || '';
 
   dlg.setBody(el('div', {},
-    el('div.pkd-section', { text: 'Description' }),
+    el('div.pkd-section', { text: translateText("Description") }),
     input('title', 'Document Title'),
     input('author', 'Author'),
-    el('div.pk-field', {}, el('label', { text: 'Description' }), desc),
+    el('div.pk-field', {}, el('label', { text: translateText("Description") }), desc),
     input('copyright', 'Copyright Notice'),
-    el('div.pkd-section', { text: 'Data' }),
+    el('div.pkd-section', { text: translateText("Data") }),
     stat('Dimensions', `${doc.width} × ${doc.height} px`),
     stat('Resolution', `${Math.round(doc.resolution || 72)} ppi`),
     stat('Print size', `${(doc.width / (doc.resolution || 72)).toFixed(2)} × ${(doc.height / (doc.resolution || 72)).toFixed(2)} in`),
@@ -365,8 +366,8 @@ async function showFileInfo(doc) {
     el('div.pkd-note', { text: 'Description fields are kept with the open document and written into .pkd projects.' })
   ));
   dlg.setButtons([
-    { label: 'Cancel', value: null, subtle: true },
-    { label: 'OK', primary: true, onClick: (d) => { d.close(true); return false; } },
+    { label: translateText("Cancel"), value: null, subtle: true },
+    { label: translateText("OK"), primary: true, onClick: (d) => { d.close(true); return false; } },
   ]);
   const ok = await dlg.open();
   if (!ok) return;
@@ -551,22 +552,22 @@ async function loadSelection(doc) {
   if (!sources.length) { app.toast('There is nothing to load a selection from.'); return; }
 
   const result = await paramDialog({
-    title: 'Load Selection',
+    title: translateText("Load Selection"),
     width: 380,
     preview: false,
     state: { source: sources[0].value, op: 'replace', invert: false },
     params: [
-      { key: 'source', label: 'Source', type: 'select', options: sources },
+      { key: 'source', label: translateText("Source"), type: 'select', options: sources },
       {
-        key: 'op', label: 'Operation', type: 'radio',
+        key: 'op', label: translateText("Operation"), type: 'radio',
         options: [
-          { value: 'replace', label: 'New Selection' },
-          { value: 'add', label: 'Add to Selection' },
-          { value: 'subtract', label: 'Subtract from Selection' },
-          { value: 'intersect', label: 'Intersect with Selection' },
+          { value: 'replace', label: translateText("New Selection") },
+          { value: 'add', label: translateText("Add to Selection") },
+          { value: 'subtract', label: translateText("Subtract from Selection") },
+          { value: 'intersect', label: translateText("Intersect with Selection") },
         ],
       },
-      { key: 'invert', label: 'Invert', type: 'checkbox' },
+      { key: 'invert', label: translateText("Invert"), type: 'checkbox' },
     ],
   });
   if (!result) return;
@@ -706,14 +707,14 @@ function layerViaSelection(doc, cut) {
 
 async function newFillLayer(doc, kind) {
   if (kind === 'solid') {
-    const c = await showColorPicker({ color: toHex(app.foreground), title: 'Color Fill' });
+    const c = await showColorPicker({ color: toHex(app.foreground), title: translateText("Color Fill") });
     if (!c) return;
     ops.addFillLayer(doc, 'solid', { color: toCss(c) });
     return;
   }
   if (kind === 'gradient') {
     const result = await paramDialog({
-      title: 'Gradient Fill',
+      title: translateText("Gradient Fill"),
       width: 420,
       preview: false,
       state: {
@@ -721,8 +722,8 @@ async function newFillLayer(doc, kind) {
         angle: 90,
       },
       params: [
-        gradientParam({ key: 'gradient', label: 'Gradient' }),
-        { key: 'angle', label: 'Angle', type: 'angle' },
+        gradientParam({ key: 'gradient', label: translateText("Gradient") }),
+        { key: 'angle', label: translateText("Angle"), type: 'angle' },
       ],
     });
     if (!result) return;
@@ -733,13 +734,13 @@ async function newFillLayer(doc, kind) {
   const patterns = getPatterns();
   if (!patterns.length) { app.toast('No patterns available — use Edit > Define Pattern first.'); return; }
   const result = await paramDialog({
-    title: 'Pattern Fill',
+    title: translateText("Pattern Fill"),
     width: 380,
     preview: false,
     state: { pattern: patterns[0].id, scale: 1 },
     params: [
-      { key: 'pattern', label: 'Pattern', type: 'select', options: patterns.map((p) => ({ value: p.id, label: p.name })) },
-      { key: 'scale', label: 'Scale', type: 'slider', min: 0.1, max: 4, step: 0.1 },
+      { key: 'pattern', label: translateText("Pattern"), type: 'select', options: patterns.map((p) => ({ value: p.id, label: p.name })) },
+      { key: 'scale', label: translateText("Scale"), type: 'slider', min: 0.1, max: 4, step: 0.1 },
       { type: 'label', label: 'A pattern fill is baked into pixels, with a mask you can paint on.' },
     ],
   });
@@ -786,16 +787,16 @@ async function stylesModule() {
 }
 
 const EFFECTS = [
-  { id: 'dropShadow', label: 'Drop Shadow…' },
-  { id: 'innerShadow', label: 'Inner Shadow…' },
-  { id: 'outerGlow', label: 'Outer Glow…' },
-  { id: 'innerGlow', label: 'Inner Glow…' },
-  { id: 'bevelEmboss', label: 'Bevel & Emboss…' },
-  { id: 'satin', label: 'Satin…' },
-  { id: 'colorOverlay', label: 'Color Overlay…' },
-  { id: 'gradientOverlay', label: 'Gradient Overlay…' },
-  { id: 'patternOverlay', label: 'Pattern Overlay…' },
-  { id: 'stroke', label: 'Stroke…' },
+  { id: 'dropShadow', label: translateText("Drop Shadow…") },
+  { id: 'innerShadow', label: translateText("Inner Shadow…") },
+  { id: 'outerGlow', label: translateText("Outer Glow…") },
+  { id: 'innerGlow', label: translateText("Inner Glow…") },
+  { id: 'bevelEmboss', label: translateText("Bevel & Emboss…") },
+  { id: 'satin', label: translateText("Satin…") },
+  { id: 'colorOverlay', label: translateText("Color Overlay…") },
+  { id: 'gradientOverlay', label: translateText("Gradient Overlay…") },
+  { id: 'patternOverlay', label: translateText("Pattern Overlay…") },
+  { id: 'stroke', label: translateText("Stroke…") },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -827,14 +828,14 @@ async function warpTextDialog(doc) {
   };
   doc.beginEdit(l);
   const result = await paramDialog({
-    title: 'Warp Text',
+    title: translateText("Warp Text"),
     width: 380,
     state: { ...original },
     params: [
-      { key: 'style', label: 'Style', type: 'select', options: WARP_STYLES },
-      { key: 'bend', label: 'Bend', type: 'slider', min: -100, max: 100, step: 1, unit: '%', when: (s) => s.style !== 'none' },
-      { key: 'h', label: 'Horizontal Distortion', type: 'slider', min: -100, max: 100, step: 1, unit: '%', when: (s) => s.style !== 'none' },
-      { key: 'v', label: 'Vertical Distortion', type: 'slider', min: -100, max: 100, step: 1, unit: '%', when: (s) => s.style !== 'none' },
+      { key: 'style', label: translateText("Style"), type: 'select', options: WARP_STYLES },
+      { key: 'bend', label: translateText("Bend"), type: 'slider', min: -100, max: 100, step: 1, unit: '%', when: (s) => s.style !== 'none' },
+      { key: 'h', label: translateText("Horizontal Distortion"), type: 'slider', min: -100, max: 100, step: 1, unit: '%', when: (s) => s.style !== 'none' },
+      { key: 'v', label: translateText("Vertical Distortion"), type: 'slider', min: -100, max: 100, step: 1, unit: '%', when: (s) => s.style !== 'none' },
     ],
     onPreview: (s) => apply(s || original),
   });
@@ -1082,13 +1083,13 @@ function dedupeGuides(list) {
 
 async function newGuide(doc) {
   const result = await paramDialog({
-    title: 'New Guide',
+    title: translateText("New Guide"),
     width: 320,
     preview: false,
     state: { axis: 'v', pos: Math.round(doc.width / 2) },
     params: [
-      { key: 'axis', label: 'Orientation', type: 'radio', options: [{ value: 'v', label: 'Vertical' }, { value: 'h', label: 'Horizontal' }] },
-      { key: 'pos', label: 'Position', type: 'number', min: 0, unit: 'px' },
+      { key: 'axis', label: translateText("Orientation"), type: 'radio', options: [{ value: 'v', label: translateText("Vertical") }, { value: 'h', label: translateText("Horizontal") }] },
+      { key: 'pos', label: translateText("Position"), type: 'number', min: 0, unit: 'px' },
     ],
   });
   if (!result) return;
@@ -1100,17 +1101,17 @@ async function newGuide(doc) {
 
 async function newGuideLayout(doc) {
   const result = await paramDialog({
-    title: 'New Guide Layout',
+    title: translateText("New Guide Layout"),
     width: 380,
     preview: false,
     state: { clear: true, columns: 3, columnGutter: 20, rows: 0, rowGutter: 20, margin: 0 },
     params: [
-      { key: 'clear', label: 'Clear existing guides', type: 'checkbox' },
-      { key: 'columns', label: 'Columns', type: 'slider', min: 0, max: 24, step: 1 },
-      { key: 'columnGutter', label: 'Column Gutter', type: 'number', min: 0, unit: 'px', when: (s) => s.columns > 0 },
-      { key: 'rows', label: 'Rows', type: 'slider', min: 0, max: 24, step: 1 },
-      { key: 'rowGutter', label: 'Row Gutter', type: 'number', min: 0, unit: 'px', when: (s) => s.rows > 0 },
-      { key: 'margin', label: 'Margin', type: 'number', min: 0, unit: 'px' },
+      { key: 'clear', label: translateText("Clear existing guides"), type: 'checkbox' },
+      { key: 'columns', label: translateText("Columns"), type: 'slider', min: 0, max: 24, step: 1 },
+      { key: 'columnGutter', label: translateText("Column Gutter"), type: 'number', min: 0, unit: 'px', when: (s) => s.columns > 0 },
+      { key: 'rows', label: translateText("Rows"), type: 'slider', min: 0, max: 24, step: 1 },
+      { key: 'rowGutter', label: translateText("Row Gutter"), type: 'number', min: 0, unit: 'px', when: (s) => s.rows > 0 },
+      { key: 'margin', label: translateText("Margin"), type: 'number', min: 0, unit: 'px' },
     ],
   });
   if (!result) return;
@@ -1232,20 +1233,20 @@ const NOT_DONE = [
 ];
 
 function showAbout() {
-  const dlg = new Dialog({ title: 'About Pikado', width: 520 });
+  const dlg = new Dialog({ title: translateText("About Pikado"), width: 520 });
   dlg.setBody(el('div.pkd-about', {},
     el('p', {
       text: 'Pikado is an image editor that runs entirely in the browser. No pixels leave '
         + 'your machine — Generative Fill is the one thing that can send any, and it asks first. '
         + 'Web fonts are downloaded from Google when you use one, which sends nothing of yours.',
     }),
-    el('div.pkd-section', { text: 'What works' }),
+    el('div.pkd-section', { text: translateText("What works") }),
     el('ul', {}, ...DONE.map((t) => el('li', { text: t }))),
-    el('div.pkd-section', { text: 'What is not implemented' }),
+    el('div.pkd-section', { text: translateText("What is not implemented") }),
     el('ul', {}, ...NOT_DONE.map((t) => el('li', { text: t }))),
     el('div.pkd-note', { text: 'Built with plain ES modules and a 2-D canvas. Everything above is checked against the code, not the roadmap.' })
   ));
-  dlg.setButtons([{ label: 'Close', value: true, primary: true }]);
+  dlg.setButtons([{ label: translateText("Close"), value: true, primary: true }]);
   return dlg.open();
 }
 
@@ -1255,15 +1256,15 @@ function showAbout() {
 
 registerCommands([
   /* --- File ------------------------------------------------------- */
-  { id: 'file.new', label: 'New…', accel: 'Ctrl+N', run: () => showNewDocumentDialog() },
-  { id: 'file.open', label: 'Open…', accel: 'Ctrl+O', run: () => pickFiles() },
+  { id: 'file.new', label: translateText("New…"), accel: 'Ctrl+N', run: () => showNewDocumentDialog() },
+  { id: 'file.open', label: translateText("Open…"), accel: 'Ctrl+O', run: () => pickFiles() },
   {
-    id: 'file.recent-clear', label: 'Clear Recent File List',
+    id: 'file.recent-clear', label: translateText("Clear Recent File List"),
     run: () => { writeRecent([]); noted.clear(); app.toast('Recent file list cleared.'); },
   },
-  { id: 'file.close', label: 'Close', accel: 'Ctrl+W', enabled: hasDoc, run: () => closeDoc(D()) },
+  { id: 'file.close', label: translateText("Close"), accel: 'Ctrl+W', enabled: hasDoc, run: () => closeDoc(D()) },
   {
-    id: 'file.close-all', label: 'Close All', accel: 'Alt+Ctrl+W',
+    id: 'file.close-all', label: translateText("Close All"), accel: 'Alt+Ctrl+W',
     enabled: () => app.docs.length > 0,
     run: async () => {
       for (const doc of [...app.docs]) {
@@ -1272,84 +1273,84 @@ registerCommands([
       }
     },
   },
-  { id: 'file.save', label: 'Save', accel: 'Ctrl+S', enabled: hasDoc, run: async () => { await saveDocument(D()); noteRecent(D()); } },
-  { id: 'file.save-as', label: 'Save As…', accel: 'Shift+Ctrl+S', enabled: hasDoc, run: async () => { const d = D(); await saveDocumentAs(d); noteRecent(d); } },
-  { id: 'file.export-as', label: 'Export As…', accel: 'Alt+Shift+Ctrl+W', enabled: hasDoc, run: () => showExportDialog(D()) },
-  { id: 'file.export-png', label: 'Quick Export as PNG', enabled: hasDoc, run: () => quickExportPng(D()) },
-  { id: 'file.revert', label: 'Revert', accel: 'F12', enabled: hasDoc, run: () => revertDoc(D()) },
-  { id: 'file.print', label: 'Print…', accel: 'Ctrl+P', enabled: hasDoc, run: () => img.printDocument(D()) },
-  { id: 'file.info', label: 'File Info…', accel: 'Alt+Shift+Ctrl+I', enabled: hasDoc, run: () => showFileInfo(D()) },
+  { id: 'file.save', label: translateText("Save"), accel: 'Ctrl+S', enabled: hasDoc, run: async () => { await saveDocument(D()); noteRecent(D()); } },
+  { id: 'file.save-as', label: translateText("Save As…"), accel: 'Shift+Ctrl+S', enabled: hasDoc, run: async () => { const d = D(); await saveDocumentAs(d); noteRecent(d); } },
+  { id: 'file.export-as', label: translateText("Export As…"), accel: 'Alt+Shift+Ctrl+W', enabled: hasDoc, run: () => showExportDialog(D()) },
+  { id: 'file.export-png', label: translateText("Quick Export as PNG"), enabled: hasDoc, run: () => quickExportPng(D()) },
+  { id: 'file.revert', label: translateText("Revert"), accel: 'F12', enabled: hasDoc, run: () => revertDoc(D()) },
+  { id: 'file.print', label: translateText("Print…"), accel: 'Ctrl+P', enabled: hasDoc, run: () => img.printDocument(D()) },
+  { id: 'file.info', label: translateText("File Info…"), accel: 'Alt+Shift+Ctrl+I', enabled: hasDoc, run: () => showFileInfo(D()) },
 
   /* --- Edit ------------------------------------------------------- */
   {
-    id: 'edit.undo', label: 'Undo', accel: 'Ctrl+Z',
+    id: 'edit.undo', label: translateText("Undo"), accel: 'Ctrl+Z',
     dynamicLabel: () => {
       const d = D();
-      if (!d || !d.history.canUndo) return 'Undo';
-      return `Undo ${d.history.states[d.history.index].label}`;
+      if (!d || !d.history.canUndo) return translateText("Undo");
+      return translateText("Undo {0}", translateText(d.history.states[d.history.index].label));
     },
     enabled: () => !!(D() && D().history.canUndo),
     run: () => D().history.undo(),
   },
   {
-    id: 'edit.redo', label: 'Redo', accel: 'Ctrl+Shift+Z',
+    id: 'edit.redo', label: translateText("Redo"), accel: 'Ctrl+Shift+Z',
     dynamicLabel: () => {
       const d = D();
-      if (!d || !d.history.canRedo) return 'Redo';
-      return `Redo ${d.history.states[d.history.index + 1].label}`;
+      if (!d || !d.history.canRedo) return translateText("Redo");
+      return translateText("Redo {0}", translateText(d.history.states[d.history.index + 1].label));
     },
     enabled: () => !!(D() && D().history.canRedo),
     run: () => D().history.redo(),
   },
   {
-    id: 'edit.step-forward', label: 'Step Forward',
+    id: 'edit.step-forward', label: translateText("Step Forward"),
     enabled: () => !!(D() && D().history.canRedo),
     run: () => D().history.redo(),
   },
   {
-    id: 'edit.step-backward', label: 'Step Backward', accel: 'Ctrl+Alt+Z',
+    id: 'edit.step-backward', label: translateText("Step Backward"), accel: 'Ctrl+Alt+Z',
     enabled: () => !!(D() && D().history.canUndo),
     run: () => D().history.undo(),
   },
   {
-    id: 'edit.fade', label: 'Fade…', accel: 'Shift+Ctrl+F',
+    id: 'edit.fade', label: translateText("Fade…"), accel: 'Shift+Ctrl+F',
     dynamicLabel: () => {
       const d = D();
-      if (!d || !img.canFade(d)) return 'Fade…';
-      return `Fade ${d.history.states[d.history.index].label}…`;
+      if (!d || !img.canFade(d)) return translateText("Fade…");
+      return translateText("Fade {0}…", translateText(d.history.states[d.history.index].label));
     },
     enabled: () => img.canFade(D()),
     run: () => img.showFadeDialog(D()),
   },
 
-  { id: 'edit.cut', label: 'Cut', accel: 'Ctrl+X', enabled: hasPixels, run: () => cut(D()) },
-  { id: 'edit.copy', label: 'Copy', accel: 'Ctrl+C', enabled: hasPixels, run: () => copy(D()) },
-  { id: 'edit.copy-merged', label: 'Copy Merged', accel: 'Shift+Ctrl+C', enabled: hasDoc, run: () => copyMerged(D()) },
-  { id: 'edit.paste', label: 'Paste', accel: 'Ctrl+V', enabled: hasDoc, run: () => paste(D()) },
+  { id: 'edit.cut', label: translateText("Cut"), accel: 'Ctrl+X', enabled: hasPixels, run: () => cut(D()) },
+  { id: 'edit.copy', label: translateText("Copy"), accel: 'Ctrl+C', enabled: hasPixels, run: () => copy(D()) },
+  { id: 'edit.copy-merged', label: translateText("Copy Merged"), accel: 'Shift+Ctrl+C', enabled: hasDoc, run: () => copyMerged(D()) },
+  { id: 'edit.paste', label: translateText("Paste"), accel: 'Ctrl+V', enabled: hasDoc, run: () => paste(D()) },
   {
-    id: 'edit.paste-into', label: 'Paste Into', accel: 'Alt+Shift+Ctrl+V',
+    id: 'edit.paste-into', label: translateText("Paste Into"), accel: 'Alt+Shift+Ctrl+V',
     enabled: () => hasDoc() && hasSelection() && !!app.clipboard,
     run: () => pasteInto(D()),
   },
   {
-    id: 'edit.paste-outside', label: 'Paste Outside',
+    id: 'edit.paste-outside', label: translateText("Paste Outside"),
     enabled: () => hasDoc() && hasSelection() && !!app.clipboard,
     run: () => pasteOutside(D()),
   },
-  { id: 'edit.clear', label: 'Clear', accel: 'Delete', altAccels: ['Backspace'], enabled: hasPixels, run: () => clear(D()) },
+  { id: 'edit.clear', label: translateText("Clear"), accel: 'Delete', altAccels: ['Backspace'], enabled: hasPixels, run: () => clear(D()) },
 
-  { id: 'edit.fill', label: 'Fill…', accel: 'Shift+F5', enabled: hasLayer, run: () => showFillDialog(D()) },
+  { id: 'edit.fill', label: translateText("Fill…"), accel: 'Shift+F5', enabled: hasLayer, run: () => showFillDialog(D()) },
   {
-    id: 'edit.fill-foreground', label: 'Fill with Foreground Color', accel: 'Alt+Backspace', altAccels: ['Alt+Delete'],
+    id: 'edit.fill-foreground', label: translateText("Fill with Foreground Color"), accel: 'Alt+Backspace', altAccels: ['Alt+Delete'],
     enabled: hasPixels, run: () => fillSelection(D(), { use: 'foreground' }),
   },
   {
-    id: 'edit.fill-background', label: 'Fill with Background Color', accel: 'Ctrl+Backspace', altAccels: ['Ctrl+Delete'],
+    id: 'edit.fill-background', label: translateText("Fill with Background Color"), accel: 'Ctrl+Backspace', altAccels: ['Ctrl+Delete'],
     enabled: hasPixels, run: () => fillSelection(D(), { use: 'background' }),
   },
-  { id: 'edit.stroke', label: 'Stroke…', enabled: hasLayer, run: () => showStrokeDialog(D()) },
+  { id: 'edit.stroke', label: translateText("Stroke…"), enabled: hasLayer, run: () => showStrokeDialog(D()) },
   {
-    id: 'edit.content-aware-fill', label: 'Content-Aware Fill…',
+    id: 'edit.content-aware-fill', label: translateText("Content-Aware Fill…"),
     enabled: () => hasPixels() && hasSelection(),
     run: () => showContentAwareFillDialog(D()),
   },
@@ -1363,40 +1364,40 @@ registerCommands([
      * invisible is a dead end: nothing would tell the user that a key is what is
      * missing, or where to put one. The dialog explains itself instead.
      */
-    id: 'edit.generative-fill', label: 'Generative Fill…',
+    id: 'edit.generative-fill', label: translateText("Generative Fill…"),
     enabled: () => hasPixels() && hasSelection(),
     run: () => openGenerativeFill(D()),
   },
 
   {
-    id: 'edit.free-transform', label: 'Free Transform', accel: 'Ctrl+T',
+    id: 'edit.free-transform', label: translateText("Free Transform"), accel: 'Ctrl+T',
     enabled: hasLayer, run: () => startOrSwitchTransform('free'),
   },
-  { id: 'edit.transform.again', label: 'Again', accel: 'Shift+Ctrl+T', enabled: () => hasLayer() && !!lastTransform, run: transformAgain },
-  { id: 'edit.transform.scale', label: 'Scale', enabled: hasLayer, run: () => startOrSwitchTransform('scale') },
-  { id: 'edit.transform.rotate', label: 'Rotate', enabled: hasLayer, run: () => startOrSwitchTransform('rotate') },
-  { id: 'edit.transform.skew', label: 'Skew', enabled: hasLayer, run: () => startOrSwitchTransform('skew') },
-  { id: 'edit.transform.distort', label: 'Distort', enabled: hasLayer, run: () => startOrSwitchTransform('distort') },
-  { id: 'edit.transform.perspective', label: 'Perspective', enabled: hasLayer, run: () => startOrSwitchTransform('perspective') },
-  { id: 'edit.transform.warp', label: 'Warp', enabled: hasLayer, run: () => startOrSwitchTransform('warp') },
-  { id: 'edit.transform.rot180', label: 'Rotate 180°', enabled: hasLayer, run: () => transformLayersOrSession('180', 'Rotate Layer 180°') },
-  { id: 'edit.transform.rot90cw', label: 'Rotate 90° Clockwise', enabled: hasLayer, run: () => transformLayersOrSession('cw', 'Rotate Layer 90° CW') },
-  { id: 'edit.transform.rot90ccw', label: 'Rotate 90° Counter Clockwise', enabled: hasLayer, run: () => transformLayersOrSession('ccw', 'Rotate Layer 90° CCW') },
-  { id: 'edit.transform.flip-h', label: 'Flip Horizontal', enabled: hasLayer, run: () => transformLayersOrSession('flip-h', 'Flip Layer Horizontal') },
-  { id: 'edit.transform.flip-v', label: 'Flip Vertical', enabled: hasLayer, run: () => transformLayersOrSession('flip-v', 'Flip Layer Vertical') },
+  { id: 'edit.transform.again', label: translateText("Again"), accel: 'Shift+Ctrl+T', enabled: () => hasLayer() && !!lastTransform, run: transformAgain },
+  { id: 'edit.transform.scale', label: translateText("Scale"), enabled: hasLayer, run: () => startOrSwitchTransform('scale') },
+  { id: 'edit.transform.rotate', label: translateText("Rotate"), enabled: hasLayer, run: () => startOrSwitchTransform('rotate') },
+  { id: 'edit.transform.skew', label: translateText("Skew"), enabled: hasLayer, run: () => startOrSwitchTransform('skew') },
+  { id: 'edit.transform.distort', label: translateText("Distort"), enabled: hasLayer, run: () => startOrSwitchTransform('distort') },
+  { id: 'edit.transform.perspective', label: translateText("Perspective"), enabled: hasLayer, run: () => startOrSwitchTransform('perspective') },
+  { id: 'edit.transform.warp', label: translateText("Warp"), enabled: hasLayer, run: () => startOrSwitchTransform('warp') },
+  { id: 'edit.transform.rot180', label: translateText("Rotate 180°"), enabled: hasLayer, run: () => transformLayersOrSession('180', 'Rotate Layer 180°') },
+  { id: 'edit.transform.rot90cw', label: translateText("Rotate 90° Clockwise"), enabled: hasLayer, run: () => transformLayersOrSession('cw', 'Rotate Layer 90° CW') },
+  { id: 'edit.transform.rot90ccw', label: translateText("Rotate 90° Counter Clockwise"), enabled: hasLayer, run: () => transformLayersOrSession('ccw', 'Rotate Layer 90° CCW') },
+  { id: 'edit.transform.flip-h', label: translateText("Flip Horizontal"), enabled: hasLayer, run: () => transformLayersOrSession('flip-h', 'Flip Layer Horizontal') },
+  { id: 'edit.transform.flip-v', label: translateText("Flip Vertical"), enabled: hasLayer, run: () => transformLayersOrSession('flip-v', 'Flip Layer Vertical') },
 
-  { id: 'edit.define-pattern', label: 'Define Pattern…', enabled: hasDoc, run: () => definePattern(D()) },
-  { id: 'edit.purge.undo', label: 'Histories (this document)', enabled: hasDoc, run: () => purge('undo') },
-  { id: 'edit.purge.clipboard', label: 'Clipboard', enabled: () => !!app.clipboard, run: () => purge('clipboard') },
-  { id: 'edit.purge.histories', label: 'All Histories', enabled: () => app.docs.length > 0, run: () => purge('histories') },
-  { id: 'edit.purge.all', label: 'All', enabled: () => app.docs.length > 0, run: () => purge('all') },
-  { id: 'edit.keyboard-shortcuts', label: 'Keyboard Shortcuts…', accel: 'Alt+Shift+Ctrl+K', run: () => showKeyboardShortcutsDialog() },
-  { id: 'edit.preferences', label: 'Preferences…', accel: 'Ctrl+K', run: () => showPreferencesDialog() },
+  { id: 'edit.define-pattern', label: translateText("Define Pattern…"), enabled: hasDoc, run: () => definePattern(D()) },
+  { id: 'edit.purge.undo', label: translateText("Histories (this document)"), enabled: hasDoc, run: () => purge('undo') },
+  { id: 'edit.purge.clipboard', label: translateText("Clipboard"), enabled: () => !!app.clipboard, run: () => purge('clipboard') },
+  { id: 'edit.purge.histories', label: translateText("All Histories"), enabled: () => app.docs.length > 0, run: () => purge('histories') },
+  { id: 'edit.purge.all', label: translateText("All"), enabled: () => app.docs.length > 0, run: () => purge('all') },
+  { id: 'edit.keyboard-shortcuts', label: translateText("Keyboard Shortcuts…"), accel: 'Alt+Shift+Ctrl+K', run: () => showKeyboardShortcutsDialog() },
+  { id: 'edit.preferences', label: translateText("Preferences…"), accel: 'Ctrl+K', run: () => showPreferencesDialog() },
   {
     // Next to Preferences rather than inside it: a credential should be
     // clearable on its own, and resetting preferences must not silently keep one.
     id: 'edit.ai-settings',
-    label: 'AI Settings…',
+    label: translateText("AI Settings…"),
     run: async () => {
       await loadAiProviders();
       const { showAiKeyDialog } = await import('../ui/dialogs/ai-key.js');
@@ -1406,46 +1407,46 @@ registerCommands([
 
   /* --- Image ------------------------------------------------------ */
   {
-    id: 'image.mode.rgb', label: 'RGB Color',
+    id: 'image.mode.rgb', label: translateText("RGB Color"),
     enabled: hasDoc, checked: () => !!D() && D().colorMode === 'rgb',
     run: () => img.convertToRGB(D()),
   },
   {
-    id: 'image.mode.grayscale', label: 'Grayscale',
+    id: 'image.mode.grayscale', label: translateText("Grayscale"),
     enabled: hasDoc, checked: () => !!D() && D().colorMode === 'grayscale',
     // Resolve the document up front: `app.busy` waits a frame, and the user can
     // close or switch documents before the callback runs.
-    run: () => { const doc = D(); return app.busy('Grayscale', async () => img.convertToGrayscale(doc)); },
+    run: () => { const doc = D(); return app.busy(translateText("Grayscale"), async () => img.convertToGrayscale(doc)); },
   },
   {
-    id: 'edit.assign-profile', label: 'Assign Profile…',
+    id: 'edit.assign-profile', label: translateText("Assign Profile…"),
     enabled: hasDoc,
     run: () => colorDialog('assign'),
   },
   {
-    id: 'edit.convert-profile', label: 'Convert to Profile…',
+    id: 'edit.convert-profile', label: translateText("Convert to Profile…"),
     enabled: hasDoc,
     run: () => colorDialog('convert'),
   },
   {
-    id: 'view.proof-colors', label: 'Proof Colors', accel: 'Ctrl+Y',
+    id: 'view.proof-colors', label: translateText("Proof Colors"), accel: 'Ctrl+Y',
     enabled: hasDoc,
     checked: () => !!(D() && D().proof && D().proof.enabled),
     run: () => toggleProof(),
   },
   {
-    id: 'view.proof-setup', label: 'Proof Setup…',
+    id: 'view.proof-setup', label: translateText("Proof Setup…"),
     enabled: hasDoc,
     run: () => colorDialog('proof'),
   },
   {
-    id: 'view.gamut-warning', label: 'Gamut Warning', accel: 'Shift+Ctrl+Y',
+    id: 'view.gamut-warning', label: translateText("Gamut Warning"), accel: 'Shift+Ctrl+Y',
     enabled: hasDoc,
     checked: () => !!(D() && D().proof && D().proof.gamutWarning),
     run: () => toggleGamutWarning(),
   },
   {
-    id: 'image.mode.bitmap', label: 'Bitmap…',
+    id: 'image.mode.bitmap', label: translateText("Bitmap…"),
     enabled: hasDoc, checked: () => !!D() && D().colorMode === 'bitmap',
     run: async () => {
       const doc = D();
@@ -1456,19 +1457,19 @@ registerCommands([
       await img.convertToBitmap(doc);
     },
   },
-  { id: 'image.auto-tone', label: 'Auto Tone', accel: 'Shift+Ctrl+L', enabled: hasLayer, run: () => applyAdjustmentCommand('auto-tone') },
-  { id: 'image.auto-contrast', label: 'Auto Contrast', accel: 'Alt+Shift+Ctrl+L', enabled: hasLayer, run: () => applyAdjustmentCommand('auto-contrast') },
-  { id: 'image.auto-color', label: 'Auto Color', accel: 'Shift+Ctrl+B', enabled: hasLayer, run: () => applyAdjustmentCommand('auto-color') },
-  { id: 'image.size', label: 'Image Size…', accel: 'Alt+Ctrl+I', enabled: hasDoc, run: () => showImageSizeDialog(D()) },
-  { id: 'image.canvas-size', label: 'Canvas Size…', accel: 'Alt+Ctrl+C', enabled: hasDoc, run: () => showCanvasSizeDialog(D()) },
+  { id: 'image.auto-tone', label: translateText("Auto Tone"), accel: 'Shift+Ctrl+L', enabled: hasLayer, run: () => applyAdjustmentCommand('auto-tone') },
+  { id: 'image.auto-contrast', label: translateText("Auto Contrast"), accel: 'Alt+Shift+Ctrl+L', enabled: hasLayer, run: () => applyAdjustmentCommand('auto-contrast') },
+  { id: 'image.auto-color', label: translateText("Auto Color"), accel: 'Shift+Ctrl+B', enabled: hasLayer, run: () => applyAdjustmentCommand('auto-color') },
+  { id: 'image.size', label: translateText("Image Size…"), accel: 'Alt+Ctrl+I', enabled: hasDoc, run: () => showImageSizeDialog(D()) },
+  { id: 'image.canvas-size', label: translateText("Canvas Size…"), accel: 'Alt+Ctrl+C', enabled: hasDoc, run: () => showCanvasSizeDialog(D()) },
   { id: 'image.rotate.180', label: '180°', enabled: hasDoc, run: () => { D().transformImage('180'); D().commit('Rotate Canvas 180°'); } },
-  { id: 'image.rotate.cw', label: '90° Clockwise', enabled: hasDoc, run: () => { D().transformImage('cw'); D().commit('Rotate Canvas 90° CW'); } },
-  { id: 'image.rotate.ccw', label: '90° Counter Clockwise', enabled: hasDoc, run: () => { D().transformImage('ccw'); D().commit('Rotate Canvas 90° CCW'); } },
-  { id: 'image.rotate.arbitrary', label: 'Arbitrary…', enabled: hasDoc, run: () => img.showArbitraryRotationDialog(D()) },
-  { id: 'image.rotate.flip-h', label: 'Flip Canvas Horizontal', enabled: hasDoc, run: () => { D().transformImage('flip-h'); D().commit('Flip Canvas Horizontal'); } },
-  { id: 'image.rotate.flip-v', label: 'Flip Canvas Vertical', enabled: hasDoc, run: () => { D().transformImage('flip-v'); D().commit('Flip Canvas Vertical'); } },
+  { id: 'image.rotate.cw', label: translateText("90° Clockwise"), enabled: hasDoc, run: () => { D().transformImage('cw'); D().commit('Rotate Canvas 90° CW'); } },
+  { id: 'image.rotate.ccw', label: translateText("90° Counter Clockwise"), enabled: hasDoc, run: () => { D().transformImage('ccw'); D().commit('Rotate Canvas 90° CCW'); } },
+  { id: 'image.rotate.arbitrary', label: translateText("Arbitrary…"), enabled: hasDoc, run: () => img.showArbitraryRotationDialog(D()) },
+  { id: 'image.rotate.flip-h', label: translateText("Flip Canvas Horizontal"), enabled: hasDoc, run: () => { D().transformImage('flip-h'); D().commit('Flip Canvas Horizontal'); } },
+  { id: 'image.rotate.flip-v', label: translateText("Flip Canvas Vertical"), enabled: hasDoc, run: () => { D().transformImage('flip-v'); D().commit('Flip Canvas Vertical'); } },
   {
-    id: 'image.crop', label: 'Crop',
+    id: 'image.crop', label: translateText("Crop"),
     enabled: hasSelection,
     run: () => {
       const doc = D();
@@ -1478,9 +1479,9 @@ registerCommands([
       doc.commit('Crop');
     },
   },
-  { id: 'image.trim', label: 'Trim…', enabled: hasDoc, run: () => img.showTrimDialog(D(), ops.trimDocument) },
+  { id: 'image.trim', label: translateText("Trim…"), enabled: hasDoc, run: () => img.showTrimDialog(D(), ops.trimDocument) },
   {
-    id: 'image.reveal-all', label: 'Reveal All',
+    id: 'image.reveal-all', label: translateText("Reveal All"),
     enabled: hasDoc,
     run: () => {
       // Layer buffers are always document-sized, so nothing can hide outside
@@ -1488,32 +1489,32 @@ registerCommands([
       app.toast('Nothing is hidden outside the canvas: Pikado clips layers to the document.');
     },
   },
-  { id: 'image.duplicate', label: 'Duplicate…', enabled: hasDoc, run: async () => {
+  { id: 'image.duplicate', label: translateText("Duplicate…"), enabled: hasDoc, run: async () => {
     const doc = D();
     const name = await promptDialog('Duplicate as', `${doc.name} copy`, 'Duplicate Image');
     if (name == null) return;
     img.duplicateDocument(doc, name.trim() || `${doc.name} copy`);
   } },
-  { id: 'image.apply-image', label: 'Apply Image…', enabled: hasPixels, run: () => img.showApplyImageDialog(D()) },
-  { id: 'image.calculations', label: 'Calculations…', enabled: hasDoc, run: () => img.showCalculationsDialog(D()) },
+  { id: 'image.apply-image', label: translateText("Apply Image…"), enabled: hasPixels, run: () => img.showApplyImageDialog(D()) },
+  { id: 'image.calculations', label: translateText("Calculations…"), enabled: hasDoc, run: () => img.showCalculationsDialog(D()) },
 
   /* --- Adjustment accelerators (menu comes from the registry) ------ */
-  { id: 'adjust.levels', label: 'Levels…', accel: 'Ctrl+L', enabled: hasLayer, run: () => applyAdjustmentCommand('levels') },
-  { id: 'adjust.curves', label: 'Curves…', accel: 'Ctrl+M', enabled: hasLayer, run: () => applyAdjustmentCommand('curves') },
-  { id: 'adjust.hue-saturation', label: 'Hue/Saturation…', accel: 'Ctrl+U', enabled: hasLayer, run: () => applyAdjustmentCommand('hue-saturation') },
-  { id: 'adjust.color-balance', label: 'Color Balance…', accel: 'Ctrl+B', enabled: hasLayer, run: () => applyAdjustmentCommand('color-balance') },
-  { id: 'adjust.invert', label: 'Invert', accel: 'Ctrl+I', enabled: hasLayer, run: () => applyAdjustmentCommand('invert') },
-  { id: 'adjust.desaturate', label: 'Desaturate', accel: 'Shift+Ctrl+U', enabled: hasLayer, run: () => applyAdjustmentCommand('desaturate') },
+  { id: 'adjust.levels', label: translateText("Levels…"), accel: 'Ctrl+L', enabled: hasLayer, run: () => applyAdjustmentCommand('levels') },
+  { id: 'adjust.curves', label: translateText("Curves…"), accel: 'Ctrl+M', enabled: hasLayer, run: () => applyAdjustmentCommand('curves') },
+  { id: 'adjust.hue-saturation', label: translateText("Hue/Saturation…"), accel: 'Ctrl+U', enabled: hasLayer, run: () => applyAdjustmentCommand('hue-saturation') },
+  { id: 'adjust.color-balance', label: translateText("Color Balance…"), accel: 'Ctrl+B', enabled: hasLayer, run: () => applyAdjustmentCommand('color-balance') },
+  { id: 'adjust.invert', label: translateText("Invert"), accel: 'Ctrl+I', enabled: hasLayer, run: () => applyAdjustmentCommand('invert') },
+  { id: 'adjust.desaturate', label: translateText("Desaturate"), accel: 'Shift+Ctrl+U', enabled: hasLayer, run: () => applyAdjustmentCommand('desaturate') },
 
   /* --- Layer ------------------------------------------------------ */
-  { id: 'layer.new', label: 'Layer', accel: 'Shift+Ctrl+N', enabled: hasDoc, run: () => ops.addRasterLayer(D()) },
+  { id: 'layer.new', label: translateText("Layer"), accel: 'Shift+Ctrl+N', enabled: hasDoc, run: () => ops.addRasterLayer(D()) },
   {
-    id: 'layer.from-background', label: 'Layer from Background',
+    id: 'layer.from-background', label: translateText("Layer from Background"),
     enabled: () => { const l = activeLayer(); return !!(l && l.isBackground); },
     run: () => ops.convertBackgroundToLayer(D()),
   },
   {
-    id: 'layer.to-background', label: 'Background from Layer',
+    id: 'layer.to-background', label: translateText("Background from Layer"),
     enabled: () => { const l = activeLayer(); return !!(l && !l.isBackground && l.type === LayerType.RASTER); },
     run: () => ops.convertLayerToBackground(D()),
   },
@@ -1522,17 +1523,17 @@ registerCommands([
     // long before this command existed and `buildBindingMap` is first-wins — so
     // claiming the accel here would print a shortcut in the menu that actually
     // runs Duplicate Layer. Left unbound rather than advertised falsely.
-    id: 'layer.via-copy', label: 'Layer Via Copy',
+    id: 'layer.via-copy', label: translateText("Layer Via Copy"),
     enabled: () => canLayerVia(false),
     run: () => layerViaSelection(D(), false),
   },
   {
-    id: 'layer.via-cut', label: 'Layer Via Cut', accel: 'Ctrl+Shift+J',
+    id: 'layer.via-cut', label: translateText("Layer Via Cut"), accel: 'Ctrl+Shift+J',
     enabled: () => canLayerVia(true),
     run: () => layerViaSelection(D(), true),
   },
   {
-    id: 'layer.new-group', label: 'Group',
+    id: 'layer.new-group', label: translateText("Group"),
     enabled: hasDoc,
     run: () => {
       const d = D();
@@ -1543,16 +1544,16 @@ registerCommands([
       d.commit('New Group');
     },
   },
-  { id: 'layer.group-from-layers', label: 'Group from Layers', accel: 'Ctrl+G', enabled: hasLayer, run: () => ops.groupLayers(D()) },
+  { id: 'layer.group-from-layers', label: translateText("Group from Layers"), accel: 'Ctrl+G', enabled: hasLayer, run: () => ops.groupLayers(D()) },
   {
-    id: 'layer.ungroup', label: 'Ungroup Layers', accel: 'Shift+Ctrl+G',
+    id: 'layer.ungroup', label: translateText("Ungroup Layers"), accel: 'Shift+Ctrl+G',
     enabled: () => !!layerOfType(LayerType.GROUP),
     run: () => ops.ungroupLayers(D()),
   },
-  { id: 'layer.duplicate', label: 'Duplicate Layer', accel: 'Ctrl+J', enabled: hasLayer, run: () => ops.duplicateLayers(D()) },
-  { id: 'layer.delete', label: 'Layer', enabled: hasLayer, run: () => ops.deleteLayers(D()) },
+  { id: 'layer.duplicate', label: translateText("Duplicate Layer"), accel: 'Ctrl+J', enabled: hasLayer, run: () => ops.duplicateLayers(D()) },
+  { id: 'layer.delete', label: translateText("Layer"), enabled: hasLayer, run: () => ops.deleteLayers(D()) },
   {
-    id: 'layer.delete-hidden', label: 'Hidden Layers',
+    id: 'layer.delete-hidden', label: translateText("Hidden Layers"),
     enabled: () => !!D() && D().flatLayers().some((l) => !l.visible),
     run: () => {
       const d = D();
@@ -1568,7 +1569,7 @@ registerCommands([
   },
 
   {
-    id: 'layer.style.options', label: 'Blending Options…',
+    id: 'layer.style.options', label: translateText("Blending Options…"),
     enabled: hasLayer,
     run: async () => { const m = await stylesModule(); await m.showLayerStyleDialog(D(), activeLayer()); },
   },
@@ -1579,76 +1580,76 @@ registerCommands([
     run: async () => { const m = await stylesModule(); await m.showLayerStyleDialog(D(), activeLayer(), fx.id); },
   })),
   {
-    id: 'layer.style.copy', label: 'Copy Layer Style',
+    id: 'layer.style.copy', label: translateText("Copy Layer Style"),
     enabled: () => { const l = activeLayer(); return !!(l && l.styles); },
     run: async () => { const m = await stylesModule(); m.copyLayerStyle(activeLayer()); },
   },
   {
-    id: 'layer.style.paste', label: 'Paste Layer Style',
+    id: 'layer.style.paste', label: translateText("Paste Layer Style"),
     enabled: () => hasLayer() && !!(stylesMod && stylesMod.hasCopiedLayerStyle()),
     run: async () => { const m = await stylesModule(); m.pasteLayerStyle(D(), activeLayer()); },
   },
   {
-    id: 'layer.style.clear', label: 'Clear Layer Style',
+    id: 'layer.style.clear', label: translateText("Clear Layer Style"),
     enabled: () => { const l = activeLayer(); return !!(l && l.styles); },
     run: async () => { const m = await stylesModule(); m.clearLayerStyles(D(), activeLayer()); },
   },
 
-  { id: 'layer.fill.solid', label: 'Solid Color…', enabled: hasDoc, run: () => newFillLayer(D(), 'solid') },
-  { id: 'layer.fill.gradient', label: 'Gradient…', enabled: hasDoc, run: () => newFillLayer(D(), 'gradient') },
-  { id: 'layer.fill.pattern', label: 'Pattern…', enabled: hasDoc, run: () => newFillLayer(D(), 'pattern') },
+  { id: 'layer.fill.solid', label: translateText("Solid Color…"), enabled: hasDoc, run: () => newFillLayer(D(), 'solid') },
+  { id: 'layer.fill.gradient', label: translateText("Gradient…"), enabled: hasDoc, run: () => newFillLayer(D(), 'gradient') },
+  { id: 'layer.fill.pattern', label: translateText("Pattern…"), enabled: hasDoc, run: () => newFillLayer(D(), 'pattern') },
 
   {
-    id: 'layer.mask.reveal-all', label: 'Reveal All',
+    id: 'layer.mask.reveal-all', label: translateText("Reveal All"),
     enabled: () => { const l = activeLayer(); return !!(l && !l.mask); },
     run: () => ops.addLayerMask(D(), null, 'reveal-all'),
   },
   {
-    id: 'layer.mask.hide-all', label: 'Hide All',
+    id: 'layer.mask.hide-all', label: translateText("Hide All"),
     enabled: () => { const l = activeLayer(); return !!(l && !l.mask); },
     run: () => ops.addLayerMask(D(), null, 'hide-all'),
   },
   {
-    id: 'layer.mask.reveal-selection', label: 'Reveal Selection',
+    id: 'layer.mask.reveal-selection', label: translateText("Reveal Selection"),
     enabled: () => { const l = activeLayer(); return !!(l && !l.mask) && hasSelection(); },
     run: () => ops.addLayerMask(D(), null, 'reveal-selection'),
   },
   {
-    id: 'layer.mask.hide-selection', label: 'Hide Selection',
+    id: 'layer.mask.hide-selection', label: translateText("Hide Selection"),
     enabled: () => { const l = activeLayer(); return !!(l && !l.mask) && hasSelection(); },
     run: () => ops.addLayerMask(D(), null, 'hide-selection'),
   },
   {
-    id: 'layer.mask.delete', label: 'Delete',
+    id: 'layer.mask.delete', label: translateText("Delete"),
     enabled: () => { const l = activeLayer(); return !!(l && l.mask); },
     run: () => ops.deleteLayerMask(D()),
   },
   {
-    id: 'layer.mask.apply', label: 'Apply',
+    id: 'layer.mask.apply', label: translateText("Apply"),
     enabled: () => { const l = activeLayer(); return !!(l && l.mask && l.canvas); },
     run: () => ops.applyLayerMask(D()),
   },
   {
-    id: 'layer.mask.toggle', label: 'Disable',
+    id: 'layer.mask.toggle', label: translateText("Disable"),
     dynamicLabel: () => { const l = activeLayer(); return l && l.mask && !l.maskEnabled ? 'Enable' : 'Disable'; },
     enabled: () => { const l = activeLayer(); return !!(l && l.mask); },
     run: () => ops.toggleMaskEnabled(D()),
   },
 
   {
-    id: 'layer.clipping', label: 'Create Clipping Mask', accel: 'Alt+Ctrl+G',
+    id: 'layer.clipping', label: translateText("Create Clipping Mask"), accel: 'Alt+Ctrl+G',
     dynamicLabel: () => { const l = activeLayer(); return l && l.clipped ? 'Release Clipping Mask' : 'Create Clipping Mask'; },
     enabled: hasLayer,
     run: () => ops.toggleClipping(D()),
   },
-  { id: 'layer.smart.convert', label: 'Convert to Smart Object', enabled: hasLayer, run: () => ops.convertToSmartObject(D()) },
+  { id: 'layer.smart.convert', label: translateText("Convert to Smart Object"), enabled: hasLayer, run: () => ops.convertToSmartObject(D()) },
   {
-    id: 'layer.smart.edit', label: 'Edit Contents',
+    id: 'layer.smart.edit', label: translateText("Edit Contents"),
     enabled: isSmart,
     run: () => smart.editSmartContents(D(), activeLayer()),
   },
   {
-    id: 'layer.smart.transform', label: 'Transform…',
+    id: 'layer.smart.transform', label: translateText("Transform…"),
     enabled: isSmart,
     run: async () => {
       const mod = await import('../ui/dialogs/smart-object.js');
@@ -1656,7 +1657,7 @@ registerCommands([
     },
   },
   {
-    id: 'layer.smart.replace', label: 'Replace Contents…',
+    id: 'layer.smart.replace', label: translateText("Replace Contents…"),
     enabled: isSmart,
     run: async () => {
       const mod = await import('../ui/dialogs/smart-object.js');
@@ -1664,7 +1665,7 @@ registerCommands([
     },
   },
   {
-    id: 'layer.smart.export', label: 'Export Contents…',
+    id: 'layer.smart.export', label: translateText("Export Contents…"),
     enabled: isSmart,
     run: () => smart.exportSmartContents(D(), activeLayer()),
   },
@@ -1674,7 +1675,7 @@ registerCommands([
      * ours — this is the one that deliberately does not, for when you want the
      * two to go their own way.
      */
-    id: 'layer.smart.copy-unlinked', label: 'New Smart Object via Copy',
+    id: 'layer.smart.copy-unlinked', label: translateText("New Smart Object via Copy"),
     enabled: () => { const l = activeLayer(); return !!(l && l.smart); },
     run: () => {
       const doc = D();
@@ -1686,7 +1687,7 @@ registerCommands([
     },
   },
   {
-    id: 'layer.smart.unlink', label: 'Unlink Contents',
+    id: 'layer.smart.unlink', label: translateText("Unlink Contents"),
     enabled: () => {
       const l = activeLayer();
       return !!(l && l.smart && l.smart.linkId);
@@ -1697,66 +1698,66 @@ registerCommands([
     },
   },
   {
-    id: 'layer.smart.rasterize', label: 'Rasterize Smart Object',
+    id: 'layer.smart.rasterize', label: translateText("Rasterize Smart Object"),
     enabled: () => !!layerOfType(LayerType.SMART),
     run: () => ops.rasterizeLayer(D(), activeLayer()),
   },
-  { id: 'layer.rasterize.type', label: 'Type', enabled: () => !!layerOfType(LayerType.TEXT), run: () => ops.rasterizeLayer(D()) },
-  { id: 'layer.rasterize.shape', label: 'Shape', enabled: () => !!layerOfType(LayerType.SHAPE), run: () => ops.rasterizeLayer(D()) },
+  { id: 'layer.rasterize.type', label: translateText("Type"), enabled: () => !!layerOfType(LayerType.TEXT), run: () => ops.rasterizeLayer(D()) },
+  { id: 'layer.rasterize.shape', label: translateText("Shape"), enabled: () => !!layerOfType(LayerType.SHAPE), run: () => ops.rasterizeLayer(D()) },
   {
-    id: 'layer.rasterize.style', label: 'Layer Style',
+    id: 'layer.rasterize.style', label: translateText("Layer Style"),
     enabled: () => { const l = activeLayer(); return !!(l && l.styles); },
     run: () => ops.rasterizeLayerStyle(D()),
   },
   {
-    id: 'layer.rasterize.layer', label: 'Layer',
+    id: 'layer.rasterize.layer', label: translateText("Layer"),
     enabled: () => { const l = activeLayer(); return !!l && l.type !== LayerType.RASTER; },
     run: () => ops.rasterizeLayer(D()),
   },
-  { id: 'layer.rasterize.all', label: 'All Layers', enabled: hasDoc, run: () => rasterizeAll(D()) },
+  { id: 'layer.rasterize.all', label: translateText("All Layers"), enabled: hasDoc, run: () => rasterizeAll(D()) },
 
-  { id: 'layer.arrange.front', label: 'Bring to Front', accel: 'Shift+Ctrl+]', enabled: hasLayer, run: () => { const d = D(); d.arrange(d.activeLayer(), 'front'); d.commit('Bring to Front'); } },
-  { id: 'layer.arrange.forward', label: 'Bring Forward', accel: 'Ctrl+]', enabled: hasLayer, run: () => { const d = D(); d.arrange(d.activeLayer(), 'forward'); d.commit('Bring Forward'); } },
-  { id: 'layer.arrange.backward', label: 'Send Backward', accel: 'Ctrl+[', enabled: hasLayer, run: () => { const d = D(); d.arrange(d.activeLayer(), 'backward'); d.commit('Send Backward'); } },
-  { id: 'layer.arrange.back', label: 'Send to Back', accel: 'Shift+Ctrl+[', enabled: hasLayer, run: () => { const d = D(); d.arrange(d.activeLayer(), 'back'); d.commit('Send to Back'); } },
+  { id: 'layer.arrange.front', label: translateText("Bring to Front"), accel: 'Shift+Ctrl+]', enabled: hasLayer, run: () => { const d = D(); d.arrange(d.activeLayer(), 'front'); d.commit('Bring to Front'); } },
+  { id: 'layer.arrange.forward', label: translateText("Bring Forward"), accel: 'Ctrl+]', enabled: hasLayer, run: () => { const d = D(); d.arrange(d.activeLayer(), 'forward'); d.commit('Bring Forward'); } },
+  { id: 'layer.arrange.backward', label: translateText("Send Backward"), accel: 'Ctrl+[', enabled: hasLayer, run: () => { const d = D(); d.arrange(d.activeLayer(), 'backward'); d.commit('Send Backward'); } },
+  { id: 'layer.arrange.back', label: translateText("Send to Back"), accel: 'Shift+Ctrl+[', enabled: hasLayer, run: () => { const d = D(); d.arrange(d.activeLayer(), 'back'); d.commit('Send to Back'); } },
 
-  { id: 'layer.align.left', label: 'Left Edges', enabled: hasLayer, run: () => img.alignLayers(D(), 'left') },
-  { id: 'layer.align.center-h', label: 'Horizontal Centers', enabled: hasLayer, run: () => img.alignLayers(D(), 'center-h') },
-  { id: 'layer.align.right', label: 'Right Edges', enabled: hasLayer, run: () => img.alignLayers(D(), 'right') },
-  { id: 'layer.align.top', label: 'Top Edges', enabled: hasLayer, run: () => img.alignLayers(D(), 'top') },
-  { id: 'layer.align.center-v', label: 'Vertical Centers', enabled: hasLayer, run: () => img.alignLayers(D(), 'center-v') },
-  { id: 'layer.align.bottom', label: 'Bottom Edges', enabled: hasLayer, run: () => img.alignLayers(D(), 'bottom') },
+  { id: 'layer.align.left', label: translateText("Left Edges"), enabled: hasLayer, run: () => img.alignLayers(D(), 'left') },
+  { id: 'layer.align.center-h', label: translateText("Horizontal Centers"), enabled: hasLayer, run: () => img.alignLayers(D(), 'center-h') },
+  { id: 'layer.align.right', label: translateText("Right Edges"), enabled: hasLayer, run: () => img.alignLayers(D(), 'right') },
+  { id: 'layer.align.top', label: translateText("Top Edges"), enabled: hasLayer, run: () => img.alignLayers(D(), 'top') },
+  { id: 'layer.align.center-v', label: translateText("Vertical Centers"), enabled: hasLayer, run: () => img.alignLayers(D(), 'center-v') },
+  { id: 'layer.align.bottom', label: translateText("Bottom Edges"), enabled: hasLayer, run: () => img.alignLayers(D(), 'bottom') },
   {
-    id: 'layer.distribute.horizontal', label: 'Horizontally',
+    id: 'layer.distribute.horizontal', label: translateText("Horizontally"),
     enabled: () => !!D() && D().selectedLayers().length >= 3,
     run: () => img.distributeLayers(D(), 'horizontal'),
   },
   {
-    id: 'layer.distribute.vertical', label: 'Vertically',
+    id: 'layer.distribute.vertical', label: translateText("Vertically"),
     enabled: () => !!D() && D().selectedLayers().length >= 3,
     run: () => img.distributeLayers(D(), 'vertical'),
   },
 
   {
-    id: 'layer.merge-down', label: 'Merge Down', accel: 'Ctrl+E',
+    id: 'layer.merge-down', label: translateText("Merge Down"), accel: 'Ctrl+E',
     dynamicLabel: () => (D() && D().selectedLayers().length > 1 ? 'Merge Layers' : 'Merge Down'),
     enabled: hasLayer,
     run: () => { const d = D(); if (d.selectedLayers().length > 1) ops.mergeSelected(d); else ops.mergeDown(d); },
   },
-  { id: 'layer.merge-visible', label: 'Merge Visible', accel: 'Shift+Ctrl+E', enabled: hasDoc, run: () => ops.mergeVisible(D()) },
-  { id: 'layer.stamp-visible', label: 'Stamp Visible', accel: 'Alt+Shift+Ctrl+E', enabled: hasDoc, run: () => ops.stampVisible(D()) },
-  { id: 'layer.flatten', label: 'Flatten Image', enabled: hasDoc, run: () => ops.flattenImage(D()) },
+  { id: 'layer.merge-visible', label: translateText("Merge Visible"), accel: 'Shift+Ctrl+E', enabled: hasDoc, run: () => ops.mergeVisible(D()) },
+  { id: 'layer.stamp-visible', label: translateText("Stamp Visible"), accel: 'Alt+Shift+Ctrl+E', enabled: hasDoc, run: () => ops.stampVisible(D()) },
+  { id: 'layer.flatten', label: translateText("Flatten Image"), enabled: hasDoc, run: () => ops.flattenImage(D()) },
 
-  { id: 'layer.matting.defringe', label: 'Defringe…', enabled: hasPixels, run: async () => {
+  { id: 'layer.matting.defringe', label: translateText("Defringe…"), enabled: hasPixels, run: async () => {
     const r = await paramDialog({
-      title: 'Defringe', width: 300, preview: false, state: { width: 1 },
-      params: [{ key: 'width', label: 'Width', type: 'slider', min: 1, max: 10, step: 1, unit: 'px' }],
+      title: translateText("Defringe"), width: 300, preview: false, state: { width: 1 },
+      params: [{ key: 'width', label: translateText("Width"), type: 'slider', min: 1, max: 10, step: 1, unit: 'px' }],
     });
     if (!r) return;
-    await app.busy('Defringe', async () => img.defringe(D(), null, r.width));
+    await app.busy(translateText("Defringe"), async () => img.defringe(D(), null, r.width));
   } },
-  { id: 'layer.matting.black', label: 'Remove Black Matte', enabled: hasPixels, run: () => img.removeMatte(D(), null, 'black') },
-  { id: 'layer.matting.white', label: 'Remove White Matte', enabled: hasPixels, run: () => img.removeMatte(D(), null, 'white') },
+  { id: 'layer.matting.black', label: translateText("Remove Black Matte"), enabled: hasPixels, run: () => img.removeMatte(D(), null, 'black') },
+  { id: 'layer.matting.white', label: translateText("Remove White Matte"), enabled: hasPixels, run: () => img.removeMatte(D(), null, 'white') },
 
   /* --- Type ------------------------------------------------------- */
   ...['none', 'sharp', 'crisp', 'strong', 'smooth'].map((mode) => ({
@@ -1767,40 +1768,40 @@ registerCommands([
     run: () => setTextProp(D(), { antialias: mode }, 'Anti-Alias'),
   })),
   {
-    id: 'type.orientation.horizontal', label: 'Horizontal',
+    id: 'type.orientation.horizontal', label: translateText("Horizontal"),
     enabled: () => !!textLayer(),
     checked: () => { const l = textLayer(); return !!(l && l.text) && !l.text.vertical; },
     run: () => setTextProp(D(), { vertical: false }, 'Horizontal Type'),
   },
   {
-    id: 'type.orientation.vertical', label: 'Vertical',
+    id: 'type.orientation.vertical', label: translateText("Vertical"),
     enabled: () => !!textLayer(),
     checked: () => { const l = textLayer(); return !!(l && l.text) && !!l.text.vertical; },
     run: () => setTextProp(D(), { vertical: true }, 'Vertical Type'),
   },
   {
-    id: 'type.convert-to-shape', label: 'Convert to Shape',
+    id: 'type.convert-to-shape', label: translateText("Convert to Shape"),
     enabled: () => !!textLayer(),
-    run: () => app.busy('Convert to Shape', async () => convertTypeToShape(D())),
+    run: () => app.busy(translateText("Convert to Shape"), async () => convertTypeToShape(D())),
   },
-  { id: 'type.rasterize', label: 'Rasterize Type Layer', enabled: () => !!textLayer(), run: () => ops.rasterizeLayer(D()) },
-  { id: 'type.warp', label: 'Warp Text…', enabled: () => !!textLayer(), run: () => warpTextDialog(D()) },
+  { id: 'type.rasterize', label: translateText("Rasterize Type Layer"), enabled: () => !!textLayer(), run: () => ops.rasterizeLayer(D()) },
+  { id: 'type.warp', label: translateText("Warp Text…"), enabled: () => !!textLayer(), run: () => warpTextDialog(D()) },
   {
-    id: 'type.panel.character', label: 'Character',
+    id: 'type.panel.character', label: translateText("Character"),
     checked: () => isPanelVisible('character'),
     run: () => togglePanel('character'),
   },
 
   /* --- Select ----------------------------------------------------- */
-  { id: 'select.all', label: 'All', accel: 'Ctrl+A', enabled: hasDoc, run: () => { const d = D(); d.selection.selectAll(); commitSelection(d, 'Select All'); } },
-  { id: 'select.deselect', label: 'Deselect', accel: 'Ctrl+D', enabled: hasSelection, run: () => deselect(D()) },
-  { id: 'select.reselect', label: 'Reselect', accel: 'Shift+Ctrl+D', enabled: () => !!(D() && lastMasks.has(D())), run: () => reselect(D()) },
-  { id: 'select.inverse', label: 'Inverse', accel: 'Shift+Ctrl+I', enabled: hasSelection, run: () => { const d = D(); d.selection.invert(); commitSelection(d, 'Inverse'); } },
-  { id: 'select.all-layers', label: 'All Layers', accel: 'Alt+Ctrl+A', enabled: hasDoc, run: () => selectAllLayers(D()) },
-  { id: 'select.deselect-layers', label: 'Deselect Layers', enabled: () => !!(D() && D().selectedLayerIds.length), run: () => deselectLayers(D()) },
-  { id: 'select.color-range', label: 'Color Range…', enabled: hasDoc, run: () => img.showColorRangeDialog(D()) },
+  { id: 'select.all', label: translateText("All"), accel: 'Ctrl+A', enabled: hasDoc, run: () => { const d = D(); d.selection.selectAll(); commitSelection(d, 'Select All'); } },
+  { id: 'select.deselect', label: translateText("Deselect"), accel: 'Ctrl+D', enabled: hasSelection, run: () => deselect(D()) },
+  { id: 'select.reselect', label: translateText("Reselect"), accel: 'Shift+Ctrl+D', enabled: () => !!(D() && lastMasks.has(D())), run: () => reselect(D()) },
+  { id: 'select.inverse', label: translateText("Inverse"), accel: 'Shift+Ctrl+I', enabled: hasSelection, run: () => { const d = D(); d.selection.invert(); commitSelection(d, 'Inverse'); } },
+  { id: 'select.all-layers', label: translateText("All Layers"), accel: 'Alt+Ctrl+A', enabled: hasDoc, run: () => selectAllLayers(D()) },
+  { id: 'select.deselect-layers', label: translateText("Deselect Layers"), enabled: () => !!(D() && D().selectedLayerIds.length), run: () => deselectLayers(D()) },
+  { id: 'select.color-range', label: translateText("Color Range…"), enabled: hasDoc, run: () => img.showColorRangeDialog(D()) },
   {
-    id: 'select.subject', label: 'Subject',
+    id: 'select.subject', label: translateText("Subject"),
     // A saliency guess plus a graph cut, not a trained model — see
     // `src/select/grabcut.js`. It opens the workspace rather than committing a
     // guess silently, because the guess is a starting point.
@@ -1808,35 +1809,35 @@ registerCommands([
     run: () => openSelectAndMask(D(), { subject: true }),
   },
   {
-    id: 'select.select-and-mask', label: 'Select and Mask…', accel: 'Alt+Ctrl+R',
+    id: 'select.select-and-mask', label: translateText("Select and Mask…"), accel: 'Alt+Ctrl+R',
     enabled: hasDoc,
     run: () => openSelectAndMask(D()),
   },
-  { id: 'select.modify.border', label: 'Border…', enabled: hasSelection, run: () => modifySelection(D(), 'border') },
-  { id: 'select.modify.smooth', label: 'Smooth…', enabled: hasSelection, run: () => modifySelection(D(), 'smooth') },
-  { id: 'select.modify.expand', label: 'Expand…', enabled: hasSelection, run: () => modifySelection(D(), 'expand') },
-  { id: 'select.modify.contract', label: 'Contract…', enabled: hasSelection, run: () => modifySelection(D(), 'contract') },
-  { id: 'select.modify.feather', label: 'Feather…', accel: 'Shift+F6', enabled: hasSelection, run: () => modifySelection(D(), 'feather') },
-  { id: 'select.grow', label: 'Grow', enabled: hasSelection, run: () => growSelection(D()) },
-  { id: 'select.similar', label: 'Similar', enabled: hasSelection, run: () => similarSelection(D()) },
-  { id: 'select.transform', label: 'Transform Selection', enabled: hasSelection, run: () => tf.transformSelectionStart(D()) },
+  { id: 'select.modify.border', label: translateText("Border…"), enabled: hasSelection, run: () => modifySelection(D(), 'border') },
+  { id: 'select.modify.smooth', label: translateText("Smooth…"), enabled: hasSelection, run: () => modifySelection(D(), 'smooth') },
+  { id: 'select.modify.expand', label: translateText("Expand…"), enabled: hasSelection, run: () => modifySelection(D(), 'expand') },
+  { id: 'select.modify.contract', label: translateText("Contract…"), enabled: hasSelection, run: () => modifySelection(D(), 'contract') },
+  { id: 'select.modify.feather', label: translateText("Feather…"), accel: 'Shift+F6', enabled: hasSelection, run: () => modifySelection(D(), 'feather') },
+  { id: 'select.grow', label: translateText("Grow"), enabled: hasSelection, run: () => growSelection(D()) },
+  { id: 'select.similar', label: translateText("Similar"), enabled: hasSelection, run: () => similarSelection(D()) },
+  { id: 'select.transform', label: translateText("Transform Selection"), enabled: hasSelection, run: () => tf.transformSelectionStart(D()) },
   {
-    id: 'select.quick-mask', label: 'Edit in Quick Mask Mode', accel: 'Q',
+    id: 'select.quick-mask', label: translateText("Edit in Quick Mask Mode"), accel: 'Q',
     enabled: hasDoc,
     checked: () => !!(D() && D().quickMask),
     run: () => toggleQuickMaskMode(D()),
   },
-  { id: 'select.load', label: 'Load Selection…', enabled: hasDoc, run: () => loadSelection(D()) },
-  { id: 'select.save', label: 'Save Selection…', enabled: hasSelection, run: () => saveSelection(D()) },
+  { id: 'select.load', label: translateText("Load Selection…"), enabled: hasDoc, run: () => loadSelection(D()) },
+  { id: 'select.save', label: translateText("Save Selection…"), enabled: hasSelection, run: () => saveSelection(D()) },
   {
-    id: 'select.make-work-path', label: 'Make Work Path',
+    id: 'select.make-work-path', label: translateText("Make Work Path"),
     enabled: hasSelection,
-    run: () => app.busy('Make Work Path', async () => makeWorkPath(D())),
+    run: () => app.busy(translateText("Make Work Path"), async () => makeWorkPath(D())),
   },
 
   /* --- Filter ----------------------------------------------------- */
   {
-    id: 'filter.last', label: 'Last Filter', accel: 'Ctrl+F',
+    id: 'filter.last', label: translateText("Last Filter"), accel: 'Ctrl+F',
     dynamicLabel: () => (app.lastFilter ? app.lastFilter.label : 'Last Filter'),
     enabled: () => hasLayer() && !!app.lastFilter,
     run: () => repeatLastFilter(),
@@ -1845,12 +1846,12 @@ registerCommands([
     // Camera Raw is a registered filter, so it also appears under Filter > Other
     // and works as a smart filter. This is the top-level entry Photoshop gives
     // it, with the same shortcut.
-    id: 'filter.camera-raw', label: 'Camera Raw Filter…', accel: 'Shift+Ctrl+A',
+    id: 'filter.camera-raw', label: translateText("Camera Raw Filter…"), accel: 'Shift+Ctrl+A',
     enabled: hasLayer,
     run: () => applyFilterCommand('camera-raw'),
   },
   {
-    id: 'filter.smart.convert', label: 'Convert for Smart Filters',
+    id: 'filter.smart.convert', label: translateText("Convert for Smart Filters"),
     enabled: () => hasLayer() && !isSmart(),
     run: () => {
       const l = ops.convertToSmartObject(D());
@@ -1859,11 +1860,11 @@ registerCommands([
   },
 
   /* --- View ------------------------------------------------------- */
-  { id: 'view.zoom-in', label: 'Zoom In', accel: 'Ctrl+=', enabled: hasDoc, run: () => zoomStep(1) },
-  { id: 'view.zoom-out', label: 'Zoom Out', accel: 'Ctrl+-', enabled: hasDoc, run: () => zoomStep(-1) },
-  { id: 'view.fit', label: 'Fit on Screen', accel: 'Ctrl+0', enabled: hasDoc, run: () => app.fitView() },
+  { id: 'view.zoom-in', label: translateText("Zoom In"), accel: 'Ctrl+=', enabled: hasDoc, run: () => zoomStep(1) },
+  { id: 'view.zoom-out', label: translateText("Zoom Out"), accel: 'Ctrl+-', enabled: hasDoc, run: () => zoomStep(-1) },
+  { id: 'view.fit', label: translateText("Fit on Screen"), accel: 'Ctrl+0', enabled: hasDoc, run: () => app.fitView() },
   {
-    id: 'view.fill-screen', label: 'Fill Screen',
+    id: 'view.fill-screen', label: translateText("Fill Screen"),
     enabled: hasDoc,
     // The viewport has no usable size until the canvas area has been laid out;
     // filling against it would set a garbage scale. Same guard as app.fitView().
@@ -1878,7 +1879,7 @@ registerCommands([
   { id: 'view.zoom-100', label: '100%', accel: 'Ctrl+1', enabled: hasDoc, run: () => zoomTo(1) },
   { id: 'view.zoom-200', label: '200%', enabled: hasDoc, run: () => zoomTo(2) },
   {
-    id: 'view.print-size', label: 'Print Size',
+    id: 'view.print-size', label: translateText("Print Size"),
     enabled: hasDoc,
     run: () => zoomTo(96 / (D().resolution || 72)),
   },
@@ -1888,30 +1889,30 @@ registerCommands([
     checked: () => getScreenMode() === mode,
     run: () => setScreenMode(mode),
   })),
-  { id: 'view.extras', label: 'Extras', accel: 'Ctrl+H', enabled: hasDoc, checked: () => !extrasHidden, run: toggleExtras },
-  { id: 'view.show.grid', label: 'Grid', accel: "Ctrl+'", checked: () => app.showGrid, run: () => toggleFlag('showGrid') },
-  { id: 'view.show.guides', label: 'Guides', accel: 'Ctrl+;', checked: () => app.showGuides, run: () => toggleFlag('showGuides') },
-  { id: 'view.rulers', label: 'Rulers', accel: 'Ctrl+R', checked: () => app.showRulers, run: () => toggleFlag('showRulers') },
-  { id: 'view.snap', label: 'Snap', accel: 'Shift+Ctrl+;', checked: () => app.snap, run: () => toggleFlag('snap') },
+  { id: 'view.extras', label: translateText("Extras"), accel: 'Ctrl+H', enabled: hasDoc, checked: () => !extrasHidden, run: toggleExtras },
+  { id: 'view.show.grid', label: translateText("Grid"), accel: "Ctrl+'", checked: () => app.showGrid, run: () => toggleFlag('showGrid') },
+  { id: 'view.show.guides', label: translateText("Guides"), accel: 'Ctrl+;', checked: () => app.showGuides, run: () => toggleFlag('showGuides') },
+  { id: 'view.rulers', label: translateText("Rulers"), accel: 'Ctrl+R', checked: () => app.showRulers, run: () => toggleFlag('showRulers') },
+  { id: 'view.snap', label: translateText("Snap"), accel: 'Shift+Ctrl+;', checked: () => app.snap, run: () => toggleFlag('snap') },
   {
-    id: 'view.clear-guides', label: 'Clear Guides',
+    id: 'view.clear-guides', label: translateText("Clear Guides"),
     enabled: () => !!(D() && D().guides.length),
     run: () => { const d = D(); d.guides = []; d.commit('Clear Guides'); },
   },
-  { id: 'view.new-guide', label: 'New Guide…', enabled: hasDoc, run: () => newGuide(D()) },
-  { id: 'view.new-guide-layout', label: 'New Guide Layout…', enabled: hasDoc, run: () => newGuideLayout(D()) },
+  { id: 'view.new-guide', label: translateText("New Guide…"), enabled: hasDoc, run: () => newGuide(D()) },
+  { id: 'view.new-guide-layout', label: translateText("New Guide Layout…"), enabled: hasDoc, run: () => newGuideLayout(D()) },
 
   /* --- Window ----------------------------------------------------- */
-  { id: 'window.next-doc', label: 'Next Document', accel: 'Ctrl+PageDown', enabled: () => app.docs.length > 1, run: () => stepDocument(1) },
-  { id: 'window.prev-doc', label: 'Previous Document', accel: 'Ctrl+PageUp', enabled: () => app.docs.length > 1, run: () => stepDocument(-1) },
-  { id: 'window.workspace.essentials', label: 'Essentials', run: () => applyWorkspace('essentials') },
-  { id: 'window.workspace.painting', label: 'Painting', run: () => applyWorkspace('painting') },
-  { id: 'window.workspace.photography', label: 'Photography', run: () => applyWorkspace('photography') },
-  { id: 'window.workspace.reset', label: 'Reset Workspace', run: resetWorkspace },
+  { id: 'window.next-doc', label: translateText("Next Document"), accel: 'Ctrl+PageDown', enabled: () => app.docs.length > 1, run: () => stepDocument(1) },
+  { id: 'window.prev-doc', label: translateText("Previous Document"), accel: 'Ctrl+PageUp', enabled: () => app.docs.length > 1, run: () => stepDocument(-1) },
+  { id: 'window.workspace.essentials', label: translateText("Essentials"), run: () => applyWorkspace('essentials') },
+  { id: 'window.workspace.painting', label: translateText("Painting"), run: () => applyWorkspace('painting') },
+  { id: 'window.workspace.photography', label: translateText("Photography"), run: () => applyWorkspace('photography') },
+  { id: 'window.workspace.reset', label: translateText("Reset Workspace"), run: resetWorkspace },
 
   {
     id: 'type.fonts',
-    label: 'Manage Fonts…',
+    label: translateText("Manage Fonts…"),
     run: async () => {
       const { showFontsDialog } = await import('../ui/dialogs/fonts.js');
       const id = await showFontsDialog({ initial: app.tool && app.tool.state ? app.tool.state.font : '' });
@@ -1946,7 +1947,7 @@ registerCommands([
      * feature whose setup lives in a different dialog from the feature itself.
      */
     id: 'help.ai-guide',
-    label: 'Using Generative Fill…',
+    label: translateText("Using Generative Fill…"),
     run: async () => {
       const { showAiGuideDialog } = await import('../ui/dialogs/ai-guide.js');
       // Opened here rather than by the guide calling runCommand: this command is
@@ -1957,7 +1958,7 @@ registerCommands([
       await showAiKeyDialog('openai');
     },
   },
-  { id: 'help.about', label: 'About Pikado…', run: showAbout },
+  { id: 'help.about', label: translateText("About Pikado…"), run: showAbout },
 ]);
 
 /* Open Recent slots — labelled from localStorage at menu-open time. */
@@ -1988,12 +1989,12 @@ applyStoredShortcuts();
  */
 export const MENU_TREE = [
   {
-    label: 'File',
+    label: translateText("File"),
     items: [
       'file.new',
       'file.open',
       {
-        label: 'Open Recent',
+        label: translateText("Open Recent"),
         get items() {
           const list = recentList();
           if (!list.length) return ['file.recent-clear'];
@@ -2016,7 +2017,7 @@ export const MENU_TREE = [
     ],
   },
   {
-    label: 'Edit',
+    label: translateText("Edit"),
     items: [
       'edit.undo',
       'edit.redo',
@@ -2039,7 +2040,7 @@ export const MENU_TREE = [
       '---',
       'edit.free-transform',
       {
-        label: 'Transform',
+        label: translateText("Transform"),
         items: [
           'edit.transform.again',
           '---',
@@ -2061,7 +2062,7 @@ export const MENU_TREE = [
       '---',
       'edit.define-pattern',
       {
-        label: 'Purge',
+        label: translateText("Purge"),
         items: ['edit.purge.undo', 'edit.purge.clipboard', 'edit.purge.histories', '---', 'edit.purge.all'],
       },
       '---',
@@ -2071,14 +2072,14 @@ export const MENU_TREE = [
     ],
   },
   {
-    label: 'Image',
+    label: translateText("Image"),
     items: [
-      { label: 'Mode', items: ['image.mode.rgb', 'image.mode.grayscale', 'image.mode.bitmap'] },
+      { label: translateText("Mode"), items: ['image.mode.rgb', 'image.mode.grayscale', 'image.mode.bitmap'] },
       '---',
       'edit.assign-profile',
       'edit.convert-profile',
       '---',
-      { label: 'Adjustments', dynamic: 'adjustments' },
+      { label: translateText("Adjustments"), dynamic: 'adjustments' },
       '---',
       'image.auto-tone',
       'image.auto-contrast',
@@ -2087,7 +2088,7 @@ export const MENU_TREE = [
       'image.size',
       'image.canvas-size',
       {
-        label: 'Image Rotation',
+        label: translateText("Image Rotation"),
         items: [
           'image.rotate.180', 'image.rotate.cw', 'image.rotate.ccw', 'image.rotate.arbitrary',
           '---', 'image.rotate.flip-h', 'image.rotate.flip-v',
@@ -2103,10 +2104,10 @@ export const MENU_TREE = [
     ],
   },
   {
-    label: 'Layer',
+    label: translateText("Layer"),
     items: [
       {
-        label: 'New',
+        label: translateText("New"),
         items: [
           'layer.new', 'layer.from-background', 'layer.to-background',
           '---', 'layer.via-copy', 'layer.via-cut',
@@ -2115,10 +2116,10 @@ export const MENU_TREE = [
       },
       'layer.duplicate',
       'layer.ungroup',
-      { label: 'Delete', items: ['layer.delete', 'layer.delete-hidden'] },
+      { label: translateText("Delete"), items: ['layer.delete', 'layer.delete-hidden'] },
       '---',
       {
-        label: 'Layer Style',
+        label: translateText("Layer Style"),
         items: [
           'layer.style.options',
           '---',
@@ -2129,11 +2130,11 @@ export const MENU_TREE = [
           'layer.style.clear',
         ],
       },
-      { label: 'New Fill Layer', items: ['layer.fill.solid', 'layer.fill.gradient', 'layer.fill.pattern'] },
-      { label: 'New Adjustment Layer', dynamic: 'adjustment-layers' },
+      { label: translateText("New Fill Layer"), items: ['layer.fill.solid', 'layer.fill.gradient', 'layer.fill.pattern'] },
+      { label: translateText("New Adjustment Layer"), dynamic: 'adjustment-layers' },
       '---',
       {
-        label: 'Layer Mask',
+        label: translateText("Layer Mask"),
         items: [
           'layer.mask.reveal-all', 'layer.mask.hide-all',
           'layer.mask.reveal-selection', 'layer.mask.hide-selection',
@@ -2142,7 +2143,7 @@ export const MENU_TREE = [
       },
       'layer.clipping',
       {
-        label: 'Smart Objects',
+        label: translateText("Smart Objects"),
         items: [
           'layer.smart.convert', '---',
           'layer.smart.edit', 'layer.smart.transform', 'layer.smart.replace', 'layer.smart.export',
@@ -2152,51 +2153,51 @@ export const MENU_TREE = [
         ],
       },
       {
-        label: 'Rasterize',
+        label: translateText("Rasterize"),
         items: ['layer.rasterize.type', 'layer.rasterize.shape', 'layer.rasterize.style', 'layer.rasterize.layer', '---', 'layer.rasterize.all'],
       },
       '---',
       {
-        label: 'Arrange',
+        label: translateText("Arrange"),
         items: ['layer.arrange.front', 'layer.arrange.forward', 'layer.arrange.backward', 'layer.arrange.back'],
       },
       {
-        label: 'Align',
+        label: translateText("Align"),
         items: [
           'layer.align.left', 'layer.align.center-h', 'layer.align.right',
           '---', 'layer.align.top', 'layer.align.center-v', 'layer.align.bottom',
         ],
       },
-      { label: 'Distribute', items: ['layer.distribute.horizontal', 'layer.distribute.vertical'] },
+      { label: translateText("Distribute"), items: ['layer.distribute.horizontal', 'layer.distribute.vertical'] },
       '---',
       'layer.merge-down',
       'layer.merge-visible',
       'layer.stamp-visible',
       'layer.flatten',
       '---',
-      { label: 'Matting', items: ['layer.matting.defringe', 'layer.matting.black', 'layer.matting.white'] },
+      { label: translateText("Matting"), items: ['layer.matting.defringe', 'layer.matting.black', 'layer.matting.white'] },
     ],
   },
   {
-    label: 'Type',
+    label: translateText("Type"),
     items: [
       'type.fonts',
       '---',
       {
-        label: 'Anti-Alias',
+        label: translateText("Anti-Alias"),
         items: ['type.antialias.none', 'type.antialias.sharp', 'type.antialias.crisp', 'type.antialias.strong', 'type.antialias.smooth'],
       },
-      { label: 'Orientation', items: ['type.orientation.horizontal', 'type.orientation.vertical'] },
+      { label: translateText("Orientation"), items: ['type.orientation.horizontal', 'type.orientation.vertical'] },
       '---',
       'type.convert-to-shape',
       'type.rasterize',
       'type.warp',
       '---',
-      { label: 'Panels', items: ['type.panel.character'] },
+      { label: translateText("Panels"), items: ['type.panel.character'] },
     ],
   },
   {
-    label: 'Select',
+    label: translateText("Select"),
     items: [
       'select.all',
       'select.deselect',
@@ -2210,7 +2211,7 @@ export const MENU_TREE = [
       'select.select-and-mask',
       'select.color-range',
       {
-        label: 'Modify',
+        label: translateText("Modify"),
         items: ['select.modify.border', 'select.modify.smooth', 'select.modify.expand', 'select.modify.contract', 'select.modify.feather'],
       },
       '---',
@@ -2226,11 +2227,11 @@ export const MENU_TREE = [
     ],
   },
   {
-    label: 'Filter',
+    label: translateText("Filter"),
     items: ['filter.last', '---', 'filter.camera-raw', '---', 'filter.smart.convert', '---', { dynamic: 'filters' }],
   },
   {
-    label: 'View',
+    label: translateText("View"),
     items: [
       'view.zoom-in',
       'view.zoom-out',
@@ -2240,14 +2241,14 @@ export const MENU_TREE = [
       'view.zoom-200',
       'view.print-size',
       '---',
-      { label: 'Screen Mode', items: ['view.screen.standard', 'view.screen.full-menu', 'view.screen.full'] },
+      { label: translateText("Screen Mode"), items: ['view.screen.standard', 'view.screen.full-menu', 'view.screen.full'] },
       '---',
       'view.proof-setup',
       'view.proof-colors',
       'view.gamut-warning',
       '---',
       'view.extras',
-      { label: 'Show', items: ['view.show.grid', 'view.show.guides'] },
+      { label: translateText("Show"), items: ['view.show.grid', 'view.show.guides'] },
       '---',
       'view.rulers',
       'view.snap',
@@ -2258,12 +2259,12 @@ export const MENU_TREE = [
     ],
   },
   {
-    label: 'Window',
+    label: translateText("Window"),
     get items() {
       return [
-        { label: 'Arrange', items: ['window.next-doc', 'window.prev-doc'] },
+        { label: translateText("Arrange"), items: ['window.next-doc', 'window.prev-doc'] },
         {
-          label: 'Workspace',
+          label: translateText("Workspace"),
           items: ['window.workspace.essentials', 'window.workspace.painting', 'window.workspace.photography', '---', 'window.workspace.reset'],
         },
         '---',
@@ -2274,7 +2275,7 @@ export const MENU_TREE = [
     },
   },
   {
-    label: 'Help',
+    label: translateText("Help"),
     items: ['help.ai-guide', '---', 'help.about', '---', 'edit.keyboard-shortcuts'],
   },
 ];

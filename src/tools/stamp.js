@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { registerTool } from './base.js';
 import { app } from '../core/app.js';
 import { PaintStroke, brushOptionDescriptors, brushFromOptions } from '../paint/brush-engine.js';
@@ -25,8 +26,8 @@ class CloneStampTool extends BrushToolBase {
       strokeLabel: 'Clone Stamp',
       options: [
         ...tweakDefaults(brushOptionDescriptors(), { size: 40, hardness: 100 }),
-        { key: 'aligned', label: 'Aligned', type: 'checkbox', default: true },
-        { key: 'sampleAllLayers', label: 'Sample All Layers', type: 'checkbox', default: false },
+        { key: 'aligned', label: translateText("Aligned"), type: 'checkbox', default: true },
+        { key: 'sampleAllLayers', label: translateText("Sample All Layers"), type: 'checkbox', default: false },
       ],
     });
     /** @type {{x:number,y:number}|null} */
@@ -98,7 +99,7 @@ class CloneStampTool extends BrushToolBase {
 
   contextMenu() {
     return brushContextMenu(this, [{
-      label: 'Reset Clone Source',
+      label: translateText("Reset Clone Source"),
       disabled: !this.source,
       run: () => {
         this.source = null;
@@ -145,10 +146,10 @@ class PatternStampTool extends BrushToolBase {
       strokeLabel: 'Pattern Stamp',
       options: [
         ...tweakDefaults(brushOptionDescriptors(), { size: 60, hardness: 100 }),
-        { key: 'pattern', label: 'Pattern', type: 'select', options: patternOptions(), default: 'checkerboard' },
-        { key: 'scale', label: 'Scale', type: 'slider', min: 10, max: 400, step: 1, default: 100, unit: '%' },
-        { key: 'aligned', label: 'Aligned', type: 'checkbox', default: true },
-        { key: 'impressionist', label: 'Impressionist', type: 'checkbox', default: false },
+        { key: 'pattern', label: translateText("Pattern"), type: 'select', options: patternOptions(), default: 'checkerboard' },
+        { key: 'scale', label: translateText("Scale"), type: 'slider', min: 10, max: 400, step: 1, default: 100, unit: '%' },
+        { key: 'aligned', label: translateText("Aligned"), type: 'checkbox', default: true },
+        { key: 'impressionist', label: translateText("Impressionist"), type: 'checkbox', default: false },
       ],
     });
   }

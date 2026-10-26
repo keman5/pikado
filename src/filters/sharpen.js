@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 /**
  * Filter > Sharpen.
  *
@@ -111,9 +112,9 @@ registerFilter({
   name: 'Unsharp Mask...',
   menu: 'Sharpen',
   params: [
-    { key: 'amount', label: 'Amount', type: 'slider', min: 1, max: 500, step: 1, default: 100, unit: '%' },
-    { key: 'radius', label: 'Radius', type: 'slider', min: 0.1, max: 250, step: 0.1, default: 1.5, unit: 'px' },
-    { key: 'threshold', label: 'Threshold', type: 'slider', min: 0, max: 255, step: 1, default: 0, unit: 'levels' },
+    { key: 'amount', label: translateText("Amount"), type: 'slider', min: 1, max: 500, step: 1, default: 100, unit: '%' },
+    { key: 'radius', label: translateText("Radius"), type: 'slider', min: 0.1, max: 250, step: 0.1, default: 1.5, unit: 'px' },
+    { key: 'threshold', label: translateText("Threshold"), type: 'slider', min: 0, max: 255, step: 1, default: 0, unit: 'levels' },
   ],
   apply(imageData, p) {
     const sigma = p.radius;
@@ -134,15 +135,15 @@ registerFilter({
   menu: 'Sharpen',
   dialogWidth: 420,
   params: [
-    { key: 'amount', label: 'Amount', type: 'slider', min: 1, max: 500, step: 1, default: 150, unit: '%' },
-    { key: 'radius', label: 'Radius', type: 'slider', min: 0.1, max: 64, step: 0.1, default: 1.5, unit: 'px' },
-    { key: 'reduceNoise', label: 'Reduce Noise', type: 'slider', min: 0, max: 100, step: 1, default: 20, unit: '%' },
-    { key: 'remove', label: 'Remove', type: 'select', default: 'gaussian', options: [
-      { value: 'gaussian', label: 'Gaussian Blur' },
-      { value: 'lens', label: 'Lens Blur' },
-      { value: 'motion', label: 'Motion Blur' },
+    { key: 'amount', label: translateText("Amount"), type: 'slider', min: 1, max: 500, step: 1, default: 150, unit: '%' },
+    { key: 'radius', label: translateText("Radius"), type: 'slider', min: 0.1, max: 64, step: 0.1, default: 1.5, unit: 'px' },
+    { key: 'reduceNoise', label: translateText("Reduce Noise"), type: 'slider', min: 0, max: 100, step: 1, default: 20, unit: '%' },
+    { key: 'remove', label: translateText("Remove"), type: 'select', default: 'gaussian', options: [
+      { value: 'gaussian', label: translateText("Gaussian Blur") },
+      { value: 'lens', label: translateText("Lens Blur") },
+      { value: 'motion', label: translateText("Motion Blur") },
     ] },
-    { key: 'angle', label: 'Angle', type: 'angle', min: -360, max: 360, step: 1, default: 0,
+    { key: 'angle', label: translateText("Angle"), type: 'angle', min: -360, max: 360, step: 1, default: 0,
       when: (s) => s.remove === 'motion' },
   ],
   apply(imageData, p) {
