@@ -1,7 +1,7 @@
 /* The app bar: brand, menus, document identity. Dropdown popups are appended
    to <body>, so they are styled here but positioned by menubar.js. */
 
-.pk-brand {
+.pk-menubar > .pk-brand {
   display: flex;
   align-items: center;
   padding-right: 14px;
@@ -11,7 +11,7 @@
 }
 /* A hairline instead of a border-right: it stops short of the bar edges, which
    reads as a seam between regions rather than a frame around one. */
-.pk-brand::after {
+.pk-menubar > .pk-brand::after {
   content: "";
   position: absolute;
   right: 0;

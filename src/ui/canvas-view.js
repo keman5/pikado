@@ -481,7 +481,10 @@ export class CanvasView {
       app.viewport.zoomBy(Math.pow(1.0022, -e.deltaY * 1.6), sx, sy);
     } else if (e.shiftKey) {
       e.preventDefault();
-      app.viewport.pan(-e.deltaY, 0);
+      // Some browsers already map Shift+wheel onto deltaX.
+      const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+      const unit = e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? r.width : 1;
+      app.viewport.pan(-delta * unit, 0);
     } else {
       e.preventDefault();
       app.viewport.pan(-e.deltaX, -e.deltaY);

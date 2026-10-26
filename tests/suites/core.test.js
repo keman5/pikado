@@ -1070,3 +1070,57 @@ suite('core / the other drag tools snap too', async (t) => {
     if (was.tool) app.setTool(was.tool);
   }
 });
+
+suite('core / Shift wheel pans horizontally across browser delta conventions', async (t) => {
+  t.doc(100, 100);
+  const app = t.app;
+  const tool = app.tool.id;
+  app.setTool('move');
+  const v = app.viewport;
+  const saved = { offsetX: v.offsetX, offsetY: v.offsetY, scale: v.scale };
+  const canvas = document.getElementById('view');
+  const r = canvas.getBoundingClientRect();
+  const wheel = (deltaX, deltaY, deltaMode = 0, mods = {}) => {
+    const e = new WheelEvent('wheel', { bubbles: true, cancelable: true,
+      shiftKey: true, deltaX, deltaY, deltaMode, clientX: r.left + 50, clientY: r.top + 50, ...mods });
+    canvas.dispatchEvent(e);
+    return e;
+  };
+  try {
+    for (const [dx, dy, mode, distance] of [
+      [0, 40, 0, 40], [40, 0, 0, 40], [40, 3, 0, 40],
+      [2, -40, 0, -40], [0, 2, 1, 32], [1, 0, 2, r.width],
+    ]) {
+      const x = v.offsetX, y = v.offsetY;
+      t.ok(wheel(dx, dy, mode).defaultPrevented, 'browser scrolling is claimed');
+      t.eq([v.offsetX - x, v.offsetY - y], [-distance, 0], `horizontal pan for ${dx}/${dy}, mode ${mode}`);
+      t.eq(v.scale, saved.scale, 'no unintended zoom');
+    }
+    const x = v.offsetX, y = v.offsetY;
+    wheel(10, 20, 0, { shiftKey: false });
+    t.eq([v.offsetX - x, v.offsetY - y], [-10, -20], 'ordinary two-axis scrolling still works');
+    wheel(0, -20, 0, { ctrlKey: true });
+    t.ok(v.scale > saved.scale, 'Ctrl retains zoom priority');
+  } finally {
+    Object.assign(v, saved);
+    app.setTool(tool);
+  }
+});
+
+suite('core / locked-layer feedback passes through localization', async (t) => {
+  const { t: translate } = await import('/src/i18n/index.js');
+  const { Tool } = await import('/src/tools/base.js');
+  const doc = t.doc(20, 20);
+  doc.activeLayer().name = 'My File {1} $&';
+  doc.activeLayer().locked.all = true;
+  const tool = new Tool();
+  tool.init(t.app);
+  const messages = [];
+  const off = t.app.on('toast', ({ message }) => messages.push(message));
+  try {
+    t.notOk(tool.canPaint(), 'locked layers cannot be painted');
+    t.eq(messages.pop(), translate('Layer "{0}" is locked.', doc.activeLayer().name), 'layer name is preserved in translated feedback');
+    t.app.toast('The layer is locked and cannot be moved.');
+    t.eq(messages.pop(), translate('The layer is locked and cannot be moved.'), 'shared toast path translates static feedback');
+  } finally { off(); }
+});

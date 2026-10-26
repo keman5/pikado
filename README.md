@@ -75,8 +75,8 @@ builds them:
 There is no blank `Untitled-1` waiting for you. With nothing open you land on a
 start screen: a handful of sizes people actually start from, a file picker, and
 your recent projects with thumbnails, dimensions, layer counts and when you last
-touched them. Drop a file anywhere on the window and it opens — hold Shift to
-place it into the current document as a layer instead. Close the last document
+touched them. Drop a file anywhere on the window to open it. With a document already open,
+dropped images become new layers in that document. Use File > Open for a separate tab. Close the last document
 and the start screen comes back.
 
 Images dragged straight out of another browser tab open the same way, at their

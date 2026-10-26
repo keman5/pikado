@@ -136,6 +136,8 @@ suite('drop / an image dragged from another tab opens whole', async (t) => {
    */
   const url = pngDataUrl(37, 23, '#3366cc');
   const before = t.app.docs.length;
+  const previous = t.app.activeDoc;
+  t.app.setActiveDoc(null);
   const e = dropOnWindow(fakeDrag({ 'text/uri-list': url }));
   t.ok(e.defaultPrevented, 'the drop is claimed, so the tab cannot navigate away');
 
@@ -148,7 +150,39 @@ suite('drop / an image dragged from another tab opens whole', async (t) => {
     }
   } finally {
     if (doc) t.app.closeDocument(doc);
+    t.app.setActiveDoc(previous);
   }
+});
+
+suite('drop / another image becomes a layer in the current tab', async (t) => {
+  const doc = t.doc(40, 30);
+  const docs = t.app.docs.length;
+  const layers = doc.layers.length;
+  dropOnWindow(fakeDrag({ 'text/uri-list': pngDataUrl(40, 30, '#3366cc') }));
+  t.ok(await waitFor(() => doc.layers.length === layers + 1), 'a new layer arrives');
+  t.eq(t.app.docs.length, docs, 'no extra document tab');
+  t.eq(t.app.activeDoc.id, doc.id, 'the original tab stays active');
+  t.pixel(doc.activeLayer().canvas, 20, 15, '51,102,204,255', 'the dropped pixels are in the new layer');
+});
+
+suite('drop / delayed file handles keep the document targeted at drop time', async (t) => {
+  const other = t.doc(40, 30);
+  const target = t.doc(40, 30);
+  const blob = await (await fetch(pngDataUrl(40, 30, '#ff0000'))).blob();
+  const file = new File([blob], 'red.png', { type: 'image/png' });
+  let resolve;
+  const handle = new Promise(r => { resolve = r; });
+  const docs = t.app.docs.length;
+  const count = target.layers.length;
+  dropOnWindow({ types: ['Files'], files: [file], items: [
+    { kind: 'file', getAsFileSystemHandle: () => handle },
+  ] });
+  t.app.setActiveDoc(other);
+  resolve(null);
+  t.ok(await waitFor(() => target.layers.length === count + 1), 'original target receives the layer');
+  t.eq(other.layers.length, 1, 'the other tab is untouched');
+  t.eq(t.app.docs.length, docs, 'no new tab');
+  t.pixel(target.activeLayer().canvas, 20, 15, '255,0,0,255', 'file pixels survive');
 });
 
 suite('drop / pasting an image larger than the canvas keeps all of it', async (t) => {

@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 /**
  * Tool base class + registry.
  *
@@ -134,7 +135,7 @@ export class Tool {
       return false;
     }
     if (l.locked.all || l.locked.pixels) {
-      if (warn && this.app) this.app.toast(`Layer "${l.name}" is locked.`);
+      if (warn && this.app) this.app.toast(translateText('Layer "{0}" is locked.', l.name));
       return false;
     }
     if (l.editingMask && l.mask) return true;

@@ -451,7 +451,7 @@ function buildControl(p, state, onChange, controls) {
       return null;
   }
 
-  if (p.hint) row.appendChild(el('div.pk-hint', { text: p.hint }));
+  if (p.hint) row.appendChild(el('div.pk-hint', { text: translateText(p.hint) }));
   return row;
 }
 

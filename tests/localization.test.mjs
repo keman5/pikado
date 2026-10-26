@@ -64,3 +64,9 @@ test('saved language takes effect on next load and denied storage falls back saf
     else delete globalThis.localStorage;
   }
 });
+
+test('locked layer feedback is translated without changing user layer names', () => {
+  assert.equal(translate('zh-CN', 'The layer is locked and cannot be moved.'), '图层已锁定，无法移动。');
+  assert.equal(translate('zh-CN', 'Layer "{0}" is locked.', 'My File {1} $&'), '图层“My File {1} $&”已锁定。');
+  assert.equal(translate('en', 'Layer "{0}" is locked.', 'My File {1} $&'), 'Layer "My File {1} $&" is locked.');
+});

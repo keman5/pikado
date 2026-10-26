@@ -171,7 +171,7 @@ export function placeAsLayer(doc, source, name) {
   c.drawImage(source, Math.round((doc.width - w) / 2), Math.round((doc.height - h) / 2), w, h);
   doc.addLayer(layer);
   doc.commit('Place');
-  app.toast(`Placed “${name}” as a new layer`, 'ok');
+  app.toast(translateText('Placed “{0}” as a new layer', name), 'ok');
   return layer;
 }
 
@@ -198,7 +198,7 @@ export async function openImageBlob(blob, name = 'Image', opts = {}) {
   if (!target && isGif) {
     const frames = await decodeGifFrames(blob);
     if (frames && frames.length > 1) {
-      app.toast(`Imported ${frames.length} GIF frames as layers`, 'ok');
+      app.toast(translateText('Imported {0} GIF frames as layers', frames.length), 'ok');
       return adopt(documentFromFrames(frames, name));
     }
   }
@@ -278,7 +278,7 @@ export async function openFile(file, opts = {}) {
 export async function openFiles(files, opts = {}) {
   const list = [...(files || [])].filter(Boolean);
   if (!list.length) return [];
-  const label = list.length > 1 ? `Opening ${list.length} files…` : `Opening ${list[0].name || 'file'}…`;
+  const label = list.length > 1 ? translateText('Opening {0} files…', list.length) : translateText('Opening {0}…', list[0].name || translateText('File'));
   const result = await app.busy(label, async () => {
     const opened = [];
     for (const file of list) {
@@ -287,7 +287,7 @@ export async function openFiles(files, opts = {}) {
         if (out) opened.push(out);
       } catch (err) {
         console.error(err);
-        const why = err && err.message ? err.message : 'the file could not be opened';
+        const why = err && err.message ? translateText(err.message) : translateText('The file could not be opened.');
         app.toast(`${file.name || 'File'}: ${why}`, 'error', 6000);
       }
     }
@@ -414,14 +414,13 @@ async function fetchDroppedImage(url, name) {
     res = await fetch(url, { mode: 'cors', credentials: 'omit', referrerPolicy: 'no-referrer' });
   } catch (err) {
     app.toast(
-      `${hostOf(url)} does not let another site read its images. Right-click the image, `
-      + 'choose Copy image, then press Ctrl+V here.',
+      translateText('{0} does not let another site read its images. Right-click the image, choose Copy image, then press Ctrl+V here.', translateText(hostOf(url))),
       'error', 8000,
     );
     return null;
   }
   if (!res.ok) {
-    app.toast(`${hostOf(url)} refused the image (HTTP ${res.status}).`, 'error', 6000);
+    app.toast(translateText('{0} refused the image (HTTP {1}).', translateText(hostOf(url)), res.status), 'error', 6000);
     return null;
   }
   const blob = await res.blob();
@@ -458,7 +457,7 @@ async function openDroppedUrl(url, alt, opts) {
   const name = nameForUrl(url, alt);
   // `app.busy` lowers the overlay in a `finally`, so two of them cannot be
   // nested — this one has to finish before `openFiles` starts its own.
-  const file = await app.busy(`Fetching ${name}…`, () => fetchDroppedImage(url, name));
+  const file = await app.busy(translateText('Fetching {0}…', name), () => fetchDroppedImage(url, name));
   if (!file) return null;
   return openFiles([file], opts);
 }
@@ -475,7 +474,7 @@ async function openDroppedUrl(url, alt, opts) {
 export function installFileDrop(areaEl) {
   const host = areaEl || document.body;
   const title = el('div.pk-drop-title', { text: translateText("Drop to open") });
-  const hint = el('div.pk-drop-hint', {}, 'Hold ', el('kbd', { text: translateText("Shift") }), ' to place into the current document');
+  const hint = el('div.pk-drop-hint', { text: translateText('Use File > Open to open a separate document') });
   const overlay = el('div.pk-drop-overlay', {}, el('div.pk-drop-card', {}, title, hint));
   host.appendChild(overlay);
 
@@ -483,9 +482,9 @@ export function installFileDrop(areaEl) {
   const show = () => overlay.classList.add('is-active');
   const hide = () => { depth = 0; overlay.classList.remove('is-active'); };
 
-  const describe = (shift) => {
-    const asLayer = shift && !!app.activeDoc;
-    title.textContent = asLayer ? 'Drop as a new layer' : 'Drop to open';
+  const describe = () => {
+    const asLayer = !!app.activeDoc;
+    title.textContent = translateText(asLayer ? 'Drop as a new layer' : 'Drop to open');
     hint.style.visibility = app.activeDoc ? 'visible' : 'hidden';
   };
 
@@ -514,14 +513,14 @@ export function installFileDrop(areaEl) {
     if (!isOpenableDrag(e)) return;
     e.preventDefault();
     depth++;
-    describe(e.shiftKey);
+    describe();
     show();
   });
 
   window.addEventListener('dragover', (e) => {
     if (!isOpenableDrag(e)) return;
     e.preventDefault();
-    describe(e.shiftKey);
+    describe();
     if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
     show();
   });
@@ -544,7 +543,7 @@ export function installFileDrop(areaEl) {
     hide();
     const dt = e.dataTransfer;
     const files = dt ? [...dt.files] : [];
-    const opts = { asLayer: e.shiftKey && !!app.activeDoc };
+    const opts = { asLayer: !!app.activeDoc, doc: app.activeDoc };
 
     if (!files.length) {
       /*

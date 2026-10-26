@@ -34,8 +34,8 @@
 
 .pk-tool-ico { display: flex; }
 .pk-tool svg {
-  width: 17px;
-  height: 17px;
+  width: 22px;
+  height: 22px;
   stroke: currentColor;
   fill: none;
   stroke-width: 1.5;
@@ -121,7 +121,7 @@
   background: var(--accent);
 }
 .pk-flyout-ico { display: flex; flex: 0 0 auto; color: inherit; }
-.pk-flyout-ico svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+.pk-flyout-ico svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.5; }
 .pk-flyout-name { flex: 1 1 auto; }
 .pk-flyout-key {
   flex: 0 0 auto;

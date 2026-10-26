@@ -66,11 +66,11 @@ function copyToClipboard(text, what) {
   const clip = navigator.clipboard;
   if (clip && clip.writeText) {
     clip.writeText(text)
-      .then(() => app.toast(`Copied ${text}`, 'ok'))
-      .catch(() => app.toast(`Clipboard blocked — ${what} is ${text}`, 'warn'));
+      .then(() => app.toast(translateText('Copied {0}', text), 'ok'))
+      .catch(() => app.toast(translateText('Clipboard blocked — {0} is {1}', translateText(what), text), 'warn'));
     return;
   }
-  app.toast(`Clipboard unavailable — ${what} is ${text}`, 'warn');
+  app.toast(translateText('Clipboard unavailable — {0} is {1}', translateText(what), text), 'warn');
 }
 
 /* ------------------------------------------------------------------ */
@@ -281,7 +281,7 @@ class ColorSamplerTool extends Tool {
       return;
     }
     if (list.length >= MAX_SAMPLERS) {
-      this.app.toast(`A document can hold ${MAX_SAMPLERS} colour samplers.`);
+      this.app.toast(translateText('A document can hold {0} colour samplers.', MAX_SAMPLERS));
       return;
     }
     list.push({ x: Math.round(e.x), y: Math.round(e.y) });

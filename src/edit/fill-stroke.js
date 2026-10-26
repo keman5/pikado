@@ -73,7 +73,7 @@ export async function definePattern(doc) {
   const entry = { id: uid('pat'), name: name.trim() || fallback, canvas: tile };
   customPatterns().unshift(entry);
   app.emit('patterns-change', entry);
-  app.toast(`Defined pattern "${entry.name}" (${b.width} × ${b.height})`, 'ok');
+  app.toast(translateText('Defined pattern "{0}" ({1} × {2})', entry.name, b.width, b.height), 'ok');
   return entry;
 }
 
@@ -95,7 +95,7 @@ function canEdit(doc, layer) {
     return false;
   }
   if (layer.locked.all || layer.locked.pixels) {
-    app.toast(`Layer "${layer.name}" is locked.`);
+    app.toast(translateText('Layer "{0}" is locked.', layer.name));
     return false;
   }
   if (!targetSurface(doc, layer)) {

@@ -66,7 +66,7 @@ export const PREF_DEFAULTS = {
   showGrid: false,
   snap: true,
   gridSize: 20,
-  gridSubdivisions: 4,
+  gridSubdivisions: 20,
 };
 
 const CATEGORIES = [

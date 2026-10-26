@@ -1,3 +1,4 @@
+import { t } from '../i18n/index.js';
 import { Emitter } from './emitter.js';
 import { PikaDocument } from './document.js';
 import { Viewport } from '../render/viewport.js';
@@ -37,7 +38,7 @@ class App extends Emitter {
     this.showRulers = true;
     this.snap = true;
     this.gridSize = 20;
-    this.gridSubdivisions = 4;
+    this.gridSubdivisions = 20;
 
     /** Modules push {label, run} for Filter > Last Filter. */
     this.lastFilter = null;
@@ -215,11 +216,12 @@ class App extends Emitter {
   /* --------------------------------------------------------------- */
 
   toast(message, kind = 'info', ms = 2600) {
-    this.emit('toast', { message, kind, ms });
+    this.emit('toast', { message: t(message), kind, ms });
   }
 
   /** Wrap a long-running operation with a busy indicator. */
   async busy(label, fn) {
+    label = t(label);
     this.emit('busy', { label, active: true });
     // Give the busy overlay a frame to paint before we block the main thread.
     // requestAnimationFrame does not fire while the tab is hidden, so race it

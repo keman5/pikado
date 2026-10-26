@@ -58,7 +58,7 @@ export function historySourceCanvasFor(doc, layer, { warn = true } = {}) {
   const entry = states[historySourceIndex(doc)];
   const snap = entry && entry.state ? findLayerSnapshot(entry.state.layers, layer.id) : null;
   if (!snap) {
-    if (warn) app.toast(`"${layer.name}" does not exist in the history source state.`, 'warn');
+    if (warn) app.toast(translateText('"{0}" does not exist in the history source state.', layer.name), 'warn');
     return null;
   }
   const cv = layer.editingMask ? snap.mask : snap.canvas;
