@@ -451,7 +451,7 @@ function collectRecords(list, out) {
       && !shapeCarriesLiveCanvas(layer.shape, layer)) {
       // Live shape layer: the rasterised pixels *and* a vector mask + fill.
       out.push({ layer, kind: 'shape' });
-    } else if (layer.canvas) {
+    } else if (layer.pixelKey()) {
       out.push({ layer, kind: 'layer' });
     }
   }
@@ -486,14 +486,14 @@ function maskPlane(canvas, width, height) {
   return out;
 }
 
-/** Content bounds clamped to the document, or null when the layer is empty. */
+/** PSD layer rectangles may extend outside the document. */
 function rectOf(layer, doc) {
   const bounds = layer.contentBounds();
   if (!bounds) return null;
-  const left = Math.max(0, bounds.x);
-  const top = Math.max(0, bounds.y);
-  const right = Math.min(doc.width, bounds.x + bounds.width);
-  const bottom = Math.min(doc.height, bounds.y + bounds.height);
+  const left = bounds.x;
+  const top = bounds.y;
+  const right = bounds.x + bounds.width;
+  const bottom = bounds.y + bounds.height;
   if (right <= left || bottom <= top) return null;
   return { left, top, right, bottom };
 }
@@ -831,7 +831,7 @@ function writeLayerRecord(w, record, doc) {
   w.int32(bottom);
   w.int32(right);
 
-  const hasMask = !isDivider && !!layer.mask;
+  const hasMask = !isDivider && layer.hasMask;
   const channelIds = [-1, 0, 1, 2];
   if (hasMask) channelIds.push(-2);
 
@@ -860,14 +860,15 @@ function writeLayerRecord(w, record, doc) {
   w.uint32(0);
   const extraStart = w.length;
 
-  // Layer mask data — our masks always cover the whole document.
+  // Preserve translated mask rectangles, including pixels outside the document.
   if (hasMask) {
     w.uint32(20);
-    w.int32(0);
-    w.int32(0);
-    w.int32(doc.height);
-    w.int32(doc.width);
-    w.byte(0); // default colour: black outside the rectangle (unused here)
+    const m = layer.maskTile || { canvas: layer.mask, x: 0, y: 0 };
+    w.int32(m.y);
+    w.int32(m.x);
+    w.int32(m.y + m.canvas.height);
+    w.int32(m.x + m.canvas.width);
+    w.byte(m.defaultColor || 0); // default colour: black outside the rectangle (unused here)
     let maskFlags = 0;
     // Bit 0 is "position relative to layer", which is the inverse of Photoshop's
     // link toggle: a linked mask moves with the layer, so it is NOT relative.
@@ -2484,7 +2485,7 @@ function writeChannelData(w, record, plan, doc) {
 
   let planes = null;
   if (rect) {
-    planes = planesOf(layer.canvas, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top);
+    planes = planesOf(layer.pixelKey(), rect.left - (layer.tile?.x || 0), rect.top - (layer.tile?.y || 0), rect.right - rect.left, rect.bottom - rect.top);
   }
   const rw = rect ? rect.right - rect.left : 0;
   const rh = rect ? rect.bottom - rect.top : 0;
@@ -2493,8 +2494,9 @@ function writeChannelData(w, record, plan, doc) {
     const id = channelIds[i];
     let written;
     if (id === -2) {
-      written = hasMask && layer.mask
-        ? writeChannel(w, maskPlane(layer.mask, doc.width, doc.height), doc.width, doc.height)
+      const mask = layer.maskTile?.canvas || layer.mask;
+      written = hasMask && mask
+        ? writeChannel(w, maskPlane(mask, mask.width, mask.height), mask.width, mask.height)
         : writeEmptyChannel(w);
     } else if (!planes) {
       written = writeEmptyChannel(w);

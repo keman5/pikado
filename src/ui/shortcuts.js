@@ -69,6 +69,16 @@ export function installShortcuts(canvasView) {
 
   app.on('ready', () => { bindings = buildBindingMap(); });
 
+  // Save must be cancelled before focused controls or tools consume the event.
+  // shortcut: Edge can reserve Shift+Cmd+S before DOM dispatch; revisit if it exposes a shortcut override.
+  window.addEventListener('keydown', (e) => {
+    if (!bindings) bindings = buildBindingMap();
+    const id = bindings.get(eventBinding(e));
+    if (id !== 'file.save' && id !== 'file.save-as') return;
+    e.preventDefault();
+    e.stopImmediatePropagation();
+    if (!document.querySelector('.pk-dialog-overlay') && isEnabled(id)) runCommand(id);
+  }, { capture: true });
   window.addEventListener('keydown', (e) => onKeyDown(e, canvasView));
   window.addEventListener('keyup', (e) => onKeyUp(e, canvasView));
   window.addEventListener('blur', () => releaseSpace(canvasView));

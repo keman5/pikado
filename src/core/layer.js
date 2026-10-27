@@ -95,7 +95,8 @@ export class Layer {
     /** @type {{canvas: HTMLCanvasElement, x: number, y: number}|null} */
     this._tile = opts.tile || null;
     /** @type {HTMLCanvasElement|null} document-sized greyscale mask (white = visible) */
-    this.mask = opts.mask || null;
+    this._mask = opts.mask || null;
+    this.maskTile = opts.maskTile || null;
     this.maskEnabled = opts.maskEnabled !== false;
     this.maskLinked = opts.maskLinked !== false;
     this.maskInverted = !!opts.maskInverted;
@@ -152,6 +153,42 @@ export class Layer {
   set canvas(cv) {
     this._full = cv || null;
     this._tile = null;
+  }
+
+  /** Document-space projection for readers; never discard pixels outside the canvas. */
+  readCanvas() {
+    if (!this._tile) return this._full;
+    const { canvas, x, y, docWidth, docHeight } = this._tile;
+    const out = createCanvas(docWidth, docHeight);
+    ctx2d(out).drawImage(canvas, x, y);
+    return out;
+  }
+
+  get hasMask() { return !!(this._mask || this.maskTile); }
+
+  get mask() {
+    if (this.maskTile) {
+      this._mask = this.readMask();
+      this.maskTile = null;
+    }
+    return this._mask;
+  }
+
+  set mask(canvas) {
+    this._mask = canvas || null;
+    this.maskTile = null;
+  }
+
+  readMask() {
+    if (!this.maskTile) return this._mask;
+    const { canvas, x, y, docWidth, docHeight, defaultColor = 0 } = this.maskTile;
+    const out = createCanvas(docWidth, docHeight);
+    const c = ctx2d(out);
+    c.fillStyle = `rgb(${defaultColor},${defaultColor},${defaultColor})`;
+    c.fillRect(0, 0, docWidth, docHeight);
+    c.clearRect(x, y, canvas.width, canvas.height);
+    c.drawImage(canvas, x, y);
+    return out;
   }
 
   /**
@@ -243,8 +280,9 @@ export class Layer {
       if (this._full) this._full = cloneCanvas(this._full);
       else if (this._tile) this._tile = { ...this._tile, canvas: cloneCanvas(this._tile.canvas) };
     }
-    if (this.mask && surface !== 'canvas') {
-      this.mask = cloneCanvas(this.mask);
+    if (this.hasMask && surface !== 'canvas') {
+      if (this.maskTile) this.maskTile = { ...this.maskTile, canvas: cloneCanvas(this.maskTile.canvas) };
+      else this._mask = cloneCanvas(this._mask);
       this.maskVersion++;
       this._maskAlphaVersion = -1;
     }
@@ -258,7 +296,7 @@ export class Layer {
   }
 
   addMask(w, h, fill = '#ffffff') {
-    if (this.mask) return this.mask;
+    if (this.hasMask) return this.mask;
     this.mask = createCanvas(w, h);
     const c = this.mask.getContext('2d');
     c.fillStyle = fill;
@@ -286,10 +324,11 @@ export class Layer {
    * `destination-in` source. Cached against `maskVersion`.
    */
   maskAlphaCanvas() {
-    if (!this.mask) return null;
+    if (!this.hasMask) return null;
     if (this._maskAlpha && this._maskAlphaVersion === this.maskVersion) return this._maskAlpha;
-    const w = this.mask.width, h = this.mask.height;
-    const src = this.mask.getContext('2d', { willReadFrequently: true }).getImageData(0, 0, w, h);
+    const mask = this.readMask();
+    const w = mask.width, h = mask.height;
+    const src = mask.getContext('2d', { willReadFrequently: true }).getImageData(0, 0, w, h);
     const out = new ImageData(w, h);
     const s = src.data, d = out.data;
     const inv = this.maskInverted;
@@ -326,7 +365,8 @@ export class Layer {
       locked: { ...this.locked },
       canvas: this._full ? cloneCanvas(this._full) : null,
       tile: this._tile ? { ...this._tile, canvas: cloneCanvas(this._tile.canvas) } : null,
-      mask: cloneCanvas(this.mask),
+      mask: cloneCanvas(this._mask),
+      maskTile: this.maskTile ? { ...this.maskTile, canvas: cloneCanvas(this.maskTile.canvas) } : null,
       maskEnabled: this.maskEnabled,
       maskLinked: this.maskLinked,
       maskInverted: this.maskInverted,
@@ -367,7 +407,8 @@ export class Layer {
       // materialise every layer in the document on every single commit.
       canvas: this._full,
       tile: this._tile,
-      mask: this.mask,
+      mask: this._mask,
+      maskTile: this.maskTile,
       maskEnabled: this.maskEnabled,
       maskLinked: this.maskLinked,
       maskInverted: this.maskInverted,
@@ -547,6 +588,12 @@ export function mapLayerGeometry(layer, mapPoint, sizeScale = 1) {
 export function translateLayerGeometry(layer, dx, dy) {
   if (!dx && !dy) return;
   mapLayerGeometry(layer, (x, y) => ({ x: x + dx, y: y + dy }));
+  if (layer.smart?.transform?.matrix) {
+    const matrix = [...layer.smart.transform.matrix];
+    matrix[4] += dx;
+    matrix[5] += dy;
+    layer.smart = { ...layer.smart, transform: { ...layer.smart.transform, matrix } };
+  }
 }
 
 function num(v, fallback = 0) {

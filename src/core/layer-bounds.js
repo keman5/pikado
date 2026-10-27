@@ -32,9 +32,10 @@ export function layerBounds(layer) {
   if (!layer) return null;
   const key = layer.pixelKey();
   if (!key) return null;
-  if (cache.has(key)) return cache.get(key);
+  const hit = peekBounds(layer);
+  if (hit !== undefined) return hit;
   const b = layer.contentBounds();
-  cache.set(key, b);
+  cache.set(key, { bounds: b, x: layer.tile?.x || 0, y: layer.tile?.y || 0 });
   return b;
 }
 
@@ -46,14 +47,16 @@ export function layerBounds(layer) {
 export function peekBounds(layer) {
   const key = layer && layer.pixelKey();
   if (!key) return undefined;
-  return cache.has(key) ? cache.get(key) : undefined;
+  const hit = cache.get(key);
+  return hit && hit.x === (layer.tile?.x || 0) && hit.y === (layer.tile?.y || 0) ? hit.bounds : undefined;
 }
 
 /** Record where a known bounding box landed after a translation. */
 export function cacheShiftedBounds(layer, b, dx, dy) {
   const key = layer.pixelKey();
   if (!key) return;
-  cache.set(key, b ? { ...b, x: b.x + dx, y: b.y + dy } : null);
+  cache.set(key, { bounds: b ? { ...b, x: b.x + dx, y: b.y + dy } : null,
+    x: layer.tile?.x || 0, y: layer.tile?.y || 0 });
 }
 
 /** The union of several layers' content bounds. */

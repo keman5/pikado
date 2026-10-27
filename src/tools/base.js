@@ -114,7 +114,10 @@ export class Tool {
   setOption(key, value) {
     this.state[key] = value;
     this.onOptionChange(key, value);
-    if (this.app) this.app.emit('tool-options', this);
+    if (this.app) {
+      this.app.emit('tool-options', this);
+      this.app.requestRender();
+    }
   }
 
   /** Convenience: the layer tools should paint into, with lock checks. */
@@ -138,12 +141,12 @@ export class Tool {
       if (warn && this.app) this.app.toast(translateText('Layer "{0}" is locked.', l.name));
       return false;
     }
-    if (l.editingMask && l.mask) return true;
+    if (l.editingMask && l.hasMask) return true;
     if (l.type === 'group') {
       if (warn && this.app) this.app.toast('Cannot paint on a group. Select a layer inside it.');
       return false;
     }
-    if (l.type === 'adjustment' && !l.mask) {
+    if (l.type === 'adjustment' && !l.hasMask) {
       if (warn && this.app) this.app.toast('Adjustment layers can only be painted on their mask.');
       return false;
     }

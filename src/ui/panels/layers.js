@@ -174,7 +174,7 @@ function buildLayersPanel(bodyEl) {
     footBtn('mask', 'Add layer mask', (e) => withDoc((doc) => {
       const l = doc.activeLayer();
       if (!l) return;
-      if (l.mask) { app.toast('Layer already has a mask.'); return; }
+      if (l.hasMask) { app.toast('Layer already has a mask.'); return; }
       const kind = e.altKey ? (doc.selection.active ? 'hide-selection' : 'hide-all')
         : (doc.selection.active ? 'reveal-selection' : 'reveal-all');
       ops.addLayerMask(doc, l, kind);
@@ -343,7 +343,7 @@ function buildLayersPanel(bodyEl) {
       case 'hidden': return !l.visible;
       case 'locked': return !!(l.locked.all || l.locked.pixels || l.locked.position || l.locked.transparency);
       case 'unlocked': return !(l.locked.all || l.locked.pixels || l.locked.position || l.locked.transparency);
-      case 'masked': return !!l.mask;
+      case 'masked': return !!l.hasMask;
       case 'clipped': return !!l.clipped;
       case 'styled': return hasStyles(l);
       case 'linked': return !!l.linkId;
@@ -424,7 +424,7 @@ function buildLayersPanel(bodyEl) {
       const doc = app.activeDoc, l = row._item && row._item.layer;
       if (!doc || !l) return;
       if (doc.activeLayerId !== l.id) doc.setActiveLayer(l.id);
-      l.editingMask = wantMask && !!l.mask;
+      l.editingMask = wantMask && !!l.hasMask;
       doc.emit('selection-change');
     };
     thumbBox.addEventListener('click', pickTarget(false));
@@ -441,7 +441,7 @@ function buildLayersPanel(bodyEl) {
     linkBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       const doc = app.activeDoc, l = row._item && row._item.layer;
-      if (!doc || !l || !l.mask) return;
+      if (!doc || !l || !l.hasMask) return;
       l.maskLinked = !l.maskLinked;
       doc.commit(l.maskLinked ? 'Link Mask' : 'Unlink Mask');
     });
@@ -543,14 +543,14 @@ function buildLayersPanel(bodyEl) {
     if (showIconBox) {
       p.iconBox.innerHTML = icon(isGroup ? (l.expanded ? 'folder-open' : 'folder') : 'adjustment', { size: 20 });
     }
-    p.thumbBox.classList.toggle('target', !!l.mask && !l.editingMask);
+    p.thumbBox.classList.toggle('target', !!l.hasMask && !l.editingMask);
     p.smartBadge.hidden = l.type !== LayerType.SMART;
 
-    p.maskBox.hidden = !l.mask;
-    p.linkBtn.hidden = !l.mask;
+    p.maskBox.hidden = !l.hasMask;
+    p.linkBtn.hidden = !l.hasMask;
     p.linkBtn.classList.toggle('off', !l.maskLinked);
-    p.maskBox.classList.toggle('target', !!l.mask && !!l.editingMask);
-    p.maskBox.style.opacity = l.mask && !l.maskEnabled ? '.4' : '';
+    p.maskBox.classList.toggle('target', !!l.hasMask && !!l.editingMask);
+    p.maskBox.style.opacity = l.hasMask && !l.maskEnabled ? '.4' : '';
 
     if (renamingId !== l.id) p.name.textContent = l.name;
 
@@ -687,13 +687,14 @@ function buildLayersPanel(bodyEl) {
       const t = l.thumbnail(THUMB);
       if (t) c.drawImage(t, 0, 0);
     }
-    if (!p.maskBox.hidden && l.mask) {
+    if (!p.maskBox.hidden && l.hasMask) {
       const c = p.maskCv.getContext('2d');
       c.clearRect(0, 0, THUMB, THUMB);
-      const s = Math.min(THUMB / l.mask.width, THUMB / l.mask.height);
-      const w = l.mask.width * s, h = l.mask.height * s;
+      const mask = l.readMask();
+      const s = Math.min(THUMB / mask.width, THUMB / mask.height);
+      const w = mask.width * s, h = mask.height * s;
       c.imageSmoothingQuality = 'low';
-      c.drawImage(l.mask, (THUMB - w) / 2, (THUMB - h) / 2, w, h);
+      c.drawImage(mask, (THUMB - w) / 2, (THUMB - h) / 2, w, h);
     }
   }
 
@@ -705,7 +706,7 @@ function buildLayersPanel(bodyEl) {
     const sf = getSmartFilters(l).map((f) => `${f.id}${f.enabled ? 1 : 0}`).join(',');
     return [
       item.depth, l.name, l.visible ? 1 : 0, l.type, l.clipped ? 1 : 0, l.expanded ? 1 : 0,
-      l.mask ? 1 : 0, l.maskEnabled ? 1 : 0, l.maskLinked ? 1 : 0, l.editingMask ? 1 : 0,
+      l.hasMask ? 1 : 0, l.maskEnabled ? 1 : 0, l.maskLinked ? 1 : 0, l.editingMask ? 1 : 0,
       l.locked.all ? 'a' : '', l.locked.pixels ? 'p' : '', l.locked.position ? 'm' : '', l.locked.transparency ? 't' : '',
       l.linkId || '', l.colorLabel || '', fx, sf, fxOpen.has(l.id) ? 1 : 0,
       selSet.has(l.id) ? 1 : 0, doc.activeLayerId === l.id ? 1 : 0,
@@ -1087,11 +1088,11 @@ function buildLayersPanel(bodyEl) {
       { label: translateText("Convert to Smart Object"), run: () => ops.convertToSmartObject(doc, sel.length ? sel : [layer]) },
       { label: translateText("Edit Contents"), disabled: !isSmartLayer(layer), run: () => editSmartContents(doc, layer) },
       { separator: true },
-      layer.mask
+      layer.hasMask
         ? { label: translateText("Apply Layer Mask"), run: () => ops.applyLayerMask(doc, layer) }
         : { label: translateText("Add Layer Mask"), run: () => ops.addLayerMask(doc, layer, doc.selection.active ? 'reveal-selection' : 'reveal-all') },
-      layer.mask ? { label: translateText("Delete Layer Mask"), run: () => ops.deleteLayerMask(doc, layer) } : null,
-      layer.mask ? { label: layer.maskEnabled ? 'Disable Layer Mask' : 'Enable Layer Mask', run: () => ops.toggleMaskEnabled(doc, layer) } : null,
+      layer.hasMask ? { label: translateText("Delete Layer Mask"), run: () => ops.deleteLayerMask(doc, layer) } : null,
+      layer.hasMask ? { label: layer.maskEnabled ? 'Disable Layer Mask' : 'Enable Layer Mask', run: () => ops.toggleMaskEnabled(doc, layer) } : null,
       { separator: true },
       layer.isBackground
         ? { label: translateText("Layer From Background"), run: () => ops.convertBackgroundToLayer(doc, layer) }

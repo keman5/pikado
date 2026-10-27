@@ -276,11 +276,11 @@ function layerPixels(layer, doc, opts) {
   if (layer.type === LayerType.GROUP) return groupPixels(layer, doc, opts);
   if (layer.type === LayerType.ADJUSTMENT) return null;
 
-  let src = previewOverrides.get(layer.id) || layer.canvas;
+  let src = previewOverrides.get(layer.id) || layer.readCanvas();
   if (!src) return null;
 
   const needsStyles = !opts.ignoreEffects && hasStyles(layer);
-  const needsMask = layer.mask && layer.maskEnabled;
+  const needsMask = layer.hasMask && layer.maskEnabled;
   const fill = layer.fillOpacity == null ? 1 : layer.fillOpacity;
 
   if (!needsStyles && !needsMask && fill >= 1) return src;
@@ -315,7 +315,7 @@ function groupPixels(group, doc, opts) {
   const temp = createCanvas(doc.width, doc.height);
   const tctx = temp.getContext('2d');
   compositeList(group.children || [], tctx, doc, opts);
-  if (group.mask && group.maskEnabled) {
+  if (group.hasMask && group.maskEnabled) {
     const ma = group.maskAlphaCanvas();
     if (ma) {
       tctx.globalCompositeOperation = 'destination-in';
@@ -338,13 +338,13 @@ function effectiveOpacity(layer) {
 function drawBelowEffects(layer, ctx, doc, opts) {
   if (opts.ignoreEffects || !hasStyles(layer)) return;
   if (layer.type === LayerType.GROUP || layer.type === LayerType.ADJUSTMENT) return;
-  const src = previewOverrides.get(layer.id) || layer.canvas;
+  const src = previewOverrides.get(layer.id) || layer.readCanvas();
   if (!src) return;
   const list = belowEffectResults(src, layer, doc, doc.width, doc.height);
   if (!list.length) return;
 
   const op = effectiveOpacity(layer);
-  const ma = layer.mask && layer.maskEnabled ? layer.maskAlphaCanvas() : null;
+  const ma = layer.hasMask && layer.maskEnabled ? layer.maskAlphaCanvas() : null;
   for (const e of list) {
     let px = e.canvas;
     if (ma) {
@@ -368,7 +368,7 @@ function drawLayer(layer, ctx, doc, opts, extra = {}) {
 
   if (layer.type === LayerType.GROUP) {
     const passThrough = layer.blendMode === 'pass-through';
-    if (passThrough && effectiveOpacity(layer) >= 1 && !(layer.mask && layer.maskEnabled)) {
+    if (passThrough && effectiveOpacity(layer) >= 1 && !(layer.hasMask && layer.maskEnabled)) {
       // True pass-through: children blend directly with the existing backdrop.
       compositeList(layer.children || [], ctx, doc, opts);
       return;
@@ -394,8 +394,9 @@ function drawLayer(layer, ctx, doc, opts, extra = {}) {
    */
   const tile = layer.tile;
   if (tile
+    && !previewOverrides.has(layer.id)
     && !(!opts.ignoreEffects && hasStyles(layer))
-    && !(layer.mask && layer.maskEnabled)
+    && !(layer.hasMask && layer.maskEnabled)
     && (layer.fillOpacity == null || layer.fillOpacity >= 1)
     && isNativeBlend(layer.blendMode === 'pass-through' ? 'normal' : layer.blendMode)) {
     const op = effectiveOpacity(layer);
@@ -432,7 +433,7 @@ function drawAdjustmentLayer(layer, ctx, doc, extra = {}) {
   adjusted.getContext('2d').putImageData(work, 0, 0);
 
   const c = adjusted.getContext('2d');
-  if (layer.mask && layer.maskEnabled) {
+  if (layer.hasMask && layer.maskEnabled) {
     const ma = layer.maskAlphaCanvas();
     if (ma) {
       c.globalCompositeOperation = 'destination-in';

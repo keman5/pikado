@@ -4,6 +4,7 @@ import { app } from '../core/app.js';
 import { brandMark, BRAND } from './brand.js';
 import { icon } from './icons.js';
 import { confirmDialog } from './dialog.js';
+import { pickFiles } from '../io/open.js';
 import { IS_MAC } from '../commands/registry.js';
 import {
   listRecent, openRecent, forgetRecent, storageUsage, sessionEvents,
@@ -116,10 +117,7 @@ function plural(n, word) {
 
 function header() {
   const newDoc = () => import('./dialogs/new-document.js').then((m) => m.showNewDocumentDialog());
-  const openFile = () => {
-    const input = document.getElementById('file-input');
-    if (input) input.click();
-  };
+  const openFile = pickFiles;
 
   return el('header.pk-wc-head', {},
     el('div.pk-wc-lock', {},

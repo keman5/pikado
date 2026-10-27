@@ -995,7 +995,7 @@ suite('io / opening a 16-bit file says the depth was lost', async (t) => {
   t.ok(seen.some((m) => /16-bit/.test(m)), `the depth loss is reported (${seen.join(' | ') || 'nothing'})`);
 });
 
-suite('io / Save As defaults to real PSD and subsequent Save keeps its format', async (t) => {
+suite('io / Save As defaults to PNG and explicit project formats keep their encoders', async (t) => {
   const descriptor = Object.getOwnPropertyDescriptor(window, 'showSaveFilePicker');
   const doc = t.doc(24, 18, '#ffffff', 'Save Test.pkd');
   t.fill(doc.activeLayer(), '#ff0000', 0, 0, 12, 18);
@@ -1007,9 +1007,9 @@ suite('io / Save As defaults to real PSD and subsequent Save keeps its format', 
   Object.defineProperty(window, 'showSaveFilePicker', { configurable: true, value: async opts => { options = opts; return handle; } });
   try {
     t.ok(await saveDocumentAs(doc), 'Save As succeeds');
-    t.eq(options.suggestedName, 'Save Test.psd', 'PSD replaces the old extension by default');
-    t.eq(options.types[0].accept['image/vnd.adobe.photoshop'], ['.psd'], 'PSD is the first filter');
-    t.eq(options.types[1].accept['application/x-pikado'], ['.pkd'], 'PKD remains an explicit option');
+    t.eq(options.suggestedName, 'Save Test.png', 'new documents default to PNG');
+    t.eq(options.types[0].accept['image/png'], ['.png'], 'PNG is the first filter');
+    t.eq(options.types.find(type => type.accept['application/x-pikado']).accept['application/x-pikado'], ['.pkd'], 'PKD remains an explicit option');
     t.eq(await written.slice(0, 4).text(), '8BPS', 'the file contains PSD bytes');
     const reopened = await readPSD(await written.arrayBuffer());
     t.eq([reopened.width, reopened.height], [24, 18], 'the saved PSD reopens at the right size');
@@ -1020,7 +1020,7 @@ suite('io / Save As defaults to real PSD and subsequent Save keeps its format', 
 
     t.fill(doc.activeLayer(), '#00ff00', 0, 0, 4, 4);
     doc.touch();
-    t.ok(await saveDocument(doc), 'ordinary Save uses the existing PSD handle');
+    t.ok(await confirmSave(doc), 'ordinary Save uses the existing PSD handle');
     t.eq(await written.slice(0, 4).text(), '8BPS', 'ordinary Save never writes PKD into a PSD file');
     const updated = await readPSD(await written.arrayBuffer());
     t.eq(t.px(updated.layers[0].canvas, 2, 2), '0,255,0,255', 'subsequent PSD save contains the edit');
@@ -1030,12 +1030,12 @@ suite('io / Save As defaults to real PSD and subsequent Save keeps its format', 
     const pkd = await loadPKD(await written.arrayBuffer());
     t.eq([pkd.width, pkd.height], [24, 18], 'PKD option contains actual PKD data');
     doc.touch();
-    t.ok(await saveDocument(doc), 'ordinary Save still supports an existing PKD handle');
+    t.ok(await confirmSave(doc), 'ordinary Save still supports an existing PKD handle');
     t.eq((await loadPKD(await written.arrayBuffer())).width, 24, 'subsequent PKD save retains its format');
 
     doc.dirty = true;
     const previousWrites = closed;
-    handle.name = 'bad.png';
+    handle.name = 'bad.exe';
     t.notOk(await saveDocumentAs(doc), 'an unsupported extension is rejected');
     t.eq(closed, previousWrites, 'invalid extensions never open a writable');
     t.eq(doc.dirty, true, 'a failed save keeps the document dirty');
@@ -1054,7 +1054,7 @@ suite('io / Save As defaults to real PSD and subsequent Save keeps its format', 
   }
 });
 
-suite('io / Save As download fallback is PSD and imported PSDs require Save As', async (t) => {
+suite('io / Save As download fallback is PNG and imported PSDs retain a source handle', async (t) => {
   const descriptor = Object.getOwnPropertyDescriptor(window, 'showSaveFilePicker');
   const originalCreate = URL.createObjectURL;
   const originalClick = HTMLAnchorElement.prototype.click;
@@ -1065,13 +1065,13 @@ suite('io / Save As download fallback is PSD and imported PSDs require Save As',
   HTMLAnchorElement.prototype.click = function () { filename = this.download; };
   try {
     t.ok(await saveDocumentAs(doc), 'fallback completes');
-    t.eq(filename, 'Fallback.psd', 'download gets the PSD extension');
-    t.eq(await downloaded.slice(0, 4).text(), '8BPS', 'fallback uses the PSD encoder');
-    const file = new File([downloaded], 'Fallback.psd', { type: 'image/vnd.adobe.photoshop' });
+    t.eq(filename, 'Fallback.png', 'download gets the PNG extension');
+    t.eq(downloaded.type, 'image/png', 'fallback uses the PNG encoder');
+    const file = new File([await writePSD(doc)], 'Fallback.psd', { type: 'image/vnd.adobe.photoshop' });
     file.handle = { name: file.name, createWritable: async () => ({ write: async () => {}, close: async () => {} }) };
     const opened = await openFile(file);
     try {
-      t.notOk(opened.fileHandle, 'an imported PSD cannot silently overwrite its original after lossy import');
+      t.is(opened.fileHandle, file.handle, 'source handle is retained; Save requires explicit replacement confirmation');
     } finally { t.app.closeDocument(opened); }
   } finally {
     URL.createObjectURL = originalCreate;
@@ -1087,3 +1087,9 @@ suite('io / PSD format limits fail before writing invalid files', async (t) => {
   try { await t.throws(() => writePSD(doc), 'PSD rejects dimensions beyond its 30,000 pixel limit'); }
   finally { doc.width = 8; }
 });
+
+async function confirmSave(doc, replace = true) {
+  const promise = saveDocument(doc);
+  document.querySelector(`.pk-dialog-footer .${replace ? 'danger' : 'subtle'}`)?.click();
+  return promise;
+}

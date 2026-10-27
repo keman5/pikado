@@ -25,7 +25,7 @@ import {
 } from '../edit/fill-stroke.js';
 
 import { saveDocument, saveDocumentAs } from '../io/save.js';
-import { openFiles } from '../io/open.js';
+import { pickFiles, openFiles } from '../io/open.js';
 
 import { showNewDocumentDialog } from '../ui/dialogs/new-document.js';
 import { showImageSizeDialog } from '../ui/dialogs/image-size.js';
@@ -58,7 +58,7 @@ const isSmart = () => smart.isSmartLayer(activeLayer());
 
 function hasPixels() {
   const l = activeLayer();
-  return !!(l && (l.canvas || (l.editingMask && l.mask)));
+  return !!(l && (l.pixelKey() || (l.editingMask && l.hasMask)));
 }
 
 function layerOfType(type) {
@@ -286,19 +286,13 @@ async function openRecent(entry) {
     }
   }
   app.toast(`The browser will not reopen "${entry.name}" by itself — pick the file again.`, 'warn', 4200);
-  const input = document.getElementById('file-input');
-  if (input) input.click();
+  await pickFiles();
 }
 
 /* ------------------------------------------------------------------ */
 /* File helpers                                                        */
 /* ------------------------------------------------------------------ */
 
-function pickFiles() {
-  const input = document.getElementById('file-input');
-  if (input) { input.click(); return; }
-  app.toast('The file picker is unavailable.', 'error');
-}
 
 async function closeDoc(doc) {
   if (!doc) return false;
@@ -1601,38 +1595,38 @@ registerCommands([
 
   {
     id: 'layer.mask.reveal-all', label: translateText("Reveal All"),
-    enabled: () => { const l = activeLayer(); return !!(l && !l.mask); },
+    enabled: () => { const l = activeLayer(); return !!(l && !l.hasMask); },
     run: () => ops.addLayerMask(D(), null, 'reveal-all'),
   },
   {
     id: 'layer.mask.hide-all', label: translateText("Hide All"),
-    enabled: () => { const l = activeLayer(); return !!(l && !l.mask); },
+    enabled: () => { const l = activeLayer(); return !!(l && !l.hasMask); },
     run: () => ops.addLayerMask(D(), null, 'hide-all'),
   },
   {
     id: 'layer.mask.reveal-selection', label: translateText("Reveal Selection"),
-    enabled: () => { const l = activeLayer(); return !!(l && !l.mask) && hasSelection(); },
+    enabled: () => { const l = activeLayer(); return !!(l && !l.hasMask) && hasSelection(); },
     run: () => ops.addLayerMask(D(), null, 'reveal-selection'),
   },
   {
     id: 'layer.mask.hide-selection', label: translateText("Hide Selection"),
-    enabled: () => { const l = activeLayer(); return !!(l && !l.mask) && hasSelection(); },
+    enabled: () => { const l = activeLayer(); return !!(l && !l.hasMask) && hasSelection(); },
     run: () => ops.addLayerMask(D(), null, 'hide-selection'),
   },
   {
     id: 'layer.mask.delete', label: translateText("Delete"),
-    enabled: () => { const l = activeLayer(); return !!(l && l.mask); },
+    enabled: () => { const l = activeLayer(); return !!(l && l.hasMask); },
     run: () => ops.deleteLayerMask(D()),
   },
   {
     id: 'layer.mask.apply', label: translateText("Apply"),
-    enabled: () => { const l = activeLayer(); return !!(l && l.mask && l.canvas); },
+    enabled: () => { const l = activeLayer(); return !!(l && l.hasMask && l.pixelKey()); },
     run: () => ops.applyLayerMask(D()),
   },
   {
     id: 'layer.mask.toggle', label: translateText("Disable"),
-    dynamicLabel: () => { const l = activeLayer(); return l && l.mask && !l.maskEnabled ? 'Enable' : 'Disable'; },
-    enabled: () => { const l = activeLayer(); return !!(l && l.mask); },
+    dynamicLabel: () => { const l = activeLayer(); return l && l.hasMask && !l.maskEnabled ? 'Enable' : 'Disable'; },
+    enabled: () => { const l = activeLayer(); return !!(l && l.hasMask); },
     run: () => ops.toggleMaskEnabled(D()),
   },
 

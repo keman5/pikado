@@ -1,4 +1,5 @@
 import { t as translateText } from '../i18n/index.js';
+import { confirmDialog } from '../ui/dialog.js';
 import { app } from '../core/app.js';
 import { getComposite, flattenLayers } from '../render/compositor.js';
 import { createCanvas, ctx2d, ctx2dRead, download } from '../core/util.js';
@@ -13,7 +14,7 @@ import { writeICNS } from './icns.js';
 /**
  * Saving and exporting.
  *
- * Save As defaults to layered PSD and also supports lossless PKD; exporting renders the composite
+ * Save retains the source format; Save As also offers layered PSD and lossless PKD. Export renders the composite
  * (or one file per top-level layer) to PNG/JPEG/WebP/HEIC/ICNS, or hands off to
  * the PSD and SVG writers.
  */
@@ -69,21 +70,42 @@ function pickerSupported() {
   return typeof window !== 'undefined' && typeof window.showSaveFilePicker === 'function';
 }
 
-function projectFormat(name) {
-  const ext = /\.(psd|pkd)$/i.exec(name || '');
-  return ext ? ext[1].toLowerCase() : null;
+const SAVE_TYPES = [
+  ['png', 'image/png', ['.png']],
+  ['jpeg', 'image/jpeg', ['.jpg', '.jpeg']],
+  ['webp', 'image/webp', ['.webp']],
+  ['gif', 'image/gif', ['.gif']],
+  ['heic', 'image/heic', ['.heic']],
+  ['icns', 'image/icns', ['.icns']],
+  ['svg', 'image/svg+xml', ['.svg']],
+  ['psd', 'image/vnd.adobe.photoshop', ['.psd']],
+  ['pkd', 'application/x-pikado', ['.pkd']],
+];
+
+function fileFormat(name) {
+  const ext = /\.([a-z0-9]+)$/i.exec(name || '')?.[1].toLowerCase();
+  return SAVE_TYPES.some(([, , extensions]) => extensions.includes(`.${ext}`)) ? ext : null;
 }
 
-function encodeProject(doc, format) {
+async function encodeFile(doc, format) {
   if (format === 'psd') return writePSD(doc);
   if (format === 'pkd') return savePKD(doc);
-  throw new Error(translateText('Choose a .psd or .pkd filename.'));
+  if (!format) throw new Error(translateText('Choose a supported image or project filename.'));
+  const blob = await exportDocument(doc, { format, save: false });
+  const expected = SAVE_TYPES.find(([, , extensions]) => extensions.includes(`.${format}`))[1];
+  if (!blob || blob.type.split(';', 1)[0] !== expected) throw new Error(translateText('This browser cannot save in the original format. Use Export to choose another format.'));
+  return blob;
 }
 
 async function writeToHandle(handle, blob) {
   const writable = await handle.createWritable();
-  await writable.write(blob);
-  await writable.close();
+  try {
+    await writable.write(blob);
+    await writable.close();
+  } catch (err) {
+    try { await writable.abort(); } catch { /* Preserve the original write error. */ }
+    throw err;
+  }
 }
 
 /**
@@ -94,10 +116,13 @@ async function writeToHandle(handle, blob) {
 export async function saveDocument(doc) {
   if (!doc) return false;
   if (!doc.fileHandle || typeof doc.fileHandle.createWritable !== 'function') return saveDocumentAs(doc);
-  const format = projectFormat(doc.fileHandle.name || doc.filePath);
+  const format = fileFormat(doc.fileHandle.name || doc.filePath);
   if (!format) return saveDocumentAs(doc);
+  const message = translateText('Replace “{0}” with the current image? The original file will be overwritten.', doc.fileHandle.name || doc.filePath);
+  const detail = format === 'pkd' ? '' : translateText(' Only content supported by this format will be retained. Use Save As (PKD) to keep all editable layers.');
+  if (!await confirmDialog(message + detail, translateText('Save'), translateText('Replace'), { danger: true })) return false;
   return app.busy(translateText('Saving…'), async () => {
-    const blob = await encodeProject(doc, format);
+    const blob = await encodeFile(doc, format);
     await writeToHandle(doc.fileHandle, blob);
     doc.dirty = false;
     app.toast(translateText('Saved {0}', doc.name), 'ok');
@@ -114,26 +139,26 @@ export async function saveDocument(doc) {
  */
 export async function saveDocumentAs(doc) {
   if (!doc) return false;
-  const suggested = `${baseName(doc.name)}.psd`;
+  const format = fileFormat(doc.fileHandle?.name || doc.filePath) || 'png';
+  const suggested = `${baseName(doc.name)}.${format}`;
 
   if (pickerSupported()) {
     let handle;
     try {
       handle = await window.showSaveFilePicker({
         suggestedName: suggested,
-        types: [
-          { description: translateText('Photoshop document'), accept: { 'image/vnd.adobe.photoshop': ['.psd'] } },
-          { description: translateText('Pikado project'), accept: { 'application/x-pikado': ['.pkd'] } },
-        ],
+        types: [...SAVE_TYPES].sort((a, b) => Number(b[2].includes(`.${format}`)) - Number(a[2].includes(`.${format}`)))
+          .map(([name, mime, extensions]) => ({ description: name.toUpperCase(), accept: { [mime]: extensions } })),
         excludeAcceptAllOption: true,
       });
     } catch (err) {
       if (err && err.name === 'AbortError') return false;
-      handle = null;
+      app.toast(err.message || String(err), 'error');
+      return false;
     }
     if (handle) {
       return app.busy(translateText('Saving…'), async () => {
-        const blob = await encodeProject(doc, projectFormat(handle.name || suggested));
+        const blob = await encodeFile(doc, fileFormat(handle.name || suggested));
         await writeToHandle(handle, blob);
         doc.fileHandle = handle;
         doc.filePath = handle.name || suggested;
@@ -147,7 +172,7 @@ export async function saveDocumentAs(doc) {
   }
 
   return app.busy(translateText('Saving…'), async () => {
-    const blob = await writePSD(doc);
+    const blob = await encodeFile(doc, format);
     download(blob, suggested);
     doc.dirty = false;
     app.toast(translateText('Saved {0}', suggested), 'ok');

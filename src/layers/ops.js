@@ -333,7 +333,7 @@ export function rasterizeLayerStyle(doc, layer) {
 export function addLayerMask(doc, layer, kind = 'reveal-all') {
   const l = layer || doc.activeLayer();
   if (!l) return;
-  if (l.mask) { app.toast('Layer already has a mask.'); return; }
+  if (l.hasMask) { app.toast('Layer already has a mask.'); return; }
   doc.beginEdit(l);
   const mask = createCanvas(doc.width, doc.height);
   const c = mask.getContext('2d');
@@ -368,7 +368,7 @@ export function addLayerMask(doc, layer, kind = 'reveal-all') {
 
 export function deleteLayerMask(doc, layer) {
   const l = layer || doc.activeLayer();
-  if (!l || !l.mask) return;
+  if (!l || !l.hasMask) return;
   doc.beginEdit(l);
   l.removeMask();
   doc.commit('Delete Layer Mask');
@@ -376,7 +376,7 @@ export function deleteLayerMask(doc, layer) {
 
 export function applyLayerMask(doc, layer) {
   const l = layer || doc.activeLayer();
-  if (!l || !l.mask || !l.canvas) return;
+  if (!l || !l.hasMask || !l.pixelKey()) return;
   doc.beginEdit(l);
   const ma = l.maskAlphaCanvas();
   const out = createCanvas(doc.width, doc.height);
@@ -391,7 +391,7 @@ export function applyLayerMask(doc, layer) {
 
 export function toggleMaskEnabled(doc, layer) {
   const l = layer || doc.activeLayer();
-  if (!l || !l.mask) return;
+  if (!l || !l.hasMask) return;
   l.maskEnabled = !l.maskEnabled;
   doc.commit(l.maskEnabled ? 'Enable Layer Mask' : 'Disable Layer Mask');
 }

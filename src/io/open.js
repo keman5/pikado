@@ -253,20 +253,44 @@ export async function openFile(file, opts = {}) {
   } else if (ext === 'pkd' || type === 'application/x-pikado') {
     doc = await loadPKD(await readFileAsArrayBuffer(file));
     if (!doc.name || doc.name === 'Untitled') doc.name = stemOf(name);
-    if (file.handle) doc.fileHandle = file.handle;
   } else if (ext === 'svg' || type === 'image/svg+xml') {
     doc = await importSVG(await readFileAsText(file), stemOf(name));
   } else {
-    return openImageBlob(file, stemOf(name), opts);
+    doc = await openImageBlob(file, stemOf(name), opts);
+    if (!target) {
+      doc.filePath = name;
+      doc.fileHandle = file.handle || null;
+      app.emit('docs-change');
+    }
+    return doc;
   }
 
   doc.filePath = name;
+  doc.fileHandle = file.handle || null;
   if (target) {
     // Placing a structured file into an open document flattens it first.
     const flat = getComposite(doc);
     return placeAsLayer(target, flat, stemOf(name));
   }
   return adopt(doc);
+}
+
+export async function pickFiles() {
+  if (typeof window.showOpenFilePicker !== 'function') {
+    document.getElementById('file-input')?.click();
+    return;
+  }
+  try {
+    const handles = await window.showOpenFilePicker({ multiple: true });
+    const files = await Promise.all(handles.map(async handle => {
+      const file = await handle.getFile();
+      file.handle = handle;
+      return file;
+    }));
+    await openFiles(files);
+  } catch (err) {
+    if (err.name !== 'AbortError') app.toast(err.message || String(err), 'error');
+  }
 }
 
 /**

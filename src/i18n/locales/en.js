@@ -1696,4 +1696,10 @@ export default {
   "Exporting layers…": "Exporting layers…",
   "Quick Export": "Quick Export",
   "Converting…": "Converting…",
+  "Choose a supported image or project filename.": "Choose a supported image or project filename.",
+  "This browser cannot save in the original format. Use Export to choose another format.": "This browser cannot save in the original format. Use Export to choose another format.",
+  "Replace “{0}” with the current image? The original file will be overwritten.": "Replace “{0}” with the current image? The original file will be overwritten.",
+  " Only content supported by this format will be retained. Use Save As (PKD) to keep all editable layers.": " Only content supported by this format will be retained. Use Save As (PKD) to keep all editable layers.",
+  "Replace": "Replace",
+  "The transformed layer is too large. Reduce its size.": "The transformed layer is too large. Reduce its size.",
 };

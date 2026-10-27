@@ -165,7 +165,7 @@ function buildPropertiesPanel(bodyEl) {
 function pickMode(doc, layer) {
   if (!doc) return 'none';
   if (!layer) return 'document';
-  if (layer.editingMask && layer.mask) return 'mask';
+  if (layer.editingMask && layer.hasMask) return 'mask';
   if (layer.type === LayerType.ADJUSTMENT && layer.adjustment) return 'adjustment';
   if (layer.type === LayerType.TEXT && layer.text) return 'text';
   if (layer.type === LayerType.SHAPE && layer.shape) return 'shape';

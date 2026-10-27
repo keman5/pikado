@@ -224,8 +224,10 @@ export async function savePKD(doc) {
     maskEnabled: layer.maskEnabled,
     maskLinked: layer.maskLinked,
     maskInverted: layer.maskInverted,
-    canvas: layer.canvas ? enc.encode(layer.canvas) : null,
-    mask: layer.mask ? enc.encode(layer.mask) : null,
+    canvas: layer.tile ? null : enc.encode(layer.pixelKey()),
+    tile: enc.encode(layer.tile),
+    mask: layer.maskTile ? null : enc.encode(layer.mask),
+    maskTile: enc.encode(layer.maskTile),
     styles: enc.encode(layer.styles),
     text: enc.encode(layer.text),
     shape: enc.encode(layer.shape),
@@ -367,6 +369,18 @@ export async function loadPKD(arrayBuffer) {
   doc.activePathId = info.activePathId || null;
   doc.alphaChannels = decode(info.alphaChannels) || [];
 
+  const decodeTile = value => {
+    if (value == null) return null;
+    const tile = decode(value);
+    if (!tile?.canvas || typeof tile.canvas.getContext !== 'function'
+      || ![tile.x, tile.y, tile.docWidth, tile.docHeight].every(Number.isSafeInteger)
+      || tile.docWidth < 1 || tile.docHeight < 1 || tile.docWidth > 32767 || tile.docHeight > 32767
+      || (tile.defaultColor != null && (!Number.isInteger(tile.defaultColor) || tile.defaultColor < 0 || tile.defaultColor > 255))) {
+      throw new Error('Invalid project layer tile');
+    }
+    return tile;
+  };
+
   const decodeLayer = (node, parent = null) => {
     const layer = new Layer({
       id: node.id,
@@ -379,6 +393,8 @@ export async function loadPKD(arrayBuffer) {
       clipped: node.clipped,
       locked: node.locked ? { ...node.locked } : undefined,
       canvas: node.canvas ? decode(node.canvas) : null,
+      tile: decodeTile(node.tile),
+      maskTile: decodeTile(node.maskTile),
       mask: node.mask ? decode(node.mask) : null,
       maskEnabled: node.maskEnabled,
       maskLinked: node.maskLinked,

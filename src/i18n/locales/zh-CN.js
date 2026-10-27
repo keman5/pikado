@@ -1696,4 +1696,10 @@ export default {
   "Exporting layers…": "正在导出图层…",
   "Quick Export": "快速导出",
   "Converting…": "正在转换…",
+  "Choose a supported image or project filename.": "请选择支持的图像或项目文件格式。",
+  "This browser cannot save in the original format. Use Export to choose another format.": "浏览器无法保存此原始格式，请使用“导出”选择其他格式。",
+  "Replace “{0}” with the current image? The original file will be overwritten.": "是否用当前图像替换“{0}”？这会覆盖源文件。",
+  " Only content supported by this format will be retained. Use Save As (PKD) to keep all editable layers.": " 仅保留该格式支持的内容。如需保留全部可编辑图层，请另存为 PKD。",
+  "Replace": "替换",
+  "The transformed layer is too large. Reduce its size.": "变换后的图层过大，请缩小尺寸。",
 };

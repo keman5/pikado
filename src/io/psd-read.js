@@ -1126,6 +1126,9 @@ function blankFor(doc, ctx) {
 }
 
 function revive(layer, stored, render, ctx, label) {
+  // Re-rendering to document size would discard the stored off-canvas raster.
+  const tile = layer.tile;
+  if (tile && (tile.x < 0 || tile.y < 0 || tile.x + tile.canvas.width > tile.docWidth || tile.y + tile.canvas.height > tile.docHeight)) return;
   const out = render();
   if (isBlankCanvas(out) && stored && !isBlankCanvas(stored)) {
     layer.canvas = stored;
@@ -1331,11 +1334,14 @@ async function attachMask(layer, rec, doc, ctx) {
       }
       const tile = createCanvas(mw, mh);
       tile.getContext('2d').putImageData(img, 0, 0);
-      c.drawImage(tile, m.left, m.top);
+      if (m.left < 0 || m.top < 0 || m.right > doc.width || m.bottom > doc.height) {
+        layer.maskTile = { canvas: tile, x: m.left, y: m.top,
+          docWidth: doc.width, docHeight: doc.height, defaultColor: m.defaultColor };
+      } else c.drawImage(tile, m.left, m.top);
     }
   }
 
-  layer.mask = canvas;
+  if (!layer.maskTile) layer.mask = canvas;
   layer.maskEnabled = !m.disabled;
   layer.maskInverted = !!m.inverted;
   // "Position relative to layer" is the inverse of the link toggle.

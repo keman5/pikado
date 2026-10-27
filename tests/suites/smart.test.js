@@ -511,15 +511,16 @@ suite('smart / free transform is non-destructive on a smart layer', async (t) =>
   // the detail, which is what proves the assertion above is about the smart path.
   const docR = t.doc(200, 200, '#ffffff', 'sfree-raster');
   const raster = docR.activeLayer();
+  raster.locked.position = false;
   docR.beginEdit(raster);
   t.detail(raster);
   docR.commit('Detail');
   const rasterOriginal = t.bytes(raster.canvas);
   docR.setActiveLayer(raster.id);
-  startTransform(docR, { layers: [docR.findLayer(raster.id)] });
+  t.ok(startTransform(docR, { layers: [docR.findLayer(raster.id)] }), 'unlocked raster starts its first transform');
   setTransformNumeric({ width: 10, height: 10 });
   commitTransform();
-  startTransform(docR, { layers: [docR.findLayer(raster.id)] });
+  t.ok(startTransform(docR, { layers: [docR.findLayer(raster.id)] }), 'unlocked raster starts its second transform');
   setTransformNumeric({ width: 1000, height: 1000 });
   commitTransform();
   const rasterMad = t.mad(t.bytes(docR.findLayer(raster.id).canvas), rasterOriginal);

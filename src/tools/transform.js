@@ -162,27 +162,29 @@ function inverseBilinear(q, p) {
  * object. */
 
 /** Render `img` through the session's current shape into `ctx`. */
-function drawThrough(ctx, img, s) {
+function drawThrough(ctx, img, s, source = { x: 0, y: 0 }, target = { x: 0, y: 0 }) {
+  const box = { ...s.bounds, x: s.bounds.x - source.x, y: s.bounds.y - source.y };
+  const local = p => ({ x: p.x - target.x, y: p.y - target.y });
   ctx.setTransform(1, 0, 0, 1, 0, 0);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = 'high';
   if (s.warp) {
     const pts = s.warp.pts;
-    drawMappedGrid(ctx, img, s.bounds, 14, (u, v) => evalWarp(pts, u, v));
+    drawMappedGrid(ctx, img, box, 14, (u, v) => local(evalWarp(pts, u, v)));
     return;
   }
   if (isAffineQuad(s.quad)) {
     const m = affineFromRectToQuad(s.bounds, s.quad);
     if (!isFinite(m.a) || !isFinite(m.d) || Math.abs(m.a * m.d - m.b * m.c) < 1e-9) return;
     ctx.save();
-    ctx.transform(m.a, m.b, m.c, m.d, m.e, m.f);
-    ctx.drawImage(img, 0, 0);
+    ctx.transform(m.a, m.b, m.c, m.d, m.e - target.x, m.f - target.y);
+    ctx.drawImage(img, source.x, source.y);
     ctx.restore();
     return;
   }
   const N = clamp(Math.round(Math.max(s.bounds.width, s.bounds.height) / 40), 6, 18);
   const Q = unitSquareToQuad(s.quad);
-  drawMappedGrid(ctx, img, s.bounds, N, (u, v) => applyMatrix3(Q, u, v));
+  drawMappedGrid(ctx, img, box, N, (u, v) => local(applyMatrix3(Q, u, v)));
 }
 
 /* ------------------------------------------------------------------ */
@@ -233,7 +235,7 @@ function rasterLayersOf(list) {
       for (const c of l.children || []) walk(c);
       return;
     }
-    if (l.canvas && !l.locked.all && !l.locked.pixels && !out.includes(l)) out.push(l);
+    if (l.pixelKey() && !l.locked.all && !l.locked.position && !l.locked.pixels && !out.includes(l)) out.push(l);
   };
   for (const l of list) walk(l);
   return out;
@@ -277,11 +279,14 @@ export function startTransform(doc, opts = {}) {
     layers,
     mode: opts.mode || 'free',
     selectionMode: false,
-    baseCanvases: layers.map((l) => cloneCanvas(l.canvas)),
+    wasDirty: doc.dirty,
+    baseCanvases: layers.map((l) => cloneCanvas(l.pixelKey())),
+    baseTiles: layers.map(l => l.tile ? { ...l.tile } : null),
     // A smart layer is transformed by composing maps, never by resampling its
     // pixels, so repeated sessions cannot compound quality loss.
     baseSmart: layers.map(smartShapeOf),
-    baseMasks: layers.map((l) => (l.mask && l.maskLinked ? cloneCanvas(l.mask) : null)),
+    baseMasks: layers.map((l) => (l.hasMask && l.maskLinked ? cloneCanvas(l.maskTile?.canvas || l.mask) : null)),
+    baseMaskTiles: layers.map(l => l.maskTile ? { ...l.maskTile } : null),
     baseSelection: null,
     bounds,
     params: { tx: 0, ty: 0, sx: 1, sy: 1, angle: 0, skewX: 0, skewY: 0 },
@@ -404,6 +409,27 @@ function renderSmartLayer(s, i) {
   });
 }
 
+/** Render into the transformed bounds rather than clipping to the document. */
+function transformedSurface(canvas, tile, s) {
+  const origin = tile || { x: 0, y: 0 };
+  let points = s.warp ? s.warp.pts.flat() : s.quad;
+  if (!s.warp && isAffineQuad(s.quad)) {
+    const matrix = affineFromRectToQuad(s.bounds, s.quad);
+    points = cornersOfRect({ x: origin.x, y: origin.y, width: canvas.width, height: canvas.height })
+      .map(p => applyM(matrix, p));
+  }
+  const x = Math.floor(Math.min(...points.map(p => p.x)));
+  const y = Math.floor(Math.min(...points.map(p => p.y)));
+  const w = Math.max(1, Math.ceil(Math.max(...points.map(p => p.x))) - x);
+  const h = Math.max(1, Math.ceil(Math.max(...points.map(p => p.y))) - y);
+  if (![x, y, w, h].every(Number.isFinite) || w > 32767 || h > 32767 || w * h > 100e6) {
+    throw new Error(translateText('The transformed layer is too large. Reduce its size.'));
+  }
+  const out = createCanvas(w, h);
+  drawThrough(out.getContext('2d'), canvas, s, origin, { x, y });
+  return { canvas: out, x, y };
+}
+
 /** Re-draw every layer in the session through the current transform. */
 function renderSession(s) {
   if (s.selectionMode) {
@@ -412,26 +438,24 @@ function renderSession(s) {
   }
   for (let i = 0; i < s.layers.length; i++) {
     const l = s.layers[i];
+    let smartRendered = false;
     if (s.baseSmart && s.baseSmart[i]) {
-      if (renderSmartLayer(s, i)) continue;
-      if (!s.smartFallbackWarned) {
+      smartRendered = renderSmartLayer(s, i);
+      if (!smartRendered && !s.smartFallbackWarned) {
         s.smartFallbackWarned = true;
         app.toast('That transform collapses the Smart Object — falling back to its pixels.', 'warn');
       }
     }
     const base = s.baseCanvases[i];
-    if (l.canvas && base) {
-      const c = l.canvas.getContext('2d');
-      c.setTransform(1, 0, 0, 1, 0, 0);
-      c.clearRect(0, 0, l.canvas.width, l.canvas.height);
-      drawThrough(c, base, s);
+    if (base && !smartRendered) {
+      const out = transformedSurface(base, s.baseTiles[i], s);
+      l.setTile(out.canvas, out.x, out.y, s.doc.width, s.doc.height);
     }
     const mbase = s.baseMasks[i];
-    if (l.mask && mbase) {
-      const c = l.mask.getContext('2d');
-      c.setTransform(1, 0, 0, 1, 0, 0);
-      c.clearRect(0, 0, l.mask.width, l.mask.height);
-      drawThrough(c, mbase, s);
+    if (mbase) {
+      const out = transformedSurface(mbase, s.baseMaskTiles[i], s);
+      l.mask = null;
+      l.maskTile = { ...out, docWidth: s.doc.width, docHeight: s.doc.height };
       l.touchMask();
     }
   }
@@ -486,11 +510,19 @@ export function cancelTransform() {
           commit: false, perspective: shape.perspective, warp: shape.warp,
         });
       } else if (s.baseCanvases[i]) {
-        l.canvas = cloneCanvas(s.baseCanvases[i]);
+        const tile = s.baseTiles[i];
+        if (tile) l.setTile(tile.canvas, tile.x, tile.y, tile.docWidth, tile.docHeight);
+        else l.canvas = s.baseCanvases[i];
       }
-      if (s.baseMasks[i]) { l.mask = cloneCanvas(s.baseMasks[i]); l.touchMask(); }
+      if (s.baseMasks[i]) {
+        l.mask = s.baseMasks[i];
+        l.maskTile = s.baseMaskTiles[i];
+        l.touchMask();
+      }
     }
-    s.doc.touch('transform-cancel');
+    s.doc.invalidate();
+    s.doc.dirty = s.wasDirty;
+    s.doc.emit('change', { reason: 'transform-cancel' });
   }
   app.emit('tool-options', app.tool);
   app.requestRender();

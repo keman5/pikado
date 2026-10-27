@@ -34,11 +34,11 @@
 
 .pk-tool-ico { display: flex; }
 .pk-tool svg {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   stroke: currentColor;
   fill: none;
-  stroke-width: 1.5;
+  stroke-width: 1.2;
 }
 
 /* "This group holds more tools": a quiet corner nick, not a bright arrowhead. */
@@ -121,7 +121,7 @@
   background: var(--accent);
 }
 .pk-flyout-ico { display: flex; flex: 0 0 auto; color: inherit; }
-.pk-flyout-ico svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+.pk-flyout-ico svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 1.2; }
 .pk-flyout-name { flex: 1 1 auto; }
 .pk-flyout-key {
   flex: 0 0 auto;
@@ -160,16 +160,16 @@
    affordances tucked into the corners the chips leave free. */
 .pk-colorwell {
   position: relative;
-  width: 44px;
-  height: 46px;
+  width: 36px;
+  height: 40px;
   flex: 0 0 auto;
   margin: 3px 0 5px;
 }
 
 .pk-swatch {
   position: absolute;
-  width: 22px;
-  height: 22px;
+  width: 18px;
+  height: 18px;
   padding: 0;
   border: none;
   border-radius: var(--r-sm);
@@ -182,8 +182,8 @@
 .pk-swatch-fg { left: 1px; top: 4px; z-index: 2; }
 /* The back chip gets a dark rim so the overlap reads as depth, not a seam. */
 .pk-swatch-bg {
-  left: 14px;
-  top: 18px;
+  left: 12px;
+  top: 15px;
   z-index: 1;
   box-shadow: 0 0 0 1px var(--hair-2), -1px -1px 0 1px var(--s1), var(--sh-1);
 }
