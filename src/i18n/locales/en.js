@@ -1702,4 +1702,10 @@ export default {
   " Only content supported by this format will be retained. Use Save As (PKD) to keep all editable layers.": " Only content supported by this format will be retained. Use Save As (PKD) to keep all editable layers.",
   "Replace": "Replace",
   "The transformed layer is too large. Reduce its size.": "The transformed layer is too large. Reduce its size.",
+  "Duplicate Layers": "Duplicate Layers",
+  "Delete Layers": "Delete Layers",
+  "Release Clipping Mask": "Release Clipping Mask",
+  "Disable Layer Mask": "Disable Layer Mask",
+  "Enable Layer Mask": "Enable Layer Mask",
+  "Enable": "Enable",
 };

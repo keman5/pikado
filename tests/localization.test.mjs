@@ -70,3 +70,17 @@ test('locked layer feedback is translated without changing user layer names', ()
   assert.equal(translate('zh-CN', 'Layer "{0}" is locked.', 'My File {1} $&'), '图层“My File {1} $&”已锁定。');
   assert.equal(translate('en', 'Layer "{0}" is locked.', 'My File {1} $&'), 'Layer "My File {1} $&" is locked.');
 });
+
+
+test('dynamic layer menu actions are available in both languages', () => {
+  const labels = {
+    'Duplicate Layers': '复制图层', 'Delete Layers': '删除图层',
+    'Release Clipping Mask': '释放剪贴蒙版',
+    'Disable Layer Mask': '禁用图层蒙版', 'Enable Layer Mask': '启用图层蒙版',
+    'Disable': '禁用', 'Enable': '启用',
+  };
+  for (const [key, chinese] of Object.entries(labels)) {
+    assert.equal(translate('zh-CN', key), chinese);
+    assert.equal(translate('en', key), key);
+  }
+});

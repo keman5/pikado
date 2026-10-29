@@ -663,7 +663,7 @@ function buildLayersPanel(bodyEl) {
   function smartFilterMenu(doc, layer, entry, index, count, x, y) {
     popupMenu([
       { label: translateText("Edit Smart Filter…"), run: () => editSmartFilter(doc, layer, entry.id) },
-      { label: entry.enabled ? 'Disable' : 'Enable', run: () => toggleSmartFilter(doc, layer, entry.id) },
+      { label: translateText(entry.enabled ? 'Disable' : 'Enable'), run: () => toggleSmartFilter(doc, layer, entry.id) },
       { separator: true },
       { label: translateText("Move Up"), disabled: index === 0, run: () => reorderSmartFilters(doc, layer, index, index - 1) },
       { label: translateText("Move Down"), disabled: index >= count - 1, run: () => reorderSmartFilters(doc, layer, index, index + 1) },
@@ -1070,11 +1070,11 @@ function buildLayersPanel(bodyEl) {
     const sel = doc.selectedLayers();
     const many = sel.length > 1;
     popupMenu([
-      { label: many ? 'Duplicate Layers' : 'Duplicate Layer', run: () => ops.duplicateLayers(doc, sel) },
-      { label: many ? 'Delete Layers' : 'Delete Layer', run: () => ops.deleteLayers(doc, sel) },
+      { label: translateText(many ? 'Duplicate Layers' : 'Duplicate Layer'), run: () => ops.duplicateLayers(doc, sel) },
+      { label: translateText(many ? 'Delete Layers' : 'Delete Layer'), run: () => ops.deleteLayers(doc, sel) },
       { separator: true },
       { label: translateText("Blending Options…"), run: () => openStyleDialog(doc, layer) },
-      { label: layer.clipped ? 'Release Clipping Mask' : 'Create Clipping Mask', run: () => ops.toggleClipping(doc, layer) },
+      { label: translateText(layer.clipped ? 'Release Clipping Mask' : 'Create Clipping Mask'), run: () => ops.toggleClipping(doc, layer) },
       { separator: true },
       { label: translateText("Group Layers"), run: () => ops.groupLayers(doc, sel.length ? sel : [layer]) },
       { label: translateText("Ungroup Layers"), disabled: layer.type !== LayerType.GROUP, run: () => ops.ungroupLayers(doc, layer) },
@@ -1092,7 +1092,7 @@ function buildLayersPanel(bodyEl) {
         ? { label: translateText("Apply Layer Mask"), run: () => ops.applyLayerMask(doc, layer) }
         : { label: translateText("Add Layer Mask"), run: () => ops.addLayerMask(doc, layer, doc.selection.active ? 'reveal-selection' : 'reveal-all') },
       layer.hasMask ? { label: translateText("Delete Layer Mask"), run: () => ops.deleteLayerMask(doc, layer) } : null,
-      layer.hasMask ? { label: layer.maskEnabled ? 'Disable Layer Mask' : 'Enable Layer Mask', run: () => ops.toggleMaskEnabled(doc, layer) } : null,
+      layer.hasMask ? { label: translateText(layer.maskEnabled ? 'Disable Layer Mask' : 'Enable Layer Mask'), run: () => ops.toggleMaskEnabled(doc, layer) } : null,
       { separator: true },
       layer.isBackground
         ? { label: translateText("Layer From Background"), run: () => ops.convertBackgroundToLayer(doc, layer) }
@@ -1109,7 +1109,7 @@ function buildLayersPanel(bodyEl) {
     ];
     for (const [key, label] of Object.entries(EFFECT_NAMES)) {
       items.push({
-        label: `${label}…`,
+        label: translateText(`${label}…`),
         checked: !!(styles[key] && styles[key].enabled),
         run: () => openStyleDialog(doc, layer, key),
       });

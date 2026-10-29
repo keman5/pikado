@@ -747,3 +747,37 @@ suite('layers / canvas picking selects and reveals the matching panel row', asyn
     app.setTool(previousTool);
   }
 });
+
+
+suite('layers / context menu translates dynamic selection and mask actions', async (t) => {
+  const { t: translateText } = await import('/src/i18n/index.js');
+  const { closeMenu } = await import('/src/ui/panel-host.js');
+  const doc = t.doc(16, 16, '#ffffff');
+  const bottom = doc.activeLayer();
+  const layer = createRasterLayer(16, 16, 'Custom Layer');
+  doc.addLayer(layer);
+  addLayerMask(doc, layer, 'reveal-all');
+  await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  const row = document.querySelector(`.pk-lay-row[data-id="${layer.id}"] .pk-lay-main`);
+  t.ok(row, 'the layer panel is rendered');
+  try {
+    for (const enabled of [true, false]) {
+      layer.clipped = !enabled;
+      layer.maskEnabled = enabled;
+      doc.selectedLayerIds = enabled ? [layer.id] : [layer.id, bottom.id];
+      row.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true, clientX: 100, clientY: 100 }));
+      const labels = [...document.querySelectorAll('.pk-menu .pk-menu-label')].map(el => el.textContent);
+      for (const key of [
+        enabled ? 'Duplicate Layer' : 'Duplicate Layers',
+        enabled ? 'Delete Layer' : 'Delete Layers',
+        enabled ? 'Create Clipping Mask' : 'Release Clipping Mask',
+        enabled ? 'Disable Layer Mask' : 'Enable Layer Mask',
+        'Apply Layer Mask', 'Delete Layer Mask', 'Layer Properties…',
+      ]) t.ok(labels.includes(translateText(key)), `${key} uses the selected language`);
+      await new Promise(resolve => setTimeout(resolve, 0));
+      closeMenu();
+    }
+  } finally {
+    closeMenu();
+  }
+});

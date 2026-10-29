@@ -275,7 +275,7 @@ function addPastedLayer(doc, clip, { name, mask = null, label = 'Paste' }) {
     layer.maskEnabled = true;
     layer.touchMask();
   }
-  doc.addLayer(layer);
+  doc.addLayer(layer, { index: 0 });
   doc.selection.clear();
   doc.emit('selection-change');
   doc.commit(label);

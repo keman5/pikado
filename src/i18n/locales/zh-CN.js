@@ -1702,4 +1702,10 @@ export default {
   " Only content supported by this format will be retained. Use Save As (PKD) to keep all editable layers.": " 仅保留该格式支持的内容。如需保留全部可编辑图层，请另存为 PKD。",
   "Replace": "替换",
   "The transformed layer is too large. Reduce its size.": "变换后的图层过大，请缩小尺寸。",
+  "Duplicate Layers": "复制图层",
+  "Delete Layers": "删除图层",
+  "Release Clipping Mask": "释放剪贴蒙版",
+  "Disable Layer Mask": "禁用图层蒙版",
+  "Enable Layer Mask": "启用图层蒙版",
+  "Enable": "启用",
 };

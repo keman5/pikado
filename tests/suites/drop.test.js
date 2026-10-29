@@ -1,6 +1,6 @@
 import { suite } from '../harness.js';
 import { createCanvas } from '/src/core/util.js';
-import { createRasterLayer } from '/src/core/layer.js';
+import { createRasterLayer, createGroupLayer } from '/src/core/layer.js';
 import { droppedImageUrl, placeAsLayer } from '/src/io/open.js';
 import { paste } from '/src/edit/clipboard.js';
 import {
@@ -183,6 +183,68 @@ suite('drop / delayed file handles keep the document targeted at drop time', asy
   t.eq(other.layers.length, 1, 'the other tab is untouched');
   t.eq(t.app.docs.length, docs, 'no new tab');
   t.pixel(target.activeLayer().canvas, 20, 15, '255,0,0,255', 'file pixels survive');
+});
+
+for (const nested of [false, true]) {
+  suite(`paste / lands above the entire stack from a ${nested ? 'nested' : 'bottom'} selection`, async (t) => {
+    const doc = t.doc(16, 16, '#ffffff');
+    const bottom = doc.activeLayer();
+    const group = createGroupLayer('group');
+    doc.addLayer(group);
+    const child = createRasterLayer(16, 16, 'child');
+    doc.addLayer(child, { parent: group, index: 0 });
+    const selected = nested ? child : bottom;
+    doc.setActiveLayer(selected.id);
+    doc.commit('Setup');
+    const before = doc.layers.map(l => l.id);
+    const history = doc.history.states.length;
+    const held = t.app.clipboard;
+    t.app.clipboard = { canvas: bottom.canvas, docId: doc.id, bounds: { x: 0, y: 0, width: 16, height: 16 } };
+    try {
+      const pasted = await paste(doc);
+      t.eq(doc.layers.map(l => l.id), [pasted.id, ...before], 'paste is first at the document root');
+      t.eq(pasted.parent, null, 'paste stays outside groups');
+      t.eq(group.children.map(l => l.id), [child.id], 'group contents are unchanged');
+      t.eq(doc.selectedLayerIds, [pasted.id], 'only the pasted layer is selected');
+      t.eq(doc.activeLayerId, pasted.id, 'pasted layer is active');
+      t.pixel(pasted.canvas, 8, 8, '255,255,255,255', 'copied pixels survive');
+      t.eq(doc.history.states.length, history + 1, 'paste creates one history entry');
+      t.ok(doc.history.undo(), 'paste can be undone');
+      t.eq(doc.layers.map(l => l.id), before, 'undo restores layer order');
+      t.eq(doc.activeLayerId, selected.id, 'undo restores selection');
+      t.ok(doc.history.redo(), 'paste can be redone');
+      t.eq(doc.layers.map(l => l.id), [pasted.id, ...before], 'redo restores topmost placement');
+      t.eq(doc.selectedLayerIds, [pasted.id], 'redo selects the pasted layer');
+    } finally {
+      t.app.clipboard = held;
+    }
+  });
+}
+
+suite('paste / native image clipboard inserts once at the document top', async (t) => {
+  const doc = t.doc(16, 16, '#ffffff');
+  const bottom = doc.activeLayer();
+  doc.addLayer(createGroupLayer('above'));
+  doc.setActiveLayer(bottom.id);
+  const before = doc.layers.map(l => l.id);
+  const held = t.app.clipboard;
+  try {
+    const blob = await (await fetch(pngDataUrl(16, 16, '#ff0000'))).blob();
+    const file = new File([blob], 'clipboard.png', { type: 'image/png' });
+    const event = new Event('paste', { bubbles: true, cancelable: true });
+    Object.defineProperty(event, 'clipboardData', { value: { items: [
+      { kind: 'file', type: 'image/png', getAsFile: () => file },
+    ] } });
+    window.dispatchEvent(event);
+    t.ok(event.defaultPrevented, 'native image event is claimed');
+    t.ok(await waitFor(() => doc.layers.length > before.length), 'image decoding completes');
+    const pasted = doc.activeLayer();
+    t.eq(doc.layers.map(l => l.id), [pasted.id, ...before], 'exactly one layer is inserted above all existing layers');
+    t.eq(doc.selectedLayerIds, [pasted.id], 'only the native pasted layer is selected');
+    t.pixel(pasted.canvas, 8, 8, '255,0,0,255', 'native clipboard pixels survive');
+  } finally {
+    t.app.clipboard = held;
+  }
 });
 
 suite('drop / pasting an image larger than the canvas keeps all of it', async (t) => {
