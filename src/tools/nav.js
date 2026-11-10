@@ -252,7 +252,7 @@ class ZoomTool extends Tool {
         {
           key: 'resizeWindows', type: 'checkbox', default: false,
           label: translateText("Resize Windows to Fit"),
-          hint: 'Re-centres the document after zooming when it fits on screen.',
+          hint: translateText("Re-centres the document after zooming when it fits on screen."),
         },
         ...VIEW_BUTTONS,
       ],

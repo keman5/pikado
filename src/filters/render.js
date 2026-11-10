@@ -361,10 +361,10 @@ registerFilter({
     {
       key: 'lensType', label: translateText("Lens Type"), type: 'select', default: '50-300',
       options: [
-        { value: '50-300', label: '50-300mm Zoom' },
-        { value: '35', label: '35mm Prime' },
-        { value: '105', label: '105mm Prime' },
-        { value: 'movie', label: 'Movie Prime' },
+        { value: '50-300', label: translateText("50-300mm Zoom") },
+        { value: '35', label: translateText("35mm Prime") },
+        { value: '105', label: translateText("105mm Prime") },
+        { value: 'movie', label: translateText("Movie Prime") },
       ],
     },
     { key: 'centerX', label: translateText("Flare Center X"), type: 'slider', min: 0, max: 100, step: 0.5, default: 35, unit: '%' },

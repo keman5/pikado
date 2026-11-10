@@ -107,36 +107,36 @@ export function mapThrown(err, provider) {
  * @returns {{text: string, action: string|null}} action is a command id or null
  */
 export function messageFor(err) {
-  const p = (err && err.provider) || 'the provider';
+  const p = !err?.provider || err.provider === 'the provider' ? translateText('the provider') : err.provider;
   switch (err && err.code) {
     case GEN_ERRORS.NO_KEY:
-      return { text: `Generative Fill needs your own ${p} API key. Nothing is sent until you add one.`, action: 'key' };
+      return { text: translateText("Generative Fill needs your own {0} API key. Nothing is sent until you add one.", p), action: 'key' };
     case GEN_ERRORS.NO_CONSENT:
-      return { text: `Generative Fill did not send anything, because sending to ${p} has not been agreed to yet.`, action: 'consent' };
+      return { text: translateText("Generative Fill did not send anything, because sending to {0} has not been agreed to yet.", p), action: 'consent' };
     case GEN_ERRORS.BAD_KEY:
-      return { text: `${p} rejected the API key. Check that it is current and allowed to generate images.`, action: 'key' };
+      return { text: translateText("{0} rejected the API key. Check that it is current and allowed to generate images.", p), action: 'key' };
     case GEN_ERRORS.RATE_LIMIT:
       return {
         text: err.retryAfter
-          ? `Rate limited by ${p}. Try again in ${err.retryAfter} seconds.`
-          : `Rate limited by ${p}. Try again in a moment.`,
+          ? translateText("Rate limited by {0}. Try again in {1} seconds.", p, err.retryAfter)
+          : translateText("Rate limited by {0}. Try again in a moment.", p),
         action: null,
       };
     case GEN_ERRORS.QUOTA:
-      return { text: `Your ${p} account is out of credit. This attempt was not charged.`, action: null };
+      return { text: translateText("Your {0} account is out of credit. This attempt was not charged.", p), action: null };
     case GEN_ERRORS.REFUSED:
-      return { text: `${p} declined this prompt. Describing the result rather than the subject often helps.`, action: null };
+      return { text: translateText("{0} declined this prompt. Describing the result rather than the subject often helps.", p), action: null };
     case GEN_ERRORS.OFFLINE:
       return { text: translateText("No connection. Generative Fill is the one thing in Pikado that needs one — everything else still works."), action: null };
     case GEN_ERRORS.ABORTED:
-      return { text: `Stopped. ${p} may still charge for a generation that had already started.`, action: null };
+      return { text: translateText("Stopped. {0} may still charge for a generation that had already started.", p), action: null };
     case GEN_ERRORS.TIMEOUT:
-      return { text: `No answer from ${p} after two minutes. It may be overloaded — try again.`, action: null };
+      return { text: translateText("No answer from {0} after two minutes. It may be overloaded — try again.", p), action: null };
     case GEN_ERRORS.BAD_RESPONSE:
-      return { text: `${p} returned something Pikado could not read. Nothing was changed.`, action: null };
+      return { text: translateText("{0} returned something Pikado could not read. Nothing was changed.", p), action: null };
     case GEN_ERRORS.SERVER:
-      return { text: `${p} is having trouble${err.status ? ` (${err.status})` : ''}. Nothing was charged for a failed request.`, action: null };
+      return { text: translateText("{0} is having trouble{1}. Nothing was charged for a failed request.", p, err.status ? ` (${err.status})` : ''), action: null };
     default:
-      return { text: `Generative Fill failed and ${p} did not say why. Nothing was changed.`, action: null };
+      return { text: translateText("Generative Fill failed and {0} did not say why. Nothing was changed.", p), action: null };
   }
 }

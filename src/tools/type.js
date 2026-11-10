@@ -475,7 +475,7 @@ class TypeToolBase extends Tool {
         { key: 'italic', label: translateText("Italic"), type: 'checkbox', default: false },
         { key: 'color', label: translateText("Color"), type: 'color', default: '#000000' },
         { key: 'align', label: translateText("Align"), type: 'radio', options: ALIGN_OPTIONS, default: 'left' },
-        { key: 'lineHeight', label: translateText("Leading"), type: 'number', min: 0, max: 20, step: 0.05, default: 1.2, hint: 'Multiple of the type size (0 = automatic)' },
+        { key: 'lineHeight', label: translateText("Leading"), type: 'number', min: 0, max: 20, step: 0.05, default: 1.2, hint: translateText("Multiple of the type size (0 = automatic)") },
         { key: 'letterSpacing', label: translateText("Tracking"), type: 'number', min: -200, max: 400, step: 0.5, default: 0, unit: 'px' },
         { key: 'underline', label: translateText("Underline"), type: 'checkbox', default: false },
         { key: 'antialias', label: translateText("Anti-alias"), type: 'select', options: ANTIALIAS_OPTIONS, default: 'smooth' },
@@ -703,7 +703,7 @@ class TypeToolBase extends Tool {
     // that is what they will act on.
     const active = doc.activeLayer();
     if (active && active.type === LayerType.TEXT && active.text) {
-      items.push({ header: 'Orientation' });
+      items.push({ header: translateText("Orientation") });
       items.push(cmd('type.orientation.horizontal'));
       items.push(cmd('type.orientation.vertical'));
     }

@@ -806,7 +806,7 @@ function channelPlane(ch, width, height) {
     plane.set(ch.mask);
     return plane;
   }
-  throw new Error(`The alpha channel "${ch.name || 'Alpha'}" has no pixel data to save`);
+  throw new Error(translateText("The alpha channel \"{0}\" has no pixel data to save", ch.name || 'Alpha'));
 }
 
 /**
@@ -2420,7 +2420,7 @@ function writeShapeLayer(w, layer, doc) {
   const shape = layer.shape;
   const subpaths = (shape.subpaths || []).filter((sp) => sp && (sp.points || []).length);
   if (!subpaths.length) {
-    throw new Error(`The shape layer "${layer.name || 'Shape'}" has no path to save`);
+    throw new Error(translateText("The shape layer \"{0}\" has no path to save", layer.name || 'Shape'));
   }
   const fill = describeShapeFill(shape);
   const stroke = describeShapeStroke(shape);

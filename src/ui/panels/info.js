@@ -43,8 +43,7 @@ const TOOL_HINTS = {
 };
 
 function hintFor(tool) {
-  if (!tool) return 'Space pans · Ctrl/Cmd + wheel zooms';
-  return TOOL_HINTS[tool.id] || TOOL_HINTS[tool.group] || 'Space pans · Ctrl/Cmd + wheel zooms';
+  return translateText(TOOL_HINTS[tool?.id] || TOOL_HINTS[tool?.group] || 'Space pans · Ctrl/Cmd + wheel zooms');
 }
 
 /** Read one composite pixel, or null when it is outside the canvas. */
@@ -149,7 +148,7 @@ registerPanel({
       posY.v.textContent = cursor ? String(py) : '—';
 
       if (dragFrom && cursor) {
-        dimLabel.textContent = 'Drag';
+        dimLabel.textContent = translateText("Drag");
         dimW.v.textContent = String(Math.round(Math.abs(cursor.x - dragFrom.x)));
         dimH.v.textContent = String(Math.round(Math.abs(cursor.y - dragFrom.y)));
       } else if (doc.selection.active) {

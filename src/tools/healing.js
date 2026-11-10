@@ -609,7 +609,7 @@ class PatchTool extends Tool {
             { value: 'destination', label: translateText("Destination") },
           ] },
         { key: 'transparent', label: translateText("Transparent"), type: 'checkbox', default: false,
-          hint: 'Transfer texture only, keeping the destination colour' },
+          hint: translateText("Transfer texture only, keeping the destination colour") },
       ],
     });
     this.app = app;
@@ -706,7 +706,7 @@ class PatchTool extends Tool {
   contextMenu() {
     const s = this.state;
     const pick = (key, value, label) => ({
-      label,
+      label: translateText(label),
       checked: s[key] === value,
       run: () => this.setOption(key, value),
     });
@@ -715,7 +715,7 @@ class PatchTool extends Tool {
       items.push({ label: translateText("Discard Patch Area"), accel: 'Esc', run: () => this.cancel() });
       items.push(sep());
     }
-    items.push({ header: 'Patch' });
+    items.push({ header: translateText("Patch") });
     items.push(pick('mode', 'normal', 'Normal'));
     items.push(pick('mode', 'content-aware', 'Content-Aware'));
     items.push({
@@ -723,7 +723,7 @@ class PatchTool extends Tool {
       checked: !!s.transparent,
       run: () => this.setOption('transparent', !s.transparent),
     });
-    items.push({ header: 'Patch From' });
+    items.push({ header: translateText("Patch From") });
     items.push(pick('patchSource', 'source', 'Source'));
     items.push(pick('patchSource', 'destination', 'Destination'));
     items.push(sep());
@@ -1000,9 +1000,9 @@ class RedEyeTool extends Tool {
       run: () => this.setOption(key, pct),
     });
     return [
-      { header: 'Pupil Size' },
+      { header: translateText("Pupil Size") },
       row('pupilSize', 25), row('pupilSize', 50), row('pupilSize', 75),
-      { header: 'Darken Amount' },
+      { header: translateText("Darken Amount") },
       row('darkenAmount', 25), row('darkenAmount', 50), row('darkenAmount', 75),
       sep(),
       cmd('edit.undo'),

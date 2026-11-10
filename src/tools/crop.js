@@ -581,7 +581,7 @@ class CropTool extends Tool {
     const pending = !!this.rect;
     return [
       ...CONTEXT_RATIOS.map(([value, label]) => ({
-        label,
+        label: translateText(label),
         checked: ratio === value,
         run: () => this.setOption('ratio', value),
       })),
@@ -1003,7 +1003,7 @@ class SliceTool extends Tool {
     const items = [];
     if (slice) {
       items.push({
-        label: `Delete "${slice.name}"`,
+        label: translateText("Delete \"{0}\"", slice.name),
         run: () => {
           const list = slicesOf(doc);
           const i = list.indexOf(slice);

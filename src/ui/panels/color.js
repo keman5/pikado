@@ -191,7 +191,7 @@ registerPanel({
       const set = (c) => (which === 'foreground' ? app.setForeground(c) : app.setBackground(c));
       showColorPicker({
         color: before,
-        title: which === 'foreground' ? 'Foreground Color' : 'Background Color',
+        title: which === 'foreground' ? translateText("Foreground Color") : translateText("Background Color"),
         onChange: (c) => set(c),
       }).then((res) => set(res || before));
     };

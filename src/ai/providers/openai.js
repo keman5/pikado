@@ -37,9 +37,9 @@ const ENDPOINT = 'https://api.openai.com/v1/images/edits';
  */
 const QUALITY = [
   { value: 'auto', label: translateText("Auto") },
-  { value: 'low', label: 'Low — fastest, cheapest' },
+  { value: 'low', label: translateText("Low — fastest, cheapest") },
   { value: 'medium', label: translateText("Medium") },
-  { value: 'high', label: 'High — slowest, dearest' },
+  { value: 'high', label: translateText("High — slowest, dearest") },
 ];
 
 /**
@@ -57,9 +57,9 @@ const QUALITY = [
  * migration 400.
  */
 const MODELS = [
-  { id: 'gpt-image-2', label: 'GPT Image 2 — recommended', efforts: QUALITY, defaultEffort: 'auto' },
+  { id: 'gpt-image-2', label: translateText("GPT Image 2 — recommended"), efforts: QUALITY, defaultEffort: 'auto' },
   { id: 'gpt-image-1.5', label: 'GPT Image 1.5', efforts: QUALITY, defaultEffort: 'auto' },
-  { id: 'gpt-image-1-mini', label: 'GPT Image 1 mini — cheapest', efforts: QUALITY, defaultEffort: 'auto' },
+  { id: 'gpt-image-1-mini', label: translateText("GPT Image 1 mini — cheapest"), efforts: QUALITY, defaultEffort: 'auto' },
 ];
 
 /**

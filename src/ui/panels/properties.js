@@ -40,7 +40,7 @@ const DASH_OPTIONS = [
   { value: 'solid', label: translateText("Solid") },
   { value: 'dash', label: translateText("Dashed") },
   { value: 'dash-tight', label: translateText("Dashed (tight)") },
-  { value: 'dot', label: 'Dotted' },
+  { value: 'dot', label: translateText("Dotted") },
   { value: 'dash-dot', label: translateText("Dash-dot") },
   { value: 'long-dash', label: translateText("Long dash") },
 ];
@@ -278,7 +278,7 @@ function adjustmentSection(doc, layer) {
   const node = el('div.pk-panel-section');
 
   if (!def) {
-    node.appendChild(el('div.pk-panel-note', { text: `Unknown adjustment "${kind}".` }));
+    node.appendChild(el('div.pk-panel-note', { text: translateText("Unknown adjustment \"{0}\".", kind) }));
     return { node };
   }
 
@@ -304,7 +304,7 @@ function adjustmentSection(doc, layer) {
       },
     }),
     el('button.pk-mini-btn', {
-      type: 'button', text: layer.clipped ? 'Release Clip' : 'Clip to Layer',
+      type: 'button', text: layer.clipped ? translateText("Release Clip") : translateText("Clip to Layer"),
       onclick: () => ops.toggleClipping(doc, layer),
     }),
     el('button.pk-mini-btn', {
@@ -412,7 +412,7 @@ function maskSection(doc, layer) {
 
   node.appendChild(form.node);
   node.appendChild(el('div.pk-panel-note', {
-    text: 'Density fades the mask toward fully revealed; Feather softens its edges. Both are baked into the mask pixels when you commit.',
+    text: translateText("Density fades the mask toward fully revealed; Feather softens its edges. Both are baked into the mask pixels when you commit."),
   }));
 
   node.appendChild(el('div.pk-prop-actions', {},
@@ -427,7 +427,7 @@ function maskSection(doc, layer) {
       },
     }),
     el('button.pk-mini-btn', {
-      type: 'button', text: layer.maskEnabled ? 'Disable' : 'Enable',
+      type: 'button', text: layer.maskEnabled ? translateText("Disable") : translateText("Enable"),
       onclick: () => ops.toggleMaskEnabled(doc, layer),
     }),
     el('button.pk-mini-btn', { type: 'button', text: translateText("Apply"), onclick: () => ops.applyLayerMask(doc, layer) }),
@@ -712,11 +712,11 @@ function shapeSection(doc, layer) {
   node.appendChild(form.node);
   if (complexFill) {
     node.appendChild(el('div.pk-panel-note', {
-      text: `This layer uses a ${fill.type === 'pattern' ? 'pattern' : 'gradient'} fill. Turn Fill off to remove it, or edit it with the shape tools.`,
+      text: translateText("This layer uses a {0} fill. Turn Fill off to remove it, or edit it with the shape tools.", translateText(fill.type === 'pattern' ? 'Pattern' : 'Gradient')),
     }));
   }
   node.appendChild(el('div.pk-panel-note', {
-    text: `${(s.subpaths || []).length} subpath${(s.subpaths || []).length === 1 ? '' : 's'} · edit the geometry with the Path Selection tools.`,
+    text: translateText((s.subpaths || []).length === 1 ? '{0} subpath · edit the geometry with the Path Selection tools.' : '{0} subpaths · edit the geometry with the Path Selection tools.', (s.subpaths || []).length),
   }));
   node.appendChild(el('div.pk-prop-actions', {},
     el('button.pk-mini-btn', { type: 'button', text: translateText("Rasterize"), onclick: () => ops.rasterizeLayer(doc, layer) })
@@ -826,9 +826,9 @@ function smartSection(doc, layer) {
   const shapeText = () => {
     const p = getSmartPerspective(layer);
     const bits = [];
-    if (p[0] || p[1]) bits.push(`perspective ${round2(p[0] * 1000)}, ${round2(p[1] * 1000)} ‰`);
-    if (getSmartWarp(layer)) bits.push('warp mesh');
-    return bits.length ? bits.join(' · ') : 'None';
+    if (p[0] || p[1]) bits.push(translateText('perspective {0}, {1} ‰', round2(p[0] * 1000), round2(p[1] * 1000)));
+    if (getSmartWarp(layer)) bits.push(translateText('warp mesh'));
+    return bits.length ? bits.join(' · ') : translateText('None');
   };
   const sizeVal = el('span.pk-panel-val', { text: `${s.sourceWidth} × ${s.sourceHeight} px` });
   const scaleVal = el('span.pk-panel-val', { text: scaleText() });
@@ -836,7 +836,7 @@ function smartSection(doc, layer) {
   const shapeVal = el('span.pk-panel-val', { text: shapeText() });
   const layerVal = el('span.pk-panel-val', { text: String(s.source.flatLayers().length) });
   const filterVal = el('span.pk-panel-val', {
-    text: filters.length ? `${filters.length} (${filters.filter((f) => f.enabled).length} on)` : 'None',
+    text: filters.length ? translateText("{0} ({1} on)", filters.length, filters.filter((f) => f.enabled).length) : translateText("None"),
   });
 
   node.appendChild(el('div.pk-panel-grid.pk-prop-smart-grid', {},
@@ -849,7 +849,7 @@ function smartSection(doc, layer) {
   ));
 
   node.appendChild(el('div.pk-panel-note', {
-    text: 'Centre, scale, rotation and skew are one matrix; perspective and warp ride alongside it. All of them, plus the smart filters, are re-applied to the embedded source on every render, so nothing here is baked into pixels until you rasterize.',
+    text: translateText("Centre, scale, rotation and skew are one matrix; perspective and warp ride alongside it. All of them, plus the smart filters, are re-applied to the embedded source on every render, so nothing here is baked into pixels until you rasterize."),
   }));
 
   const clearBtn = el('button.pk-mini-btn', {
@@ -903,10 +903,10 @@ function smartSection(doc, layer) {
     scaleVal.textContent = scaleText();
     posVal.textContent = `${Math.round(state.x)}, ${Math.round(state.y)}`;
     shapeVal.textContent = shapeText();
-    clearBtn.style.display = shapeVal.textContent === 'None' ? 'none' : '';
+    clearBtn.style.display = !getSmartWarp(layer) && !getSmartPerspective(layer).some(Boolean) ? 'none' : '';
     layerVal.textContent = String(layer.smart.source.flatLayers().length);
     const fl = getSmartFilters(layer);
-    filterVal.textContent = fl.length ? `${fl.length} (${fl.filter((f) => f.enabled).length} on)` : 'None';
+    filterVal.textContent = fl.length ? translateText("{0} ({1} on)", fl.length, fl.filter((f) => f.enabled).length) : translateText("None");
   };
   sync();
   return { node, sync, dispose: () => { off(); committer.flush(); } };

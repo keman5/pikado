@@ -476,7 +476,7 @@ function buildCurveEditor(container, cfg) {
   const setReadout = (px, py) => {
     const v = toVal(px, py);
     const lut = curveToLUT(value[value.channel]);
-    readout.textContent = `Input: ${v.x}   Output: ${lut[v.x]}`;
+    readout.textContent = translateText("Input: {0}   Output: {1}", v.x, lut[v.x]);
   };
 
   canvas.addEventListener('pointerdown', (e) => {

@@ -89,7 +89,7 @@ export async function showGenerativeFillDialog(doc = app.activeDoc) {
     const choices = effortChoices(p, modelId);
     effortRow.hidden = !choices.length;
     if (choices.length) {
-      effortRow.querySelector('label').textContent = (p && p.effortLabel) || 'Effort';
+      effortRow.querySelector('label').textContent = translateText((p && p.effortLabel) || 'Effort');
       effortSel.replaceChildren(...choices.map((c) => el('option', { value: c.value, text: c.label })));
       effortSel.value = getEffort(p, modelId);
     }
@@ -97,14 +97,14 @@ export async function showGenerativeFillDialog(doc = app.activeDoc) {
     const frame = planFrame(bounds, doc.width, doc.height, { size });
     const region = Math.max(frame.crop.width, frame.crop.height);
     const bits = [];
-    if (p && p.needsKey && !hasCredential(p.id)) bits.push(`No ${p.name} key set yet — you will be asked for one.`);
+    if (p && p.needsKey && !hasCredential(p.id)) bits.push(translateText('No {0} key set yet — you will be asked for one.', p.name));
     if (frame.scale < 1) {
-      bits.push(`Generating at ${size}x${size} for a ${region}px region, so the fill will be softer than the rest of the image.`);
+      bits.push(translateText('Generating at {0}×{0} for a {1}px region, so the fill will be softer than the rest of the image.', size, region));
     }
-    if (p && !p.needsKey) bits.push('This provider runs without a key and sends nothing anywhere.');
+    if (p && !p.needsKey) bits.push(translateText('This provider runs without a key and sends nothing anywhere.'));
     // Which model is about to be billed, said where it is spent rather than
     // only in the settings dialog it was chosen in.
-    if (modelId) bits.push(`Using ${modelId} — change it in Edit > AI Settings.`);
+    if (modelId) bits.push(translateText('Using {0} — change it in Edit > AI Settings.', modelId));
     note.textContent = bits.join(' ');
   };
   providerSel.addEventListener('change', () => { providerId = providerSel.value; syncNote(); });
@@ -163,7 +163,7 @@ export async function showGenerativeFillDialog(doc = app.activeDoc) {
     const tick = setInterval(() => {
       if (!busy) return;
       const s = Math.round((Date.now() - started) / 1000);
-      status.textContent = `Generating… ${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+      status.textContent = translateText("Generating… {0}:{1}", Math.floor(s / 60), String(s % 60).padStart(2, '0'));
     }, 1000);
 
     try {
@@ -174,7 +174,7 @@ export async function showGenerativeFillDialog(doc = app.activeDoc) {
       clearInterval(tick);
       if (err && err.code === GEN_ERRORS.ABORTED) {
         // Not an error, but the user should know it may still have cost them.
-        app.toast(`Stopped. ${provider.name} may still charge for a generation already under way.`, 'info', 5000);
+        app.toast(translateText("Stopped. {0} may still charge for a generation already under way.", provider.name), 'info', 5000);
         setBusy(false, '');
         return;
       }

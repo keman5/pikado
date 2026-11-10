@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { app } from '../core/app.js';
 import { Layer, LayerType } from '../core/layer.js';
 import { createCanvas, ctx2d } from '../core/util.js';
@@ -163,7 +164,7 @@ export async function runGenerativeFill(doc, opts) {
     );
   }
   if (rw && rw < size) {
-    app.toast(`${provider.name} returned ${rw}x${rh} instead of ${size}x${size}; the fill will be softer.`, 'warn', 4000);
+    app.toast(translateText("{0} returned {1}x{2} instead of {3}x{4}; the fill will be softer.", provider.name, rw, rh, size, size), 'warn', 4000);
   }
 
   const patch = patchFromResult(result.image, frame);

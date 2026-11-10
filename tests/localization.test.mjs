@@ -84,3 +84,34 @@ test('dynamic layer menu actions are available in both languages', () => {
     assert.equal(translate('en', key), key);
   }
 });
+
+test('literal translation keys used by source code exist in both catalogs', async () => {
+  const { parseAst } = await import('rolldown/parseAst');
+  const missing = [];
+  const check = (node, file) => {
+    if (node?.type === 'ConditionalExpression') {
+      check(node.consequent, file); check(node.alternate, file);
+    } else if (node?.type === 'LogicalExpression') {
+      check(node.left, file); check(node.right, file);
+    } else if (node?.type === 'Literal' && typeof node.value === 'string') {
+      if (!Object.hasOwn(en, node.value) && !Object.hasOwn(en, `${node.value}...`)) missing.push(`${file}: ${node.value}`);
+    }
+  };
+  for (const file of readdirSync(new URL('../src', import.meta.url), { recursive: true })) {
+    if (!file.endsWith('.js') || file.startsWith('i18n/')) continue;
+    const source = readFileSync(new URL(`../src/${file}`, import.meta.url), 'utf8');
+    const tree = parseAst(source);
+    const names = tree.body.filter(n => n.type === 'ImportDeclaration' && n.source.value.endsWith('/i18n/index.js'))
+      .flatMap(n => n.specifiers.filter(s => s.imported?.name === 't').map(s => s.local.name));
+    const walk = node => {
+      if (!node || typeof node !== 'object') return;
+      if (node.type === 'CallExpression' && names.includes(node.callee.name)) check(node.arguments[0], file);
+      for (const value of Object.values(node)) {
+        if (Array.isArray(value)) value.forEach(walk);
+        else if (value && typeof value === 'object') walk(value);
+      }
+    };
+    walk(tree);
+  }
+  assert.deepEqual(missing, []);
+});

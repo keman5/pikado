@@ -23,27 +23,26 @@ export async function showAiConsentDialog(provider) {
   const host = hostOf(provider.endpoint);
   if (!host || hasConsent(host)) return true;
 
-  const dialog = new Dialog({ title: `Send this image to ${provider.name}?`, width: 500 });
+  const dialog = new Dialog({ title: translateText("Send this image to {0}?", provider.name), width: 500 });
   const dontAsk = el('input', { type: 'checkbox' });
 
   dialog.setBody(
     el('div.pk-hint', { text: translateText("Pikado has never sent your work anywhere. This feature does.") }),
     el('div.pk-field', {},
-      el('label', { text: `Leaving this computer, to ${host}` }),
+      el('label', { text: translateText("Leaving this computer, to {0}", host) }),
       el('ul.pk-list', {},
-        el('li', { text: 'the selected part of your image, and some of what surrounds it, as a PNG' }),
-        el('li', { text: 'the prompt you type' }),
-        el('li', { text: 'your API key, in a request header' }))),
+        el('li', { text: translateText("the selected part of your image, and some of what surrounds it, as a PNG") }),
+        el('li', { text: translateText("the prompt you type") }),
+        el('li', { text: translateText("your API key, in a request header") }))),
     el('div.pk-field', {},
       el('label', { text: translateText("Not leaving") }),
       el('ul.pk-list', {},
-        el('li', { text: 'your other open documents, your layer names and your file names' }),
-        el('li', { text: 'your edit history, and anything else stored in this browser' }))),
+        el('li', { text: translateText("your other open documents, your layer names and your file names") }),
+        el('li', { text: translateText("your edit history, and anything else stored in this browser") }))),
     el('div.pk-hint', {
-      text: `What ${provider.name} stores, and for how long, is governed by their terms and not `
-        + 'by Pikado. Read them before sending anything you would not post publicly.',
+      text: translateText("What {0} stores, and for how long, is governed by their terms and not by Pikado. Read them before sending anything you would not post publicly.", provider.name),
     }),
-    el('label.pk-check', {}, dontAsk, el('span', { text: `Don't ask again for ${host}` })),
+    el('label.pk-check', {}, dontAsk, el('span', { text: translateText("Don't ask again for {0}", host) })),
   );
 
   dialog.setButtons([

@@ -288,12 +288,12 @@ class MagicEraserTool extends Tool {
   /** No brush tip here, so the menu offers the flags that shape the match. */
   contextMenu() {
     const flag = (key, label) => ({
-      label,
+      label: translateText(label),
       checked: !!this.state[key],
       run: () => this.setOption(key, !this.state[key]),
     });
     return [
-      { header: 'Magic Eraser' },
+      { header: translateText("Magic Eraser") },
       flag('contiguous', 'Contiguous'),
       flag('antialias', 'Anti-alias'),
       flag('sampleAllLayers', 'Sample All Layers'),

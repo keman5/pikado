@@ -495,7 +495,7 @@ export function showLayerStyleDialog(doc, layer, initialEffect = null) {
     const row = el('div.pk-fx-row', { onclick: () => selectPage(id) });
     if (withCheck) {
       const box = el('input', {
-        type: 'checkbox', checked: !!working[id].enabled, title: `Toggle ${name}`,
+        type: 'checkbox', checked: !!working[id].enabled, title: translateText("Toggle {0}", name),
       });
       box.addEventListener('click', (e) => e.stopPropagation());
       box.addEventListener('change', () => {
@@ -551,7 +551,7 @@ export function showLayerStyleDialog(doc, layer, initialEffect = null) {
     return [
       pageTitle('Blending Options'),
       form.node,
-      el('div.pk-hint', { text: 'Fill Opacity fades the layer pixels only — layer effects keep their own opacity.' }),
+      el('div.pk-hint', { text: translateText("Fill Opacity fades the layer pixels only — layer effects keep their own opacity.") }),
     ];
   }
 
@@ -594,7 +594,7 @@ export function showLayerStyleDialog(doc, layer, initialEffect = null) {
       }
       preview();
     });
-    const enableRow = el('label.pk-check.pk-fx-enable', {}, enableBox, el('span', { text: `Enable ${page.name}` }));
+    const enableRow = el('label.pk-check.pk-fx-enable', {}, enableBox, el('span', { text: translateText("Enable {0}", page.name) }));
 
     return [pageTitle(page.name, reset), enableRow, form.node];
   }

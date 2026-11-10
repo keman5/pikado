@@ -32,7 +32,7 @@ export const DASH_OPTIONS = [
   { value: 'solid', label: translateText("Solid") },
   { value: 'dash', label: translateText("Dashed") },
   { value: 'dash-tight', label: translateText("Dashed (tight)") },
-  { value: 'dot', label: 'Dotted' },
+  { value: 'dot', label: translateText("Dotted") },
   { value: 'dash-dot', label: translateText("Dash-dot") },
   { value: 'long-dash', label: translateText("Long dash") },
 ];
@@ -366,7 +366,7 @@ export function anchorEditItems(doc, e, tol, live = null) {
         },
       },
       {
-        label: smooth ? 'Convert to Corner Point' : 'Convert to Smooth Point',
+        label: smooth ? translateText("Convert to Corner Point") : translateText("Convert to Smooth Point"),
         run: () => {
           begin();
           convertPoint(site.subpaths, site.hit.subpathIndex, site.hit.pointIndex, !smooth);

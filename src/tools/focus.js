@@ -66,7 +66,7 @@ class SharpenTool extends BrushToolBase {
         ...tweakDefaults(FOCUS_OPTIONS(), { size: 40, hardness: 0 }),
         { key: 'strength', label: translateText("Strength"), type: 'slider', min: 0, max: 100, step: 1, default: 50, unit: '%' },
         { key: 'protectDetail', label: translateText("Protect Detail"), type: 'checkbox', default: true,
-          hint: 'Softer radius that resists halos and noise' },
+          hint: translateText("Softer radius that resists halos and noise") },
       ],
     });
   }
@@ -114,7 +114,7 @@ class SmudgeTool extends BrushToolBase {
         ...tweakDefaults(FOCUS_OPTIONS(), { size: 40, hardness: 0, smoothing: 30 }),
         { key: 'strength', label: translateText("Strength"), type: 'slider', min: 0, max: 100, step: 1, default: 50, unit: '%' },
         { key: 'fingerPainting', label: translateText("Finger Painting"), type: 'checkbox', default: false,
-          hint: 'Start the smear with the foreground colour' },
+          hint: translateText("Start the smear with the foreground colour") },
       ],
     });
   }

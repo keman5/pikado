@@ -583,7 +583,7 @@ function applySmartFilters(canvas, s, layer) {
     if (!f.enabled) continue;
     const def = getFilter(f.filterId);
     if (!def) {
-      app.toast(`Smart filter "${f.filterId}" is not registered — skipped.`, 'error');
+      app.toast(translateText("Smart filter \"{0}\" is not registered — skipped.", f.filterId), 'error');
       continue;
     }
     const w = cur.width, h = cur.height;
@@ -1190,7 +1190,7 @@ export function addSmartFilter(doc, layer, filterId, params) {
   }
   const def = getFilter(filterId);
   if (!def) {
-    app.toast(`Unknown filter "${filterId}".`, 'error');
+    app.toast(translateText("Unknown filter \"{0}\".", filterId), 'error');
     return null;
   }
   const entry = {
@@ -1286,11 +1286,11 @@ export async function editSmartFilter(doc, layer, ref) {
   const entry = getSmartFilters(layer)[i];
   const def = getFilter(entry.filterId);
   if (!def) {
-    app.toast(`Filter "${entry.filterId}" is not registered.`, 'error');
+    app.toast(translateText("Filter \"{0}\" is not registered.", entry.filterId), 'error');
     return false;
   }
   if (!def.params || !def.params.length) {
-    app.toast(`${entry.name} has no settings to edit.`);
+    app.toast(translateText("{0} has no settings to edit.", entry.name));
     return false;
   }
   const result = await runFilterDialog(doc, layer, def, { ...entry.params }, (params) => {
@@ -1347,7 +1347,7 @@ async function runFilterDialog(doc, layer, def, state, buildFilters) {
 export async function promptSmartFilter(doc, layer, filterId, preset) {
   const def = getFilter(filterId);
   if (!def) {
-    app.toast(`Unknown filter "${filterId}".`, 'error');
+    app.toast(translateText("Unknown filter \"{0}\".", filterId), 'error');
     return null;
   }
   if (preset || !def.needsDialog || !def.params || !def.params.length) {

@@ -378,7 +378,7 @@ function ensureBuilt(p) {
   } catch (err) {
     console.error(`[panel:${p.id}] build`, err);
     p.api = null;
-    p.node.appendChild(el('div.pk-panel-error', { text: `${p.title} could not be built.` }));
+    p.node.appendChild(el('div.pk-panel-error', { text: translateText("{0} could not be built.", p.title) }));
   }
 }
 

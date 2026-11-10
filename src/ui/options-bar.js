@@ -313,7 +313,7 @@ function renderOption(p, tool) {
       return null;
   }
 
-  if (p.hint) row.title = p.hint;
+  if (p.hint) row.title = translateText(p.hint);
   return row;
 }
 

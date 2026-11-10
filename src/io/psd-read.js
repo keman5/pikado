@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { PikaDocument } from '../core/document.js';
 import { Layer, LayerType, createGroupLayer } from '../core/layer.js';
 import { createCanvas, ctx2d, clamp, uid } from '../core/util.js';
@@ -335,7 +336,7 @@ export async function readPSD(arrayBuffer, opts = {}) {
   const signature = r.readString(4);
   if (signature !== '8BPS') throw new Error('Not a Photoshop file (the 8BPS signature is missing)');
   const version = r.readUint16();
-  if (version !== 1 && version !== 2) throw new Error(`Unsupported PSD version ${version}`);
+  if (version !== 1 && version !== 2) throw new Error(translateText("Unsupported PSD version {0}", version));
   const psb = version === 2;
   r.skip(6); // reserved
 
@@ -346,14 +347,14 @@ export async function readPSD(arrayBuffer, opts = {}) {
   const colorMode = r.readUint16();
 
   if (depth !== 8 && depth !== 16) {
-    throw new Error(`Unsupported bit depth: ${depth} bits per channel. Pikado can open 8- and 16-bit files.`);
+    throw new Error(translateText("Unsupported bit depth: {0} bits per channel. Pikado can open 8- and 16-bit files.", depth));
   }
   if (colorMode !== 3 && colorMode !== 1) {
     const nm = COLOR_MODE_NAMES[colorMode] || `mode ${colorMode}`;
-    throw new Error(`Unsupported colour mode: ${nm}. Pikado can open RGB and Grayscale files.`);
+    throw new Error(translateText("Unsupported colour mode: {0}. Pikado can open RGB and Grayscale files.", nm));
   }
   if (width < 1 || height < 1) throw new Error('The PSD reports an empty canvas');
-  if (width * height > 120e6) throw new Error(`The image is too large to open (${width}×${height})`);
+  if (width * height > 120e6) throw new Error(translateText("The image is too large to open ({0}×{1})", width, height));
 
   const ctx = {
     buf: arrayBuffer, psb, depth, colorMode, width, height, channelCount,
@@ -494,7 +495,7 @@ export async function readPSD(arrayBuffer, opts = {}) {
   if (ctx.skipped.size) {
     const names = [...ctx.skipped].slice(0, 4).join(', ');
     const more = ctx.skipped.size > 4 ? ` and ${ctx.skipped.size - 4} more` : '';
-    app.toast(`ZIP-compressed channels could not be decoded on: ${names}${more}`, 'warn', 6000);
+    app.toast(translateText("ZIP-compressed channels could not be decoded on: {0}{1}", names, more), 'warn', 6000);
   }
   for (const w of ctx.warnings) app.toast(w, 'warn', 5000);
 
@@ -1753,7 +1754,7 @@ function readDescriptorValue(r) {
       return refs;
     }
     default:
-      throw new Error(`Unsupported descriptor type "${type}"`);
+      throw new Error(translateText("Unsupported descriptor type \"{0}\"", type));
   }
 }
 
@@ -1768,7 +1769,7 @@ function readReference(r) {
     case 'indx': return { index: r.readUint32() };
     case 'name': { r.readUnicodeString(); r.readKeyId(); return { name: r.readUnicodeString() }; }
     default:
-      throw new Error(`Unsupported reference type "${type}"`);
+      throw new Error(translateText("Unsupported reference type \"{0}\"", type));
   }
 }
 

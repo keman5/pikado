@@ -178,7 +178,7 @@ export async function showKeyboardShortcutsDialog() {
     const { grouped, total } = rows();
     const body = el('tbody');
     for (const [name, list] of grouped) {
-      body.appendChild(el('tr.pkd-keys-group', {}, el('td', { colspan: 3, text: name })));
+      body.appendChild(el('tr.pkd-keys-group', {}, el('td', { colspan: 3, text: translateText(name) })));
       for (const cmd of list) body.appendChild(renderRow(cmd));
     }
     table.replaceChildren(
@@ -189,7 +189,7 @@ export async function showKeyboardShortcutsDialog() {
       )),
       body
     );
-    count.textContent = `${total} command${total === 1 ? '' : 's'}`;
+    count.textContent = translateText(total === 1 ? '{0} command' : '{0} commands', total);
   }
 
   function renderRow(cmd) {
@@ -210,7 +210,7 @@ export async function showKeyboardShortcutsDialog() {
       if (recording) return;
       recording = true;
       btn.classList.add('recording');
-      btn.textContent = 'Press keys…';
+      btn.textContent = translateText("Press keys…");
       const onKey = (e) => {
         if (e.key === 'Control' || e.key === 'Shift' || e.key === 'Alt' || e.key === 'Meta') return;
         e.preventDefault();
@@ -223,7 +223,7 @@ export async function showKeyboardShortcutsDialog() {
         const binding = accelBinding(accel);
         const clash = [...commands.values()].find((c) => c.id !== cmd.id && accelBinding(c.accel) === binding);
         setOverride(cmd.id, accel);
-        if (clash) app.toast(`${formatAccel(accel)} was also used by "${labelOf(clash.id)}".`, 'warn', 4000);
+        if (clash) app.toast(translateText("{0} was also used by \"{1}\".", formatAccel(accel), labelOf(clash.id)), 'warn', 4000);
         render();
       };
       window.addEventListener('keydown', onKey, true);
@@ -242,7 +242,7 @@ export async function showKeyboardShortcutsDialog() {
     el('div', {},
       el('div.pkd-keys-search', {}, search, count),
       scroll,
-      el('div.pkd-note', { style: { marginTop: '8px' }, text: 'Click a shortcut to record a new one. Press Backspace to remove it, Escape to cancel.' })
+      el('div.pkd-note', { style: { marginTop: '8px' }, text: translateText("Click a shortcut to record a new one. Press Backspace to remove it, Escape to cancel.") })
     )
   );
 

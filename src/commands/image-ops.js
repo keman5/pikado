@@ -105,13 +105,13 @@ export async function convertToBitmap(doc) {
       {
         key: 'method', label: translateText("Method"), type: 'select',
         options: [
-          { value: 'threshold', label: '50% Threshold' },
+          { value: 'threshold', label: translateText("50% Threshold") },
           { value: 'pattern', label: translateText("Pattern Dither") },
           { value: 'diffusion', label: translateText("Diffusion Dither") },
         ],
       },
       { key: 'threshold', label: translateText("Threshold"), type: 'slider', min: 1, max: 254, step: 1, when: (s) => s.method === 'threshold' },
-      { type: 'label', label: 'Bitmap mode flattens the document to a single black-and-white layer.' },
+      { type: 'label', label: translateText("Bitmap mode flattens the document to a single black-and-white layer.") },
     ],
   });
   if (!opts) return;
@@ -453,7 +453,7 @@ export async function showFadeDialog(doc) {
   const build = (s) => blendCanvases(before, after, s.blendMode, s.opacity / 100);
 
   const result = await paramDialog({
-    title: `Fade ${label}`,
+    title: translateText("Fade {0}", translateText(label)),
     width: 380,
     state: { opacity: 100, blendMode: 'normal' },
     params: [
@@ -787,7 +787,7 @@ export async function showColorRangeDialog(doc) {
   const previewBox = el('div.pkd-preview', { style: { height: `${Math.min(260, ph)}px`, cursor: 'crosshair' } });
   const previewCanvas = el('canvas', { width: pw, height: ph });
   previewBox.appendChild(previewCanvas);
-  const hint = el('div.pkd-note', { text: 'Click the preview to sample a colour. Shift-click adds, Alt-click removes.' });
+  const hint = el('div.pkd-note', { text: translateText("Click the preview to sample a colour. Shift-click adds, Alt-click removes.") });
 
   let maskCache = null;
 
@@ -817,7 +817,7 @@ export async function showColorRangeDialog(doc) {
       ...state.samples.map((s, i) =>
         el('button.pk-color-swatch', {
           type: 'button',
-          title: `Remove sample ${i + 1}`,
+          title: translateText("Remove sample {0}", i + 1),
           style: { background: `rgb(${s.r},${s.g},${s.b})` },
           onclick: () => {
             if (state.samples.length > 1) {
@@ -827,7 +827,7 @@ export async function showColorRangeDialog(doc) {
           },
         })
       ),
-      el('span.pk-hint', { text: `${state.samples.length} sample${state.samples.length === 1 ? '' : 's'}` })
+      el('span.pk-hint', { text: translateText(state.samples.length === 1 ? '{0} sample' : '{0} samples', state.samples.length) })
     );
 
     maskCache = colorRangeMask(proxyImg, { ...currentOpts(), samples: scaledSamples(scale) });
@@ -1016,7 +1016,7 @@ export async function showArbitraryRotationDialog(doc) {
       { key: 'angle', label: translateText("Angle"), type: 'slider', min: 0, max: 359.9, step: 0.1, unit: '°' },
       {
         key: 'direction', label: translateText("Direction"), type: 'radio',
-        options: [{ value: 'cw', label: '°CW' }, { value: 'ccw', label: '°CCW' }],
+        options: [{ value: 'cw', label: translateText("°CW") }, { value: 'ccw', label: translateText("°CCW") }],
       },
     ],
   });

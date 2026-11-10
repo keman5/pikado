@@ -191,7 +191,7 @@ function statusValue(doc) {
     case 'Document Sizes':
       return `${formatBytes(doc.width * doc.height * 4)}/${formatBytes(doc.memoryUse())}`;
     case 'Document Profile':
-      return doc.colorMode === 'gray' ? 'Gray Gamma 2.2' : 'sRGB IEC61966-2.1';
+      return doc.colorMode === 'gray' ? translateText('Gray Gamma 2.2') : 'sRGB IEC61966-2.1';
     case 'Document Dimensions':
       return `${doc.width} × ${doc.height} px @ ${doc.resolution || 72} ppi`;
     case 'Scratch Sizes':
@@ -210,9 +210,9 @@ function statusValue(doc) {
 }
 
 function hintFor(tool) {
-  if (!tool) return 'Space+drag pans · Ctrl+wheel zooms';
-  if (tool.hint) return tool.hint;
+  if (!tool) return translateText('Space+drag pans · Ctrl+wheel zooms');
+  if (tool.hint) return translateText(tool.hint);
   if (TOOL_HINTS[tool.id]) return translateText(TOOL_HINTS[tool.id]);
   if (GROUP_HINTS[tool.group]) return translateText(GROUP_HINTS[tool.group]);
-  return 'Space+drag pans · Ctrl+wheel zooms · Tab hides the panels';
+  return translateText('Space+drag pans · Ctrl+wheel zooms · Tab hides the panels');
 }

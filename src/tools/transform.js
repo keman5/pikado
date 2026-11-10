@@ -364,7 +364,7 @@ export function transformContextMenu() {
   if (!s) return [];
   const mode = (id, m) => cmd(id, { checked: s.mode === m });
   return [
-    { header: s.selectionMode ? 'Transform Selection' : 'Free Transform' },
+    { header: s.selectionMode ? translateText("Transform Selection") : translateText("Free Transform") },
     mode('edit.transform.scale', 'scale'),
     mode('edit.transform.rotate', 'rotate'),
     mode('edit.transform.skew', 'skew'),

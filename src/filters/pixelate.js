@@ -510,10 +510,10 @@ registerFilter({
   dialogWidth: 400,
   params: [
     { key: 'maxRadius', label: translateText("Max. Radius"), type: 'slider', min: 4, max: 127, step: 1, default: 8, unit: 'px' },
-    { key: 'angle1', label: 'Channel 1 (Cyan)', type: 'number', min: 0, max: 360, step: 1, default: 108, unit: '°' },
-    { key: 'angle2', label: 'Channel 2 (Magenta)', type: 'number', min: 0, max: 360, step: 1, default: 162, unit: '°' },
-    { key: 'angle3', label: 'Channel 3 (Yellow)', type: 'number', min: 0, max: 360, step: 1, default: 90, unit: '°' },
-    { key: 'angle4', label: 'Channel 4 (Black)', type: 'number', min: 0, max: 360, step: 1, default: 45, unit: '°' },
+    { key: 'angle1', label: translateText("Channel 1 (Cyan)"), type: 'number', min: 0, max: 360, step: 1, default: 108, unit: '°' },
+    { key: 'angle2', label: translateText("Channel 2 (Magenta)"), type: 'number', min: 0, max: 360, step: 1, default: 162, unit: '°' },
+    { key: 'angle3', label: translateText("Channel 3 (Yellow)"), type: 'number', min: 0, max: 360, step: 1, default: 90, unit: '°' },
+    { key: 'angle4', label: translateText("Channel 4 (Black)"), type: 'number', min: 0, max: 360, step: 1, default: 45, unit: '°' },
   ],
   apply(imageData, p) {
     const w = imageData.width, h = imageData.height, d = imageData.data;

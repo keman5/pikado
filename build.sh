@@ -2,7 +2,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 mode="${1:-build}"
-case "$mode" in build|deploy|check) ;; *) echo 'Usage: ./build.sh [build|check|deploy]' >&2; exit 2 ;; esac
+case "$mode" in build|deploy|check|test) ;; *) echo 'Usage: ./build.sh [build|check|test|deploy]' >&2; exit 2 ;; esac
 if command -v caffeinate >/dev/null; then
   caffeinate -di -w "$$" &
 fi
@@ -11,6 +11,7 @@ if [[ -f go.mod ]] && command -v go >/dev/null; then go clean -cache -testcache;
 rm -rf .artifacts
 if [[ ! -d node_modules ]]; then npm ci; fi
 node --test tests/localization.test.mjs
+if [[ "$mode" == test ]]; then node tests/run-headless.mjs; exit $?; fi
 if [[ "$mode" == check ]]; then exit 0; fi
 npm run build
 node scripts/check-build.mjs

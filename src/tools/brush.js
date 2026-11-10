@@ -64,7 +64,7 @@ export function brushPresetItems(tool) {
   const items = [];
   if (optionShown(tool, 'size')) {
     const cur = Math.round(tool.state.size);
-    items.push({ header: 'Brush Size' });
+    items.push({ header: translateText("Brush Size") });
     for (const px of SIZE_PRESETS) {
       items.push({
         label: `${px} px`,
@@ -78,7 +78,7 @@ export function brushPresetItems(tool) {
   }
   if (optionShown(tool, 'hardness')) {
     const cur = Math.round(tool.state.hardness);
-    items.push({ header: 'Hardness' });
+    items.push({ header: translateText("Hardness") });
     for (const pct of HARDNESS_PRESETS) {
       items.push({
         label: `${pct}%`,
@@ -529,7 +529,7 @@ class PencilTool extends BrushToolBase {
       options: [
         ...withBlendMode(tweakDefaults(brushOptionDescriptors().filter((d) => d.key !== 'hardness'), { size: 4, smoothing: 0 })),
         { key: 'autoErase', label: translateText("Auto Erase"), type: 'checkbox', default: false,
-          hint: 'Paint the background colour over foreground-coloured pixels' },
+          hint: translateText("Paint the background colour over foreground-coloured pixels") },
       ],
     });
   }
@@ -732,11 +732,11 @@ class MixerBrushTool extends BrushToolBase {
       options: [
         ...tweakDefaults(brushOptionDescriptors({ opacity: false, flow: false }), { size: 40, hardness: 60 }),
         { key: 'wet', label: translateText("Wet"), type: 'slider', min: 0, max: 100, step: 1, default: 60, unit: '%',
-          hint: 'How much canvas colour the brush picks up' },
+          hint: translateText("How much canvas colour the brush picks up") },
         { key: 'load', label: translateText("Load"), type: 'slider', min: 0, max: 100, step: 1, default: 70, unit: '%',
-          hint: 'How much paint the reservoir lays down' },
+          hint: translateText("How much paint the reservoir lays down") },
         { key: 'mix', label: translateText("Mix"), type: 'slider', min: 0, max: 100, step: 1, default: 50, unit: '%',
-          hint: 'Ratio of canvas colour to reservoir colour in each dab' },
+          hint: translateText("Ratio of canvas colour to reservoir colour in each dab") },
         { key: 'flow', label: translateText("Flow"), type: 'slider', min: 1, max: 100, step: 1, default: 100, unit: '%' },
         { key: 'cleanAfterStroke', label: translateText("Clean Brush After Stroke"), type: 'checkbox', default: true },
       ],

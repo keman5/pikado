@@ -1179,11 +1179,11 @@ registerFilter({
     { key: 'brushPressure', label: translateText("Brush Pressure"), type: 'slider', min: 1, max: 100, step: 1, default: 60 },
     {
       key: 'brushRate', label: translateText("Brush Rate"), type: 'slider', min: 1, max: 100, step: 1, default: 40,
-      hint: 'Speed of the tools that keep working while you hold still',
+      hint: translateText("Speed of the tools that keep working while you hold still"),
     },
     {
       key: 'brushDensity', label: translateText("Brush Density"), type: 'slider', min: 0, max: 100, step: 1, default: 50,
-      hint: 'How far the effect reaches toward the brush edge',
+      hint: translateText("How far the effect reaches toward the brush edge"),
     },
     { key: 'showMesh', label: translateText("Show Mesh"), type: 'checkbox', default: false },
     { key: 'showMask', label: translateText("Show Frozen Areas"), type: 'checkbox', default: true },

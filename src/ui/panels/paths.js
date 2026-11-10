@@ -267,7 +267,7 @@ registerPanel({
         return null;
       }
       if (l.locked.all || l.locked.pixels) {
-        app.toast(`Layer "${l.name}" is locked.`, 'warn');
+        app.toast(translateText("Layer \"{0}\" is locked.", l.name), 'warn');
         return null;
       }
       return l;
@@ -405,11 +405,11 @@ registerPanel({
 
       if (!d.paths.some((p) => p.isWork)) {
         list.appendChild(el('div.pkp-row.is-ghost', {
-          title: 'Draw with the Pen tool or use "Make work path from selection" to create one',
+          title: translateText("Draw with the Pen tool or use \"Make work path from selection\" to create one"),
         },
           el('div.pkp-thumb.pk-checker'),
           el('span.pkp-name.pk-truncate', { text: translateText("Work Path") }),
-          el('span.pkp-tag', { text: 'empty' })
+          el('span.pkp-tag', { text: translateText("empty") })
         ));
       }
 
@@ -418,14 +418,14 @@ registerPanel({
         const thumb = el('div.pkp-thumb.pk-checker', {}, pathThumb(d, path));
         const name = el('span.pkp-name.pk-truncate', { text: path.name });
         row.append(thumb, name);
-        if (path.isWork) row.appendChild(el('span.pkp-tag', { text: 'work' }));
+        if (path.isWork) row.appendChild(el('span.pkp-tag', { text: translateText("work") }));
         row.addEventListener('click', () => {
           d.activePathId = path.id;
           render();
           d.emit('structure');
         });
         row.addEventListener('dblclick', async () => {
-          const next = await promptDialog('Path name', path.name, 'Rename Path');
+          const next = await promptDialog(translateText("Path name"), path.name, 'Rename Path');
           if (next == null || !next.trim()) return;
           path.name = next.trim();
           if (path.isWork) path.isWork = false;

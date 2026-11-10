@@ -220,7 +220,7 @@ registerPanel({
 
     const makeRow = ({ id, name, thumb, eye, onRename, dim }) => {
       const row = el('div.pkch-row' + (selectedId === id ? '.is-selected' : '') + (dim ? '.is-hidden' : ''), {
-        title: `${name} — Ctrl/Cmd-click to load as a selection`,
+        title: translateText("{0} — Ctrl/Cmd-click to load as a selection", name),
       });
       const eyeCell = el('div.pkch-eye');
       if (eye) {
@@ -276,7 +276,7 @@ registerPanel({
         dim: !allOn,
         eye: {
           on: allOn,
-          title: allOn ? 'Hide all channels' : 'Show all channels',
+          title: allOn ? translateText("Hide all channels") : translateText("Show all channels"),
           onToggle: toggleCompositeView,
         },
       }));
@@ -288,7 +288,7 @@ registerPanel({
           dim: !cv[key],
           eye: {
             on: cv[key],
-            title: `${cv[key] ? 'Hide' : 'Show'} the ${name.toLowerCase()} channel`,
+            title: translateText("{0} the {1} channel", translateText(cv[key] ? 'Hide' : 'Show'), translateText(name)),
             onToggle: () => toggleChannelView(key),
           },
         }));
@@ -300,7 +300,7 @@ registerPanel({
           name: ch.name,
           thumb: canvasThumb(ch.canvas),
           onRename: async () => {
-            const next = await promptDialog('Channel name', ch.name, 'Rename Channel');
+            const next = await promptDialog(translateText("Channel name"), ch.name, 'Rename Channel');
             if (next == null || !next.trim()) return;
             ch.name = next.trim();
             d.commit('Rename Channel');

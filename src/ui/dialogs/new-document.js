@@ -326,7 +326,7 @@ export async function showNewDocumentDialog() {
     const inH = state.px.h / state.res;
     summary.replaceChildren(
       el('div', {}, el('b', { text: `${state.px.w} × ${state.px.h} px` })),
-      el('div', { text: `${inW.toFixed(2)} × ${inH.toFixed(2)} in at ${Math.round(state.res)} ppi` }),
+      el('div', { text: translateText("{0} × {1} in at {2} ppi", inW.toFixed(2), inH.toFixed(2), Math.round(state.res)) }),
       el('div', { text: `${(inW * 2.54).toFixed(2)} × ${(inH * 2.54).toFixed(2)} cm` }),
       el('div', { text: translateText("Flat memory ≈ {0} MB", mb.toFixed(1)) })
     );
@@ -382,7 +382,7 @@ export async function showNewDocumentDialog() {
   const limit = getPref('maxDocPixels', 80) * 1e6;
   if (result.px.w * result.px.h > limit) {
     const ok = await confirmDialog(
-      `${result.px.w} × ${result.px.h} px is ${(result.px.w * result.px.h / 1e6).toFixed(1)} megapixels, above the ${getPref('maxDocPixels', 80)} MP limit set in Preferences. Create it anyway?`,
+      translateText("{0} × {1} px is {2} megapixels, above the {3} MP limit set in Preferences. Create it anyway?", result.px.w, result.px.h, (result.px.w * result.px.h / 1e6).toFixed(1), getPref('maxDocPixels', 80)),
       'Large document', translateText("Create")
     );
     if (!ok) return null;

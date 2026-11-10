@@ -35,7 +35,7 @@ function sourceNote(doc) {
   return [{
     type: 'label',
     className: 'pk-hint pk-source-profile',
-    label: `Opened from a file tagged ${doc.sourceProfileName}; its colours were converted to sRGB as it opened.`,
+    label: translateText("Opened from a file tagged {0}; its colours were converted to sRGB as it opened.", doc.sourceProfileName),
   }];
 }
 
@@ -47,14 +47,13 @@ export async function showAssignProfileDialog(doc = app.activeDoc) {
 
   const dialog = new Dialog({ title: translateText("Assign Profile"), width: 420 });
   const form = buildForm([
-    { type: 'label', label: `This document is currently ${current.name}` },
+    { type: 'label', label: translateText("This document is currently {0}", current.name) },
     ...sourceNote(doc),
     { key: 'profile', label: translateText("Profile"), type: 'select', options: profileOptions(doc) },
     {
       type: 'label',
       className: 'pk-hint',
-      label: 'Assigning relabels the pixels without changing them, so the picture will '
-        + 'look different. Use Convert to Profile to keep the appearance instead.',
+      label: translateText("Assigning relabels the pixels without changing them, so the picture will look different. Use Convert to Profile to keep the appearance instead."),
     },
   ], state, (key, value) => { state[key] = value; });
 
@@ -68,7 +67,7 @@ export async function showAssignProfileDialog(doc = app.activeDoc) {
   const next = resolve(doc, state.profile);
   if (!next) return false;
   assignProfile(doc, next);
-  app.toast(`Assigned ${next.name}`, 'ok');
+  app.toast(translateText("Assigned {0}", next.name), 'ok');
   return true;
 }
 
@@ -88,12 +87,12 @@ export async function showConvertProfileDialog(doc = app.activeDoc) {
   const syncNote = () => {
     const exact = intentIsExact(state.intent);
     note.textContent = exact
-      ? 'Colours outside the destination gamut are clipped; converting back will not restore them.'
-      : 'A matrix profile has no perceptual table, so this intent behaves as Relative Colorimetric.';
+      ? translateText("Colours outside the destination gamut are clipped; converting back will not restore them.")
+      : translateText("A matrix profile has no perceptual table, so this intent behaves as Relative Colorimetric.");
   };
 
   form = buildForm([
-    { type: 'label', label: `Source: ${current.name}` },
+    { type: 'label', label: translateText("Source: {0}", current.name) },
     ...sourceNote(doc),
     { key: 'profile', label: translateText("Destination"), type: 'select', options: profileOptions(doc) },
     { key: 'intent', label: translateText("Intent"), type: 'select', options: INTENTS },
@@ -103,9 +102,7 @@ export async function showConvertProfileDialog(doc = app.activeDoc) {
       className: 'pk-hint',
       // Honest about when it does nothing: the built-in spaces are idealised and
       // have a black point of zero, so there is nothing to compensate between them.
-      label: 'Black point compensation only has an effect when a profile declares a '
-        + 'real media black — an embedded profile with a bkpt tag. The built-in '
-        + 'working spaces have a black point of zero.',
+      label: translateText("Black point compensation only has an effect when a profile declares a real media black — an embedded profile with a bkpt tag. The built-in working spaces have a black point of zero."),
     },
   ], state, (key, value) => {
     state[key] = value;
@@ -125,7 +122,7 @@ export async function showConvertProfileDialog(doc = app.activeDoc) {
   if (!next) return false;
   const done = await app.busy('Converting…', async () =>
     convertToProfile(doc, next, { intent: state.intent, blackPoint: state.blackPoint }));
-  if (done) app.toast(`Converted to ${done.name}`, 'ok');
+  if (done) app.toast(translateText("Converted to {0}", done.name), 'ok');
   return !!done;
 }
 
@@ -152,8 +149,7 @@ export async function showProofSetupDialog(doc = app.activeDoc) {
     {
       type: 'label',
       className: 'pk-hint',
-      label: 'Proofing changes the view only. Export, Save and every filter keep reading '
-        + 'the document\'s real colours.',
+      label: translateText("Proofing changes the view only. Export, Save and every filter keep reading the document's real colours."),
     },
   ], state, (key, value) => {
     state[key] = value;

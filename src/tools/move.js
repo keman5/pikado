@@ -596,7 +596,7 @@ class MoveTool extends Tool {
     const doc = this.doc;
     if (!doc) return [];
     const active = doc.activeLayer();
-    const items = [{ header: 'Select Layer' }];
+    const items = [{ header: translateText("Select Layer") }];
     const hits = layersUnderPoint(doc, e.x, e.y);
     if (!hits.length) {
       items.push({ label: translateText("No layer under cursor"), disabled: true });
@@ -920,7 +920,7 @@ class ArtboardTool extends Tool {
     const a = doc && this.selected(doc);
     if (!a) return;
     const { promptDialog } = await import('../ui/dialog.js');
-    const name = await promptDialog('Artboard name', a.name, 'Rename Artboard');
+    const name = await promptDialog(translateText("Artboard name"), a.name, 'Rename Artboard');
     if (name != null && name !== '') {
       a.name = name;
       doc.touch('artboard');

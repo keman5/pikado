@@ -379,7 +379,7 @@ function buildLayersPanel(bodyEl) {
     const clip = el('span.pk-lay-clip', { html: icon('chevron-right', { size: 11 }), hidden: true, title: translateText("Clipped to the layer below") });
     const thumbCv = el('canvas', { width: THUMB, height: THUMB });
     const smartBadge = el('span.pk-lay-smartbadge', {
-      hidden: true, title: 'Smart Object — double-click the thumbnail to edit its contents',
+      hidden: true, title: translateText("Smart Object — double-click the thumbnail to edit its contents"),
       html: icon('image', { size: 9 }),
     });
     const thumbBox = el('div.pk-lay-thumbbox.pk-checker', { title: translateText("Edit layer pixels") }, thumbCv, smartBadge);
@@ -633,7 +633,7 @@ function buildLayersPanel(bodyEl) {
         }),
         el('span.pk-lay-fxname', {
           text: translateText("Smart Filters"),
-          title: 'Applied to the embedded contents on every render',
+          title: translateText("Applied to the embedded contents on every render"),
         })
       ),
     ];

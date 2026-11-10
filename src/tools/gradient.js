@@ -127,7 +127,7 @@ function optionChoices(tool, key) {
 /** A checkable row that flips a boolean option. */
 function optionToggle(tool, key, label) {
   return {
-    label,
+    label: translateText(label),
     checked: !!tool.state[key],
     run: () => tool.setOption(key, !tool.state[key]),
   };
@@ -254,7 +254,7 @@ class GradientTool extends Tool {
       optionToggle(this, 'reverse', 'Reverse'),
       sep(),
       cmd('edit.fill', { hideWhenDisabled: true }),
-      cmd('layer.fill.gradient', { label: 'New Gradient Fill Layer…', hideWhenDisabled: true }),
+      cmd('layer.fill.gradient', { label: translateText("New Gradient Fill Layer…"), hideWhenDisabled: true }),
     ];
   }
 

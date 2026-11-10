@@ -179,7 +179,7 @@ function closeAll() {
 function openPopup(items, x, y, depth) {
   while (bar.popups.length > depth) bar.popups.pop().remove();
   const menu = el('div.pk-menu', { role: 'menu' });
-  if (!items.length) menu.appendChild(el('div.pk-menu-item.disabled', {}, el('span.pk-menu-tick'), el('span.pk-menu-label', { text: '(empty)' })));
+  if (!items.length) menu.appendChild(el('div.pk-menu-item.disabled', {}, el('span.pk-menu-tick'), el('span.pk-menu-label', { text: translateText("(empty)") })));
   for (const it of items) menu.appendChild(buildItem(it, depth));
   menu.style.left = '-9999px';
   menu.style.top = '0px';

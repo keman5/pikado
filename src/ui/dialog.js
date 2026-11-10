@@ -95,7 +95,7 @@ export class Dialog {
     this.footer.replaceChildren(
       ...buttons.map((b) =>
         el('button.pk-btn' + (b.primary ? '.primary' : '') + (b.subtle ? '.subtle' : '') + (b.danger ? '.danger' : ''), {
-          text: b.label,
+          text: translateText(b.label),
           onclick: () => {
             if (b.onClick && b.onClick(this) === false) return;
             if (b.value !== undefined) this.close(b.value);
@@ -152,7 +152,7 @@ export class Dialog {
 
 export function alertDialog(message, title = 'Pikado') {
   const d = new Dialog({ title, width: 340 });
-  d.setBody(el('p.pk-msg', { text: message }));
+  d.setBody(el('p.pk-msg', { text: translateText(message) }));
   d.setButtons([{ label: translateText("OK"), value: true, primary: true }]);
   return d.open();
 }
@@ -171,7 +171,7 @@ export function alertDialog(message, title = 'Pikado') {
  */
 export function confirmDialog(message, title = 'Pikado', okLabel = 'OK', opts = {}) {
   const d = new Dialog({ title, width: 360 });
-  d.setBody(el('p.pk-msg', { text: message }));
+  d.setBody(el('p.pk-msg', { text: translateText(message) }));
   d.setButtons([
     { label: translateText("Cancel"), value: false, subtle: true },
     { label: okLabel, value: true, primary: !opts.danger, danger: !!opts.danger },
@@ -182,7 +182,7 @@ export function confirmDialog(message, title = 'Pikado', okLabel = 'OK', opts = 
 export function promptDialog(message, initial = '', title = 'Pikado') {
   const d = new Dialog({ title, width: 360 });
   const input = el('input.pk-input', { type: 'text', value: initial });
-  d.setBody(el('div.pk-field', {}, el('label', { text: message }), input));
+  d.setBody(el('div.pk-field', {}, el('label', { text: translateText(message) }), input));
   d.setButtons([
     { label: translateText("Cancel"), value: null, subtle: true },
     { label: translateText("OK"), primary: true, onClick: (dlg) => { dlg.close(input.value); return false; } },

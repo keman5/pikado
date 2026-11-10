@@ -41,13 +41,13 @@ const WORK_PIXELS = 260000;
 
 /** How the preview shows the selection. */
 const VIEW_MODES = [
-  { value: 'onion', label: translateText("Onion Skin"), hint: 'Unselected areas fade out' },
-  { value: 'ants', label: translateText("Marching Ants"), hint: 'The classic dashed outline' },
-  { value: 'overlay', label: translateText("Overlay"), hint: 'Unselected areas tinted, like Quick Mask' },
-  { value: 'black', label: translateText("On Black"), hint: 'The selection over black' },
-  { value: 'white', label: translateText("On White"), hint: 'The selection over white' },
-  { value: 'mask', label: translateText("Black & White"), hint: 'The mask itself' },
-  { value: 'layers', label: translateText("On Layers"), hint: 'The selection over the layers below' },
+  { value: 'onion', label: translateText("Onion Skin"), hint: translateText("Unselected areas fade out") },
+  { value: 'ants', label: translateText("Marching Ants"), hint: translateText("The classic dashed outline") },
+  { value: 'overlay', label: translateText("Overlay"), hint: translateText("Unselected areas tinted, like Quick Mask") },
+  { value: 'black', label: translateText("On Black"), hint: translateText("The selection over black") },
+  { value: 'white', label: translateText("On White"), hint: translateText("The selection over white") },
+  { value: 'mask', label: translateText("Black & White"), hint: translateText("The mask itself") },
+  { value: 'layers', label: translateText("On Layers"), hint: translateText("The selection over the layers below") },
 ];
 
 /** Where the result goes when the workspace closes. */
@@ -60,8 +60,8 @@ const OUTPUTS = [
 ];
 
 const TOOLS = [
-  { value: 'brush', label: translateText("Brush"), hint: 'Paint subject; hold Alt to paint background' },
-  { value: 'refine', label: translateText("Refine Edge"), hint: 'Hand the boundary back to the matting pass' },
+  { value: 'brush', label: translateText("Brush"), hint: translateText("Paint subject; hold Alt to paint background") },
+  { value: 'refine', label: translateText("Refine Edge"), hint: translateText("Hand the boundary back to the matting pass") },
   { value: 'lasso', label: translateText("Lasso"), hint: translateText("Enclose an area to mark it") },
 ];
 
@@ -379,7 +379,7 @@ export async function showSelectAndMask(doc, opts = {}) {
     let selected = 0;
     for (let i = 0; i < finalMask.length; i++) selected += finalMask[i];
     const pct = (selected / (finalMask.length * 255)) * 100;
-    status.textContent = `${pct.toFixed(1)}% selected · cut at ${work.w}×${work.h}, refined at ${W}×${H}`;
+    status.textContent = translateText("{0}% selected · cut at {1}×{2}, refined at {3}×{4}", pct.toFixed(1), work.w, work.h, W, H);
   }
 
   /** Marching ants, traced from the mask's own contour loops. */
@@ -605,7 +605,7 @@ export async function showSelectAndMask(doc, opts = {}) {
   const actions = el('div.pk-sam-actions', {},
     el('button.pk-btn.subtle', {
       text: translateText("Select Subject"),
-      title: 'Guess the subject with saliency plus a graph cut — no model, so no magic',
+      title: translateText("Guess the subject with saliency plus a graph cut — no model, so no magic"),
       onclick: () => { selectSubject(); draw(); },
     }),
     el('button.pk-btn.subtle', {

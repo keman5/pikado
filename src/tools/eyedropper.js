@@ -311,7 +311,7 @@ class ColorSamplerTool extends Tool {
     const items = [];
     if (i >= 0) {
       items.push({
-        label: `Delete Sampler ${i + 1}`,
+        label: translateText("Delete Sampler {0}", i + 1),
         run: () => { list.splice(i, 1); doc.touch('samplers'); },
       });
     }
@@ -583,7 +583,7 @@ class NoteTool extends Tool {
       groupOrder: 5,
       options: [
         { key: 'author', type: 'text', label: translateText("Author"), default: 'Me' },
-        { type: 'label', label: 'Click to place a note, double-click to edit it.' },
+        { type: 'label', label: translateText("Click to place a note, double-click to edit it.") },
         {
           type: 'button', label: translateText("Delete All Notes"),
           onClick: () => {
@@ -667,7 +667,7 @@ class NoteTool extends Tool {
   }
 
   async edit(doc, note) {
-    const text = await promptDialog(`Note by ${note.author}`, note.text, 'Note');
+    const text = await promptDialog(translateText("Note by {0}", note.author), note.text, 'Note');
     if (text == null) return;
     note.text = text;
     doc.touch('notes');

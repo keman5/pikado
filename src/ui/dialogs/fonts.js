@@ -135,8 +135,8 @@ export async function showFontsDialog(opts = {}) {
     n.spec.style.fontFamily = st === 'ready' ? fontStack(entry.id, entry.category) : '';
     n.spec.classList.toggle('waiting', st === 'loading' || st === 'unknown');
     n.spec.classList.toggle('unavailable', st === 'failed' || st === 'offline');
-    n.spec.title = st === 'offline' ? 'No preview while offline'
-      : st === 'failed' ? 'The preview could not be loaded' : '';
+    n.spec.title = st === 'offline' ? translateText("No preview while offline")
+      : st === 'failed' ? translateText("The preview could not be loaded") : '';
 
     n.action.replaceChildren(...actionFor(entry));
   };
@@ -146,9 +146,9 @@ export async function showFontsDialog(opts = {}) {
     if (isInstalled(entry.id)) {
       const meta = installedFamilies().find((f) => f.family === googleNameFor(entry.id));
       return [
-        el('span.pkf-tag.ok', { text: meta ? `${Math.max(1, Math.round(meta.bytes / 1024))} KB` : 'Ready' }),
+        el('span.pkf-tag.ok', { text: meta ? `${Math.max(1, Math.round(meta.bytes / 1024))} KB` : translateText("Ready") }),
         el('button.pk-icon-btn.pkf-trash', {
-          type: 'button', title: `Remove ${entry.family}`,
+          type: 'button', title: translateText("Remove {0}", entry.family),
           onclick: async (ev) => { ev.stopPropagation(); await remove(entry); },
         }, iconEl('trash')),
       ];
@@ -157,8 +157,8 @@ export async function showFontsDialog(opts = {}) {
       type: 'button',
       text: translateText("Get"),
       disabled: isOffline() || !webfontsAllowed(),
-      title: isOffline() ? 'You are offline'
-        : !webfontsAllowed() ? 'Downloading fonts is turned off in Preferences' : '',
+      title: isOffline() ? translateText("You are offline")
+        : !webfontsAllowed() ? translateText("Downloading fonts is turned off in Preferences") : '',
       onclick: (ev) => { ev.stopPropagation(); get(entry, btn); },
     });
     return [btn];
@@ -167,19 +167,19 @@ export async function showFontsDialog(opts = {}) {
   async function get(entry, btn) {
     const family = googleNameFor(entry.id) || entry.family;
     btn.disabled = true;
-    btn.textContent = 'Getting…';
+    btn.textContent = translateText("Getting…");
     try {
       await downloadFamily(family, {
-        onProgress: (done, total) => { btn.textContent = total > 1 ? `${done}/${total}` : 'Getting…'; },
+        onProgress: (done, total) => { btn.textContent = total > 1 ? `${done}/${total}` : translateText("Getting…"); },
       });
       render();
       syncPrimary();
     } catch (err) {
       btn.disabled = false;
-      btn.textContent = 'Retry';
+      btn.textContent = translateText("Retry");
       // A user-initiated download that fails should say so out loud, not only
       // as a tooltip on a row they may already have scrolled past.
-      app.toast((err && err.message) || `${family} could not be downloaded.`, 'error', 5000);
+      app.toast((err && err.message) || translateText('{0} could not be downloaded.', family), 'error', 5000);
     }
   }
 
@@ -188,9 +188,9 @@ export async function showFontsDialog(opts = {}) {
     const users = [...app.docs].reduce((n, d) => n + ([...fontsUsedBy(d)].includes(entry.id) ? 1 : 0), 0);
     const ok = await confirmDialog(
       users
-        ? `${family} is used by ${users} open ${users === 1 ? 'document' : 'documents'}. They will render in a substitute face.`
-        : `Remove ${family}?`,
-      `Remove ${family}`, translateText("Remove"), { danger: true },
+        ? translateText("{0} is used by {1} open {2}. They will render in a substitute face.", family, users, translateText(users === 1 ? 'document' : 'documents'))
+        : translateText("Remove {0}?", family),
+      translateText('Remove {0}', family), translateText("Remove"), { danger: true },
     );
     if (!ok) return;
     await removeFamily(family);
@@ -241,9 +241,9 @@ export async function showFontsDialog(opts = {}) {
     const total = catalogSize() + FONT_FAMILIES.length;
     const filtered = query || category || scope !== 'all';
     footer.textContent = (filtered
-      ? `${rows.length.toLocaleString()} of ${total.toLocaleString()} families`
-      : `${rows.length.toLocaleString()} families`)
-      + ` · ${installedFamilies().length} downloaded`;
+      ? translateText('{0} of {1} families', rows.length.toLocaleString(), total.toLocaleString())
+      : translateText('{0} families', rows.length.toLocaleString()))
+      + translateText(' · {0} downloaded', installedFamilies().length);
   }
 
   function rebuild() {
@@ -276,7 +276,7 @@ export async function showFontsDialog(opts = {}) {
     active = rows.findIndex((e) => normalizeFontId(e.id) === chosen);
     empty.hidden = rows.length > 0;
     empty.replaceChildren(
-      el('p', { text: query ? `Nothing matches “${query}”.` : 'Nothing here yet.' }),
+      el('p', { text: query ? translateText("Nothing matches “{0}”.", query) : translateText("Nothing here yet.") }),
       el('button.pk-btn.subtle', {
         type: 'button', text: translateText("Clear filters"),
         onclick: () => { query = ''; category = ''; scope = 'all'; search.value = ''; paintChips(); rebuild(); },
@@ -293,7 +293,7 @@ export async function showFontsDialog(opts = {}) {
     strip.hidden = !off && !anyFailed;
     if (strip.hidden) return;
     strip.replaceChildren(
-      el('span', { text: off ? 'Offline — previews and downloads are unavailable.' : 'Some previews could not be loaded.' }),
+      el('span', { text: off ? translateText("Offline — previews and downloads are unavailable.") : translateText("Some previews could not be loaded.") }),
       ...(off ? [] : [el('button.pk-btn.subtle', {
         type: 'button', text: translateText("Retry previews"),
         onclick: () => { retryFailedPreviews(); render(); },
@@ -362,7 +362,7 @@ export async function showFontsDialog(opts = {}) {
     dlg.setButtons([
       { label: translateText("Cancel"), value: null, subtle: true },
       {
-        label: needsGet ? 'Download and use' : 'Use font',
+        label: needsGet ? translateText("Download and use") : translateText("Use font"),
         primary: true,
         onClick: async (d) => {
           const e = rows[active];

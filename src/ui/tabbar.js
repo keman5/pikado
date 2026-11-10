@@ -120,7 +120,7 @@ function beginTabDrag(e, doc) {
 async function closeDoc(doc) {
   if (doc.dirty) {
     const ok = await confirmDialog(
-      `"${doc.name}" has unsaved changes. Close it anyway?`,
+      translateText("\"{0}\" has unsaved changes. Close it anyway?", doc.name),
       'Close Document',
       'Close Without Saving'
     );

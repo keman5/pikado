@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { createCanvas, cloneCanvas, imageDataToCanvas } from '../core/util.js';
 import { getFilter, runFilter } from './registry.js';
 import { getAdjustment, applyAdjustment } from '../adjustments/registry.js';
@@ -125,7 +126,7 @@ export async function applyFilterCommand(id, preset) {
   }
 
   const surf = operableSurface(doc, layer);
-  if (!surf) { app.toast(`Cannot apply "${f.name}" to this layer.`); return; }
+  if (!surf) { app.toast(translateText("Cannot apply \"{0}\" to this layer.", f.name)); return; }
 
   const runWith = (params) =>
     processSurface(doc, layer, (imageData, ctx) =>
@@ -177,7 +178,7 @@ export async function applyAdjustmentCommand(id, preset) {
   const layer = doc.activeLayer();
   if (!layer) { app.toast('No layer selected.'); return; }
   const surf = operableSurface(doc, layer);
-  if (!surf) { app.toast(`Cannot apply "${a.name}" to this layer.`); return; }
+  if (!surf) { app.toast(translateText("Cannot apply \"{0}\" to this layer.", a.name)); return; }
 
   const runWith = (params) =>
     processSurface(doc, layer, (imageData, ctx) => {

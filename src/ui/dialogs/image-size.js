@@ -213,9 +213,9 @@ export async function showImageSizeDialog(doc = app.activeDoc) {
     const before = origW * origH * 4;
     const after = state.w * state.h * 4;
     readout.replaceChildren(
-      el('div', {}, el('b', { text: `${state.w} × ${state.h} px` }), ` (was ${origW} × ${origH})`),
-      el('div', { text: `${(state.w / state.res).toFixed(2)} × ${(state.h / state.res).toFixed(2)} in at ${Math.round(state.res)} ppi` }),
-      el('div', { text: `Image size ${formatBytes(after)} — was ${formatBytes(before)}` })
+      el('div', {}, el('b', { text: `${state.w} × ${state.h} px` }), translateText(' (was {0} × {1})', origW, origH)),
+      el('div', { text: translateText("{0} × {1} in at {2} ppi", (state.w / state.res).toFixed(2), (state.h / state.res).toFixed(2), Math.round(state.res)) }),
+      el('div', { text: translateText("Image size {0} — was {1}", formatBytes(after), formatBytes(before)) })
     );
   }
 
@@ -239,7 +239,7 @@ export async function showImageSizeDialog(doc = app.activeDoc) {
         ),
         el('div.pk-field.inline', {}, el('label.pk-check', {}, resampleInput, el('span', { text: translateText("Resample") }))),
         field('Method', methodSelect),
-        el('div.pkd-note', { text: 'With Resample off the pixels are untouched — only the print size and resolution change.' })
+        el('div.pkd-note', { text: translateText("With Resample off the pixels are untouched — only the print size and resolution change.") })
       )
     )
   );
@@ -256,7 +256,7 @@ export async function showImageSizeDialog(doc = app.activeDoc) {
   const limit = getPref('maxDocPixels', 80) * 1e6;
   if (result.w * result.h > limit) {
     const ok = await confirmDialog(
-      `${result.w} × ${result.h} px is ${((result.w * result.h) / 1e6).toFixed(1)} megapixels. Continue?`,
+      translateText("{0} × {1} px is {2} megapixels. Continue?", result.w, result.h, ((result.w * result.h) / 1e6).toFixed(1)),
       'Large image', 'Resize'
     );
     if (!ok) return null;

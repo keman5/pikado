@@ -266,7 +266,7 @@ async function pickColor(which) {
     if (typeof show !== 'function') throw new Error('showColorPicker is not exported');
     const res = await show({
       color: isFg ? app.foreground : app.background,
-      title: isFg ? 'Foreground Color' : 'Background Color',
+      title: isFg ? translateText("Foreground Color") : translateText("Background Color"),
       onChange: apply,
     });
     if (res) apply(res.color !== undefined ? res.color : res);

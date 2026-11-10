@@ -803,7 +803,8 @@ rest of Pikado, so it can be replaced with any compatible build.
 ## 中文版与 Cloudflare 部署
 
 中文版地址：**https://ps.macseek.cc**。菜单、工具、面板和编辑对话框使用中文；
-用户文件名、图层名、内部命令标识与文件格式保持原样。部分技术说明仍沿用上游英文。
+覆盖右键菜单的动态状态、工具提示、帮助说明及文件读写错误提示。
+用户文件名、图层名、内部命令标识与文件格式保持原样；浏览器或第三方服务返回的原始错误可能仍为英文。
 所有图像编辑在浏览器中完成，生成式填充依然需要用户自己的 API 密钥并单独授权。
 
 支持简体中文和 English，默认中文。通过“编辑 → 首选项 → 语言”切换，
@@ -817,7 +818,8 @@ PSD 沿用现有导出器的兼容性限制；需要完整保留 Pikado 专有�
 
 ```bash
 ./build.sh          # 本地测试并构建，输出 dist/
-./build.sh check    # 多语言资源和中文化边界检查
+./build.sh check    # 词库、占位符、源码翻译键与中文化边界检查
+./build.sh test     # 独立临时配置的无头 Edge，中英文完整浏览器回归，不抢占窗口
 ./build.sh deploy   # 本地构建后上传 Cloudflare Workers 静态资源并绑定域名
 ```
 
@@ -826,4 +828,5 @@ PSD 沿用现有导出器的兼容性限制；需要完整保留 Pikado 专有�
 首次部署需确保本机已通过 `npx wrangler login` 登录对应 Cloudflare 账户。
 `public/_headers` 对入口和 Service Worker 禁用长期缓存，对哈希资源使用长期缓存。
 
-浏览器回归测试：先运行 `npm run dev`，再访问 `http://localhost:5173/tests/`。
+默认通过 `./build.sh test` 在后台运行浏览器回归，退出时清理临时浏览器配置。
+需要人工调试时，可运行 `npm run dev` 后访问 `http://localhost:5173/tests/`。

@@ -30,11 +30,11 @@ import { Dialog } from '../dialog.js';
 function step(n, title, ...body) {
   return el('li.pkd-guide-step', {},
     el('span.pkd-guide-num', { text: String(n) }),
-    el('div', {}, el('strong', { text: title }), ...body));
+    el('div', {}, el('strong', { text: translateText(title) }), ...body));
 }
 
 function p(text) {
-  return el('p', { text });
+  return el('p', { text: translateText(text) });
 }
 
 export function showAiGuideDialog() {
@@ -45,7 +45,7 @@ export function showAiGuideDialog() {
       + 'result comes back as a new layer masked to your selection. Nothing is '
       + 'painted over: generate three attempts and keep the one that works.'),
 
-    el('div.pkd-section', { text: 'Getting set up, once' }),
+    el('div.pkd-section', { text: translateText("Getting set up, once") }),
     el('ol.pkd-guide-steps', {},
       step(1, 'Get an API key. ',
         p('Pikado ships none and has no server that could hold one — a key in a '
@@ -95,17 +95,13 @@ export function showAiGuideDialog() {
     el('ul', {},
       el('li', { text: translateText("Your provider bills you directly. Pikado never sees the bill and takes no cut.") }),
       el('li', {
-        text: 'Generation is 1024×1024. Fill a region larger than that and the '
-          + 'result is softer than the rest of the image — the dialog says so before '
-          + 'you spend anything.',
+        text: translateText("Generation is 1024×1024. Fill a region larger than that and the result is softer than the rest of the image — the dialog says so before you spend anything."),
       }),
       el('li', {
-        text: 'Cancel stops Pikado waiting, but the provider may already have '
-          + 'started and may still charge for it.',
+        text: translateText("Cancel stops Pikado waiting, but the provider may already have started and may still charge for it."),
       }),
       el('li', {
-        text: 'A provider can refuse a prompt. That comes back as a refusal with '
-          + 'its reason, not as a silent failure.',
+        text: translateText("A provider can refuse a prompt. That comes back as a refusal with its reason, not as a silent failure."),
       })),
 
     el('div.pkd-section', { text: translateText("What leaves your machine") }),

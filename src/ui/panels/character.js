@@ -252,7 +252,7 @@ registerPanel({
         numField('Leading', 'leading', { min: 0, max: 3000, unit: 'px', hint: translateText("0 = automatic (1.2 × size)") })
       ),
       el('div.pkt-pair', {},
-        numField('Tracking', 'tracking', { min: -1000, max: 1000, hint: 'Letter spacing in 1/1000 em' }),
+        numField('Tracking', 'tracking', { min: -1000, max: 1000, hint: translateText("Letter spacing in 1/1000 em") }),
         selectField('Kerning', 'kerning', [
           { value: 'metrics', label: translateText("Metrics") },
           { value: 'optical', label: translateText("Optical") },
@@ -321,8 +321,8 @@ registerPanel({
     const sync = () => {
       const l = textLayer();
       scope.textContent = l
-        ? `Editing “${l.name}”`
-        : 'No text layer selected — these are the defaults for the next one.';
+        ? translateText("Editing “{0}”", l.name)
+        : translateText("No text layer selected — these are the defaults for the next one.");
       scope.classList.toggle('is-defaults', !l);
       for (const fn of controls) fn();
     };

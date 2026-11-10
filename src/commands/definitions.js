@@ -285,7 +285,7 @@ async function openRecent(entry) {
       console.warn('[open-recent]', err);
     }
   }
-  app.toast(`The browser will not reopen "${entry.name}" by itself — pick the file again.`, 'warn', 4200);
+  app.toast(translateText("The browser will not reopen \"{0}\" by itself — pick the file again.", entry.name), 'warn', 4200);
   await pickFiles();
 }
 
@@ -297,7 +297,7 @@ async function openRecent(entry) {
 async function closeDoc(doc) {
   if (!doc) return false;
   if (doc.dirty && getPref('confirmBeforeClosing', true)) {
-    const ok = await confirmDialog(`"${doc.name}" has unsaved changes. Close it anyway?`, translateText("Close"), 'Discard');
+    const ok = await confirmDialog(translateText("\"{0}\" has unsaved changes. Close it anyway?", doc.name), translateText("Close"), 'Discard');
     if (!ok) return false;
   }
   app.closeDocument(doc);
@@ -319,13 +319,13 @@ async function revertDoc(doc) {
   if (!doc.history.canUndo) { app.toast('Nothing to revert to.'); return; }
   doc.history.goto(0);
   doc.dirty = false;
-  app.toast(`Reverted ${doc.name}`, 'ok');
+  app.toast(translateText("Reverted {0}", doc.name), 'ok');
 }
 
 async function showFileInfo(doc) {
   const info = doc.info || (doc.info = { title: '', author: '', description: '', copyright: '' });
   const stat = (label, value) => el('div.pkd-row', {},
-    el('span', { text: label, style: { flex: '0 0 130px', color: 'var(--fg-dim)' } }),
+    el('span', { text: translateText(label), style: { flex: '0 0 130px', color: 'var(--fg-dim)' } }),
     el('span', { text: value })
   );
   const layers = doc.flatLayers();
@@ -335,7 +335,7 @@ async function showFileInfo(doc) {
   const input = (key, label) => {
     const node = el('input.pk-input', { type: 'text', value: info[key] || '' });
     fields[key] = node;
-    return el('div.pk-field', {}, el('label', { text: label }), node);
+    return el('div.pk-field', {}, el('label', { text: translateText(label) }), node);
   };
   const desc = el('textarea.pk-input.pk-textarea', { rows: 3 });
   desc.value = info.description || '';
@@ -350,14 +350,14 @@ async function showFileInfo(doc) {
     stat('Dimensions', `${doc.width} × ${doc.height} px`),
     stat('Resolution', `${Math.round(doc.resolution || 72)} ppi`),
     stat('Print size', `${(doc.width / (doc.resolution || 72)).toFixed(2)} × ${(doc.height / (doc.resolution || 72)).toFixed(2)} in`),
-    stat('Color mode', doc.colorMode === 'grayscale' ? 'Grayscale' : doc.colorMode === 'bitmap' ? 'Bitmap' : 'RGB Color'),
-    stat('Layers', `${layers.length} (${layers.filter((l) => l.visible).length} visible)`),
+    stat('Color mode', translateText(doc.colorMode === 'grayscale' ? 'Grayscale' : doc.colorMode === 'bitmap' ? 'Bitmap' : 'RGB Color')),
+    stat('Layers', translateText('{0} ({1} visible)', layers.length, layers.filter((l) => l.visible).length)),
     stat('Alpha channels', String(doc.alphaChannels.length)),
     stat('Paths', String(doc.paths.length)),
     stat('Pixel memory', formatBytes(doc.memoryUse())),
     stat('History states', String(doc.history.states.length)),
-    stat('File', doc.filePath || 'Not saved yet'),
-    el('div.pkd-note', { text: 'Description fields are kept with the open document and written into .pkd projects.' })
+    stat('File', doc.filePath || translateText('Not saved yet')),
+    el('div.pkd-note', { text: translateText("Description fields are kept with the open document and written into .pkd projects.") })
   ));
   dlg.setButtons([
     { label: translateText("Cancel"), value: null, subtle: true },
@@ -494,7 +494,7 @@ async function modifySelection(doc, kind) {
     width: 320,
     preview: false,
     state: { amount: kind === 'feather' ? 2 : 4 },
-    params: [{ key: 'amount', label: kind === 'feather' ? 'Feather Radius' : 'Width', type: 'slider', min: 1, max, step: 1, unit: 'px' }],
+    params: [{ key: 'amount', label: kind === 'feather' ? translateText("Feather Radius") : translateText("Width"), type: 'slider', min: 1, max, step: 1, unit: 'px' }],
   });
   if (!result) return;
   const n = result.amount;
@@ -517,7 +517,7 @@ function toggleQuickMaskMode(doc) {
 }
 
 async function saveSelection(doc) {
-  const name = await promptDialog('Channel name', `Alpha ${doc.alphaChannels.length + 1}`, 'Save Selection');
+  const name = await promptDialog(translateText("Channel name"), `Alpha ${doc.alphaChannels.length + 1}`, 'Save Selection');
   if (name == null) return;
   doc.alphaChannels.push({
     id: `chan_${Date.now().toString(36)}_${doc.alphaChannels.length}`,
@@ -539,9 +539,9 @@ function maskFromCanvas(canvas, w, h) {
 
 async function loadSelection(doc) {
   const sources = [
-    ...doc.alphaChannels.map((c) => ({ value: `chan:${c.id}`, label: `Channel — ${c.name}` })),
-    ...doc.flatLayers().filter((l) => l.canvas).map((l) => ({ value: `layer:${l.id}`, label: `${l.name} Transparency` })),
-    ...doc.flatLayers().filter((l) => l.mask).map((l) => ({ value: `mask:${l.id}`, label: `${l.name} Mask` })),
+    ...doc.alphaChannels.map((c) => ({ value: `chan:${c.id}`, label: translateText("Channel — {0}", c.name) })),
+    ...doc.flatLayers().filter((l) => l.canvas).map((l) => ({ value: `layer:${l.id}`, label: translateText("{0} Transparency", l.name) })),
+    ...doc.flatLayers().filter((l) => l.mask).map((l) => ({ value: `mask:${l.id}`, label: translateText("{0} Mask", l.name) })),
   ];
   if (!sources.length) { app.toast('There is nothing to load a selection from.'); return; }
 
@@ -735,7 +735,7 @@ async function newFillLayer(doc, kind) {
     params: [
       { key: 'pattern', label: translateText("Pattern"), type: 'select', options: patterns.map((p) => ({ value: p.id, label: p.name })) },
       { key: 'scale', label: translateText("Scale"), type: 'slider', min: 0.1, max: 4, step: 0.1 },
-      { type: 'label', label: 'A pattern fill is baked into pixels, with a mask you can paint on.' },
+      { type: 'label', label: translateText("A pattern fill is baked into pixels, with a mask you can paint on.") },
     ],
   });
   if (!result) return;
@@ -1159,7 +1159,7 @@ function applyWorkspace(name) {
     if (wanted.has(p)) openPanel(p);
     else closePanel(p);
   }
-  app.toast(`${name[0].toUpperCase()}${name.slice(1)} workspace`, 'ok');
+  app.toast(translateText('{0} workspace', translateText(name[0].toUpperCase() + name.slice(1))), 'ok');
 }
 
 function resetWorkspace() {
@@ -1230,15 +1230,13 @@ function showAbout() {
   const dlg = new Dialog({ title: translateText("About Pikado"), width: 520 });
   dlg.setBody(el('div.pkd-about', {},
     el('p', {
-      text: 'Pikado is an image editor that runs entirely in the browser. No pixels leave '
-        + 'your machine — Generative Fill is the one thing that can send any, and it asks first. '
-        + 'Web fonts are downloaded from Google when you use one, which sends nothing of yours.',
+      text: translateText("Pikado is an image editor that runs entirely in the browser. No pixels leave your machine — Generative Fill is the one thing that can send any, and it asks first. Web fonts are downloaded from Google when you use one, which sends nothing of yours."),
     }),
     el('div.pkd-section', { text: translateText("What works") }),
-    el('ul', {}, ...DONE.map((t) => el('li', { text: t }))),
+    el('ul', {}, ...DONE.map((t) => el('li', { text: translateText(t) }))),
     el('div.pkd-section', { text: translateText("What is not implemented") }),
-    el('ul', {}, ...NOT_DONE.map((t) => el('li', { text: t }))),
-    el('div.pkd-note', { text: 'Built with plain ES modules and a 2-D canvas. Everything above is checked against the code, not the roadmap.' })
+    el('ul', {}, ...NOT_DONE.map((t) => el('li', { text: translateText(t) }))),
+    el('div.pkd-note', { text: translateText("Built with plain ES modules and a 2-D canvas. Everything above is checked against the code, not the roadmap.") })
   ));
   dlg.setButtons([{ label: translateText("Close"), value: true, primary: true }]);
   return dlg.open();
@@ -1485,7 +1483,7 @@ registerCommands([
   },
   { id: 'image.duplicate', label: translateText("Duplicate…"), enabled: hasDoc, run: async () => {
     const doc = D();
-    const name = await promptDialog('Duplicate as', `${doc.name} copy`, 'Duplicate Image');
+    const name = await promptDialog(translateText("Duplicate as"), `${doc.name} copy`, 'Duplicate Image');
     if (name == null) return;
     img.duplicateDocument(doc, name.trim() || `${doc.name} copy`);
   } },
@@ -1625,14 +1623,14 @@ registerCommands([
   },
   {
     id: 'layer.mask.toggle', label: translateText("Disable"),
-    dynamicLabel: () => { const l = activeLayer(); return l && l.hasMask && !l.maskEnabled ? 'Enable' : 'Disable'; },
+    dynamicLabel: () => { const l = activeLayer(); return translateText(l && l.hasMask && !l.maskEnabled ? 'Enable' : 'Disable'); },
     enabled: () => { const l = activeLayer(); return !!(l && l.hasMask); },
     run: () => ops.toggleMaskEnabled(D()),
   },
 
   {
     id: 'layer.clipping', label: translateText("Create Clipping Mask"), accel: 'Alt+Ctrl+G',
-    dynamicLabel: () => { const l = activeLayer(); return l && l.clipped ? 'Release Clipping Mask' : 'Create Clipping Mask'; },
+    dynamicLabel: () => { const l = activeLayer(); return translateText(l && l.clipped ? 'Release Clipping Mask' : 'Create Clipping Mask'); },
     enabled: hasLayer,
     run: () => ops.toggleClipping(D()),
   },
@@ -1734,7 +1732,7 @@ registerCommands([
 
   {
     id: 'layer.merge-down', label: translateText("Merge Down"), accel: 'Ctrl+E',
-    dynamicLabel: () => (D() && D().selectedLayers().length > 1 ? 'Merge Layers' : 'Merge Down'),
+    dynamicLabel: () => translateText(D() && D().selectedLayers().length > 1 ? 'Merge Layers' : 'Merge Down'),
     enabled: hasLayer,
     run: () => { const d = D(); if (d.selectedLayers().length > 1) ops.mergeSelected(d); else ops.mergeDown(d); },
   },
@@ -1756,7 +1754,7 @@ registerCommands([
   /* --- Type ------------------------------------------------------- */
   ...['none', 'sharp', 'crisp', 'strong', 'smooth'].map((mode) => ({
     id: `type.antialias.${mode}`,
-    label: mode === 'none' ? 'None' : mode[0].toUpperCase() + mode.slice(1),
+    label: mode === 'none' ? translateText("None") : translateText(mode[0].toUpperCase() + mode.slice(1)),
     enabled: () => !!textLayer(),
     checked: () => { const l = textLayer(); return !!(l && l.text) && (l.text.antialias || 'smooth') === mode; },
     run: () => setTextProp(D(), { antialias: mode }, 'Anti-Alias'),
@@ -1832,7 +1830,7 @@ registerCommands([
   /* --- Filter ----------------------------------------------------- */
   {
     id: 'filter.last', label: translateText("Last Filter"), accel: 'Ctrl+F',
-    dynamicLabel: () => (app.lastFilter ? app.lastFilter.label : 'Last Filter'),
+    dynamicLabel: () => translateText(app.lastFilter ? app.lastFilter.label : 'Last Filter'),
     enabled: () => hasLayer() && !!app.lastFilter,
     run: () => repeatLastFilter(),
   },
@@ -1879,7 +1877,7 @@ registerCommands([
   },
   ...[['standard', 'Standard Screen Mode'], ['full-menu', 'Full Screen With Menu Bar'], ['full', 'Full Screen Mode']].map(([mode, label]) => ({
     id: `view.screen.${mode}`,
-    label,
+    label: translateText(label),
     checked: () => getScreenMode() === mode,
     run: () => setScreenMode(mode),
   })),
@@ -1959,10 +1957,10 @@ registerCommands([
 for (let i = 0; i < RECENT_MAX; i++) {
   registerCommand({
     id: `file.open-recent.${i}`,
-    label: `Recent ${i + 1}`,
+    label: translateText("Recent {0}", i + 1),
     dynamicLabel: () => {
       const e = recentList()[i];
-      return e ? e.name : `Recent ${i + 1}`;
+      return e ? e.name : translateText('Recent {0}', i + 1);
     },
     enabled: () => !!recentList()[i],
     run: () => openRecent(recentList()[i]),

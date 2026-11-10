@@ -1,3 +1,4 @@
+import { t as translateText } from '../../i18n/index.js';
 import { registerProvider } from './index.js';
 import { authorizeRequest } from '../credentials.js';
 import { mapHttpError, mapThrown, GenerationError, GEN_ERRORS } from '../errors.js';
@@ -34,8 +35,8 @@ import { createCanvas, ctx2d, loadImage } from '../../core/util.js';
 const HOST = 'https://generativelanguage.googleapis.com';
 
 const THINKING = [
-  { value: 'MINIMAL', label: 'Minimal — fastest' },
-  { value: 'HIGH', label: 'High — thinks before drawing' },
+  { value: 'MINIMAL', label: translateText("Minimal — fastest") },
+  { value: 'HIGH', label: translateText("High — thinks before drawing") },
 ];
 
 /**
@@ -52,10 +53,10 @@ const THINKING = [
  * model id alone. The GA ids carry no suffix.
  */
 const MODELS = [
-  { id: 'gemini-3.1-flash-image', label: 'Gemini 3.1 Flash Image — recommended', efforts: THINKING, defaultEffort: 'MINIMAL' },
-  { id: 'gemini-3.1-flash-lite-image', label: 'Gemini 3.1 Flash Lite Image — cheapest', efforts: THINKING, defaultEffort: 'MINIMAL' },
-  { id: 'gemini-3-pro-image', label: 'Gemini 3 Pro Image — always thinks' },
-  { id: 'gemini-2.5-flash-image', label: 'Gemini 2.5 Flash Image (legacy)' },
+  { id: 'gemini-3.1-flash-image', label: translateText("Gemini 3.1 Flash Image — recommended"), efforts: THINKING, defaultEffort: 'MINIMAL' },
+  { id: 'gemini-3.1-flash-lite-image', label: translateText("Gemini 3.1 Flash Lite Image — cheapest"), efforts: THINKING, defaultEffort: 'MINIMAL' },
+  { id: 'gemini-3-pro-image', label: translateText("Gemini 3 Pro Image — always thinks") },
+  { id: 'gemini-2.5-flash-image', label: translateText("Gemini 2.5 Flash Image (legacy)") },
 ];
 
 const DEFAULT_MODEL = MODELS[0].id;

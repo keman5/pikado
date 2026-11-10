@@ -29,7 +29,7 @@ const EXTENSION_COLORS = [
   { value: 'foreground', label: translateText("Foreground") },
   { value: 'white', label: translateText("White") },
   { value: 'black', label: translateText("Black") },
-  { value: 'gray', label: '50% Gray' },
+  { value: 'gray', label: translateText("50% Gray") },
   { value: 'transparent', label: translateText("Transparent") },
   { value: 'custom', label: translateText("Other...") },
 ];
@@ -130,7 +130,7 @@ export async function showCanvasSizeDialog(doc = app.activeDoc) {
         })
       )
     );
-    anchorGrid.title = `New canvas ${target.w} × ${target.h}`;
+    anchorGrid.title = translateText("New canvas {0} × {1}", target.w, target.h);
   }
 
   function sync(skipInputs) {
@@ -152,13 +152,13 @@ export async function showCanvasSizeDialog(doc = app.activeDoc) {
 
     current.replaceChildren(
       el('div', {}, 'Current size: ', el('b', { text: formatBytes(origW * origH * 4) })),
-      el('div', { text: `${origW} × ${origH} px  (${(origW / res).toFixed(2)} × ${(origH / res).toFixed(2)} in)` })
+      el('div', { text: translateText("{0} × {1} px  ({2} × {3} in)", origW, origH, (origW / res).toFixed(2), (origH / res).toFixed(2)) })
     );
     const off = anchorOffset(state.anchor, origW, origH, target.w, target.h);
     newReadout.replaceChildren(
       el('div', {}, 'New size: ', el('b', { text: formatBytes(target.w * target.h * 4) })),
       el('div', { text: `${target.w} × ${target.h} px` }),
-      el('div', { text: `Existing image lands at ${off.dx}, ${off.dy}` })
+      el('div', { text: translateText("Existing image lands at {0}, {1}", off.dx, off.dy) })
     );
   }
 

@@ -58,7 +58,7 @@ export async function showSmartTransformDialog(doc, layer) {
       { key: 'scaleY', label: translateText("Height"), type: 'number', min: 0.1, max: 4000, step: 0.1, unit: '%', when: (v) => !v.linked },
       {
         key: 'angle', label: translateText("Rotate"), type: 'angle',
-        hint: `Source is ${s.sourceWidth} × ${s.sourceHeight} px — every change resamples it from scratch.`,
+        hint: translateText("Source is {0} × {1} px — every change resamples it from scratch.", s.sourceWidth, s.sourceHeight),
       },
     ],
     onPreview: (v) => {
@@ -93,7 +93,7 @@ export async function showReplaceContentsDialog(doc, layer) {
   return app.busy('Replace Contents', async () => {
     const img = await decodeImage(file);
     replaceContents(doc, layer, img, 'Replace Contents');
-    app.toast(`Replaced with "${file.name}".`, 'ok');
+    app.toast(translateText("Replaced with \"{0}\".", file.name), 'ok');
     return true;
   });
 }

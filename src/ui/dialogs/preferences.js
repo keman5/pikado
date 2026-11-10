@@ -81,7 +81,7 @@ const CATEGORIES = [
           { value: 'cm', label: translateText("Centimeters") }, { value: 'mm', label: translateText("Millimeters") },
           { value: 'pt', label: translateText("Points") }, { value: 'pica', label: translateText("Picas") },
         ],
-        hint: 'Used by the rulers, the Info panel and the size dialogs.',
+        hint: translateText("Used by the rulers, the Info panel and the size dialogs."),
       },
       { key: 'recentLimit', label: translateText("Recent Documents"), type: 'slider', min: 0, max: 20, step: 1 },
       { key: 'confirmBeforeClosing', label: translateText("Ask before closing a document with unsaved changes"), type: 'checkbox' },
@@ -92,9 +92,7 @@ const CATEGORIES = [
           { value: 'auto', label: translateText("Download when needed") },
           { value: 'off', label: translateText("Never download") },
         ],
-        hint: 'Fonts come from Google Fonts. Nothing of yours is sent — this is a '
-          + 'download — and a family is kept once fetched, so it works offline afterwards. '
-          + 'Turning it off leaves the built-in Google families showing a substitute face.',
+        hint: translateText("Fonts come from Google Fonts. Nothing of yours is sent — this is a download — and a family is kept once fetched, so it works offline afterwards. Turning it off leaves the built-in Google families showing a substitute face."),
       },
     ],
   },
@@ -134,7 +132,7 @@ const CATEGORIES = [
       { key: 'historyStates', label: translateText("History States"), type: 'slider', min: 5, max: 200, step: 1 },
       {
         key: 'autoPurgeHistory', label: translateText("Purge the oldest states when memory runs high"), type: 'checkbox',
-        hint: 'Uses the memory limit set under Performance.',
+        hint: translateText("Uses the memory limit set under Performance."),
       },
     ],
   },

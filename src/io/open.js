@@ -29,24 +29,19 @@ async function askAboutOversizePSD(info) {
   const mb = Math.round(info.projectedBytes / 1048576);
   const budgetMb = Math.round(info.budgetBytes / 1048576);
   const { Dialog } = await import('../ui/dialog.js');
-  const dialog = new Dialog({ title: 'This PSD is bigger than it looks', width: 500 });
+  const dialog = new Dialog({ title: translateText("This PSD is bigger than it looks"), width: 500 });
   dialog.setBody(
     el('div.pk-msg', {
-      text: `It has ${info.layers} layers on a ${info.width} x ${info.height} canvas. `
-        + `Pikado keeps every layer at full canvas size, so opening them all needs about `
-        + `${mb} MB — well past the ${budgetMb} MB budget in Preferences. That is usually `
-        + `enough to make the tab unresponsive or close it outright.`,
+      text: translateText("It has {0} layers on a {1} x {2} canvas. Pikado keeps every layer at full canvas size, so opening them all needs about {3} MB — well past the {4} MB budget in Preferences. That is usually enough to make the tab unresponsive or close it outright.", info.layers, info.width, info.height, mb, budgetMb),
     }),
     el('div.pk-hint', {
-      text: 'Opening it flattened uses the composite Photoshop already stored in the file. '
-        + 'You get the picture, at one layer, immediately. Opening every layer may still '
-        + 'work if you have the memory to spare — it is your call, not a refusal.',
+      text: translateText("Opening it flattened uses the composite Photoshop already stored in the file. You get the picture, at one layer, immediately. Opening every layer may still work if you have the memory to spare — it is your call, not a refusal."),
     }),
   );
   dialog.setButtons([
     { label: translateText("Cancel"), value: 'cancel', subtle: true },
-    { label: 'Open all layers anyway', value: 'proceed' },
-    { label: 'Open flattened', value: 'flatten', primary: true },
+    { label: translateText("Open all layers anyway"), value: 'proceed' },
+    { label: translateText("Open flattened"), value: 'flatten', primary: true },
   ]);
   const choice = await dialog.open();
   return choice || 'cancel';

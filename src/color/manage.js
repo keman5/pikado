@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { app } from '../core/app.js';
 import { ctx2dRead, ctx2d } from '../core/util.js';
 import { registerProofRenderer } from '../render/compositor.js';
@@ -93,7 +94,7 @@ export async function convertToProfile(doc, profile, opts = {}) {
   if (!to) return null;
   const from = profileOf(doc);
   if (from === to || (from.id === to.id && !from.embedded && !to.embedded)) {
-    app.toast(`This document is already ${to.name}.`, 'info');
+    app.toast(translateText("This document is already {0}.", to.name), 'info');
     return null;
   }
   // Text, shape and smart layers have to be re-rendered, which needs modules a
@@ -347,7 +348,7 @@ export function proofLabel(doc) {
   const proof = proofOf(doc);
   const to = getProfile(proof.profileId);
   const exact = intentIsExact(proof.intent);
-  return `Proof: ${to.name}${exact ? '' : ' (relative)'}${proof.gamutWarning ? ' + gamut warning' : ''}`;
+  return translateText('Proof: {0}{1}{2}', to.name, exact ? '' : translateText(' (relative)'), proof.gamutWarning ? translateText(' + gamut warning') : '');
 }
 
 /** The colour a gamut warning paints over out-of-gamut pixels. */

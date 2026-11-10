@@ -25,7 +25,7 @@ const FORMATS = [
   { value: 'heic', label: 'HEIC', mime: 'image/heic', lossy: true, alpha: true, ext: 'heic' },
   // An icon is one file holding every size macOS asks for, so it has no export
   // scale and no per-layer mode.
-  { value: 'icns', label: 'ICNS (macOS icon)', mime: 'image/icns', lossy: false, alpha: true, ext: 'icns', icon: true },
+  { value: 'icns', label: translateText("ICNS (macOS icon)"), mime: 'image/icns', lossy: false, alpha: true, ext: 'icns', icon: true },
 ];
 
 const SCALES = [0.5, 1, 2, 3];
@@ -164,8 +164,8 @@ export async function showExportDialog(doc = app.activeDoc) {
   heicEncodeSupport().then(({ ok, reason }) => {
     heicOption.disabled = !ok;
     if (!ok) {
-      heicOption.textContent = 'HEIC (not available in this browser)';
-      heicNote.textContent = reason;
+      heicOption.textContent = translateText("HEIC (not available in this browser)");
+      heicNote.textContent = translateText(reason);
       heicNote.style.display = '';
     }
   });
@@ -217,8 +217,8 @@ export async function showExportDialog(doc = app.activeDoc) {
       try { blob = await writeICNS(source); } catch { blob = null; }
       info.replaceChildren(
         el('div', {}, el('b', { text: `${sizes.join(', ')} px` }), ` · ${fmt.label}`),
-        el('div', { text: blob ? `Size ≈ ${formatBytes(blob.size)}` : 'Estimated size unavailable' }),
-        el('div', { text: Math.max(doc.width, doc.height) < 1024 ? 'Sizes above the document are left out rather than upscaled — 1024 px is the largest macOS uses.' : `Single file: ${state.filename || baseName(doc)}.${fmt.ext}` })
+        el('div', { text: blob ? translateText("Size ≈ {0}", formatBytes(blob.size)) : translateText("Estimated size unavailable") }),
+        el('div', { text: Math.max(doc.width, doc.height) < 1024 ? translateText("Sizes above the document are left out rather than upscaled — 1024 px is the largest macOS uses.") : translateText("Single file: {0}.{1}", state.filename || baseName(doc), fmt.ext) })
       );
       return;
     }
@@ -245,10 +245,10 @@ export async function showExportDialog(doc = app.activeDoc) {
     const animated = fmt.value === 'gif' && frameCount > 1 && !state.allLayers;
     info.replaceChildren(
       el('div', {}, el('b', { text: `${w} × ${h} px` }), ` · ${fmt.label}`),
-      el('div', { text: size ? `Estimated size ≈ ${formatBytes(Math.round(size))}${ratio > 1 ? ' (extrapolated)' : ''}${animated ? ' per frame' : ''}` : 'Estimated size unavailable' }),
-      el('div', { text: state.allLayers ? `Exports ${doc.flatLayers().filter((l) => l.visible && l.type !== 'adjustment').length} layers as separate files` : `Single file: ${state.filename || baseName(doc)}.${fmt.ext}` }),
+      el('div', { text: size ? translateText("Estimated size ≈ {0}{1}{2}", formatBytes(Math.round(size)), ratio > 1 ? translateText(' (extrapolated)') : '', animated ? translateText(' per frame') : '') : translateText("Estimated size unavailable") }),
+      el('div', { text: state.allLayers ? translateText("Exports {0} layers as separate files", doc.flatLayers().filter((l) => l.visible && l.type !== 'adjustment').length) : translateText("Single file: {0}.{1}", state.filename || baseName(doc), fmt.ext) }),
       animated
-        ? el('div', { text: `Animated: ${frameCount} frames, ${doc.loopCount ? `${doc.loopCount} play${doc.loopCount > 1 ? 's' : ''}` : 'looping forever'}` })
+        ? el('div', { text: translateText("Animated: {0} frames, {1}", frameCount, doc.loopCount ? translateText(doc.loopCount === 1 ? '{0} play' : '{0} plays', doc.loopCount) : translateText('looping forever')) })
         : null
     );
   }, 220);

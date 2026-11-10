@@ -207,7 +207,7 @@ function buildHistoryPanel(bodyEl) {
   }
 
   async function renameSnapshot(doc, snap) {
-    const name = await promptDialog('Snapshot name', snap.name, 'Rename Snapshot');
+    const name = await promptDialog(translateText("Snapshot name"), snap.name, 'Rename Snapshot');
     if (name == null) return;
     const v = String(name).trim();
     if (v) snap.name = v;

@@ -1,3 +1,4 @@
+import { t as translateText } from '../i18n/index.js';
 import { createCanvas, ctx2d, ctx2dRead } from '../core/util.js';
 
 /**
@@ -320,7 +321,7 @@ function gridData(rows, cols, width, height) {
 export function muxHEIF(parts) {
   const { hvcC, tiles, tileW, tileH, cols, rows, width, height, nclx } = parts;
   const alphaTiles = parts.alphaTiles && parts.alphaTiles.length ? parts.alphaTiles : null;
-  if (tiles.length !== rows * cols) throw new Error(`expected ${rows * cols} tiles, got ${tiles.length}`);
+  if (tiles.length !== rows * cols) throw new Error(translateText("expected {0} tiles, got {1}", rows * cols, tiles.length));
   if (alphaTiles && alphaTiles.length !== tiles.length) throw new Error('the alpha plane needs one tile per colour tile');
 
   // Item ids: the grid is 1 and the primary image; its tiles follow; the alpha

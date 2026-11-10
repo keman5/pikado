@@ -26,7 +26,7 @@ const FILL_CONTENTS = [
   { value: 'pattern', label: translateText("Pattern") },
   { value: 'history', label: translateText("History") },
   { value: 'black', label: translateText("Black") },
-  { value: 'gray50', label: '50% Gray' },
+  { value: 'gray50', label: translateText("50% Gray") },
   { value: 'white', label: translateText("White") },
 ];
 
@@ -68,7 +68,7 @@ export async function definePattern(doc) {
   tile.getContext('2d').drawImage(src, -b.x, -b.y);
 
   const fallback = `Pattern ${customPatterns().length + 1}`;
-  const name = await promptDialog('Pattern name', fallback, 'Pattern Name');
+  const name = await promptDialog(translateText("Pattern name"), fallback, 'Pattern Name');
   if (name == null) return null;
   const entry = { id: uid('pat'), name: name.trim() || fallback, canvas: tile };
   customPatterns().unshift(entry);
@@ -786,7 +786,7 @@ export async function showContentAwareFillDialog(doc) {
         key: 'output', label: translateText("Output To"), type: 'select',
         options: [{ value: 'current', label: translateText("Current Layer") }, { value: 'new-layer', label: translateText("New Layer") }],
       },
-      { type: 'label', label: 'The selected pixels are re-synthesised from the surrounding image.' },
+      { type: 'label', label: translateText("The selected pixels are re-synthesised from the surrounding image.") },
     ],
   });
   if (!result) return;
